@@ -12,47 +12,47 @@ const en: Translations = {
   },
 
   hero: {
-    badge: 'Since 1969',
-    title: "Istanbul's Photography Hub",
-    subtitle: 'Passport Photos • Film Development • Printing • Souvenirs',
-    description: "In the heart of Sirkeci, defying the speed of the digital world. We process every frame with care.",
-    cta: 'Contact via WhatsApp',
-    ctaSecondary: 'Explore Our Services',
+    badge: 'IN SIRKECI, ISTANBUL SINCE 1969',
+    title: 'Everything About Photography: Sirkeci\'s Premier Photo Studio',
+    subtitle: 'Biometric Passport • Film Developing • Used Cameras • Photo Printing',
+    description: 'At Istanbul Sirkeci\'s established photo studio, we offer professional instant biometric passport photos, analog film developing & scanning, used camera trading, and high-quality digital printing services.',
+    cta: 'Explore Our Services',
+    ctaSecondary: 'WhatsApp Support',
     filmGallery: 'View My Films',
   },
 
   services: {
     title: 'Our Services',
-    subtitle: 'Professional photography services',
+    subtitle: 'Professional Photography Services in Sirkeci',
     passport: {
-      title: 'Passport Photos',
-      description: 'Biometric-compatible professional passport photos valid for all official applications. Ready in 5 minutes.',
-      features: ['Biometric compatible', 'All country standards', 'Ready in 5 minutes', 'Digital copy included'],
+      title: 'Passport, Biometric & Corporate Portrait Studio',
+      description: 'We provide instant biometric passport photos for visa, passport, driving license, and ID card applications. We also meticulously capture high-quality corporate identity (portrait) photos for your CV, LinkedIn, and company profiles.',
+      features: ['Biometric & Passport', 'Visa & ID Compliance', 'LinkedIn & CV Portraits', 'Instant Digital Delivery'],
     },
     film: {
-      title: 'Film Development & Scanning',
-      description: 'We professionally develop and high-resolution scan your 35mm, 120 format, and disposable camera films.',
-      features: ['35mm & 120 format', 'Color & B&W', 'High-resolution scanning', 'Digital delivery'],
+      title: 'Analog Film Developing & High-Res Scanning',
+      description: 'We carefully develop your color (C-41) or black and white analog prints on the same day and convert them to digital format with our high-resolution scanners. You can ship your film from anywhere in Turkey.',
+      features: ['35mm & 120 format', 'Color (C-41) & B&W', 'High-res scanning', 'Digital delivery'],
     },
     print: {
-      title: 'Photo Printing',
-      description: 'We print your photos in the highest quality with our professional Epson equipment. Any size, any format.',
-      features: ['Professional Epson D700', 'All sizes available', 'Canvas & poster', 'Same-day delivery'],
+      title: 'Professional Photo Printing Center',
+      description: 'Don\'t let your memories stay on your phone. We provide professional photo printing in 10x15, 13x18, 15x21, 20x30, 30x40, and custom sizes on fade-resistant, your choice of matte or glossy photo paper.',
+      features: ['Professional Epson quality', 'All sizes available', 'Canvas & poster', 'Same-day delivery'],
     },
     sublimation: {
-      title: 'Customizable Products',
-      description: 'Custom mugs, magnets, puzzles and more. Perfect for Istanbul souvenirs or special gifts.',
-      features: ['Custom mugs', 'Magnets & keychains', 'Puzzles', 'Corporate gifts'],
+      title: 'Custom Photo Gifts & Keepsakes',
+      description: 'Personalized mugs, magnets, puzzles, and many more products designed with your photos. Let us prepare unforgettable and meaningful gifts for your loved ones from Sirkeci, Istanbul.',
+      features: ['Custom photo mugs', 'Magnets & keychains', 'Photo puzzles', 'Corporate gifts'],
     },
     studio: {
-      title: 'Studio Photography',
-      description: 'We shoot ID photos, biometrics, portraits and special occasions in our professional studio environment.',
-      features: ['Professional Lighting', 'Portrait Photography', 'Corporate Shoots', 'Instant Delivery'],
+      title: 'Professional Product Photography',
+      description: 'We capture high-quality, eye-catching product photos for your e-commerce stores. Professional lighting setups fully compatible with Etsy, Amazon, eBay, and your own website.',
+      features: ['E-Commerce Ready', 'Etsy, Amazon & eBay', 'White Background', 'High Resolution'],
     },
     equipment: {
-      title: 'Photo & Camera Equipment',
-      description: 'Analog and digital camera equipment, batteries, films and accessories are waiting for you in our store.',
-      features: ['Camera Batteries', 'Analog Films', 'Memory Cards', 'Bags and Accessories'],
+      title: 'Used Camera Buying & Selling',
+      description: 'We buy your second-hand analog cameras for cash at their fair market value. You can get an instant preliminary offer by providing model and condition details. Once your camera arrives and passes our technician\'s inspection, we issue the agreed payment immediately.',
+      features: ['Used Cameras', 'Fresh Analog Films', 'Camera Batteries', 'Lenses & Accessories'],
     },
   },
 
@@ -60,10 +60,16 @@ const en: Translations = {
     title: 'Our Products',
     subtitle: 'Analog photography and personal keepsakes',
     addToCart: 'Add to Cart',
-    orderWhatsApp: 'Order via WhatsApp',
+    orderWhatsApp: 'WhatsApp Order',
     customProduct: 'Customizable',
     viewAll: 'View All Products',
     currency: '₺',
+    categoriesTitle: 'Categories',
+    allProducts: 'All Products',
+    productsShowing: 'products showing',
+    clearFilters: 'Clear Filters',
+    loadingProducts: 'Loading products...',
+    internationalWarning: 'For orders outside Turkey, please contact us in advance!',
     mainCategories: {
       'photo-supplies': {
         title: 'Photo Supplies',
@@ -203,6 +209,7 @@ const en: Translations = {
     loading: 'Loading...',
     startingFrom: 'starting from',
     whatsappDefault: 'Hello, I am reaching out from your website.',
+    contactUs: 'Contact Us',
   },
 
   whyUs: {
@@ -215,7 +222,7 @@ const en: Translations = {
       },
       location: {
         title: 'Central Location',
-        description: '3-minute walk from Sirkeci tram station',
+        description: '3-minute walk from Sirkeci tram station, 5-minute walk from Marmaray',
       },
       express: {
         title: 'Express Service',

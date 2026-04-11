@@ -11,10 +11,15 @@ import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import { CartProvider } from '@/hooks/useCart';
 import GlobalCart from '@/components/layout/GlobalCart';
 
-export default function ClientLayout({ children }: { children: ReactNode }) {
+interface ClientLayoutProps {
+  children: ReactNode;
+  lang?: 'tr' | 'en';
+}
+
+export default function ClientLayout({ children, lang }: ClientLayoutProps) {
   return (
     <StyledComponentsRegistry>
-      <LanguageProvider>
+      <LanguageProvider lang={lang}>
         <CartProvider>
           <GlobalStyles />
           <Toaster

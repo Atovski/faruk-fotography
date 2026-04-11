@@ -1,0 +1,66 @@
+server {
+    
+    server_name farukfotografcilik.com www.farukfotografcilik.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \$host;
+        proxy_cache_bypass \$http_upgrade;
+    }
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/farukfotografcilik.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/farukfotografcilik.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+}
+
+
+server {
+    if ($host = www.farukfotografcilik.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    if ($host = farukfotografcilik.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    listen [::]:80;
+    
+    server_name farukfotografcilik.com www.farukfotografcilik.com;
+    return 404; # managed by Certbot
+
+
+
+
+}
+======
+2026/04/04 09:19:32 [error] 14154#14154: *1553 upstream prematurely closed connection while reading response header from upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:3000/", host: "farukfotografcilik.com"
+2026/04/04 09:19:32 [error] 14154#14154: *1553 no live upstreams while connecting to upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET /favicon.ico HTTP/1.1", upstream: "http://localhost/favicon.ico", host: "farukfotografcilik.com", referrer: "https://farukfotografcilik.com/"
+2026/04/04 09:19:34 [error] 14154#14154: *1553 no live upstreams while connecting to upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://localhost/", host: "farukfotografcilik.com"
+2026/04/04 09:19:34 [error] 14154#14154: *1553 no live upstreams while connecting to upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET /favicon.ico HTTP/1.1", upstream: "http://localhost/favicon.ico", host: "farukfotografcilik.com", referrer: "https://farukfotografcilik.com/"
+2026/04/04 09:19:35 [error] 14153#14153: *1557 upstream prematurely closed connection while reading response header from upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET /hero-bg.mp4 HTTP/1.1", upstream: "http://[::1]:3000/hero-bg.mp4", host: "farukfotografcilik.com", referrer: "http://farukfotografcilik.com/"
+2026/04/04 09:19:35 [error] 14153#14153: *1557 upstream prematurely closed connection while reading response header from upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET /hero-bg.mp4 HTTP/1.1", upstream: "http://127.0.0.1:3000/hero-bg.mp4", host: "farukfotografcilik.com", referrer: "http://farukfotografcilik.com/"
+2026/04/04 09:19:36 [error] 14154#14154: *1553 no live upstreams while connecting to upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://localhost/", host: "farukfotografcilik.com"
+2026/04/04 09:19:36 [error] 14154#14154: *1553 no live upstreams while connecting to upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET /favicon.ico HTTP/1.1", upstream: "http://localhost/favicon.ico", host: "farukfotografcilik.com", referrer: "https://farukfotografcilik.com/"
+2026/04/04 09:19:56 [error] 14154#14154: *1553 upstream prematurely closed connection while reading response header from upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:3000/", host: "farukfotografcilik.com"
+2026/04/04 09:19:56 [error] 14154#14154: *1553 upstream prematurely closed connection while reading response header from upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://[::1]:3000/", host: "farukfotografcilik.com"
+2026/04/04 09:19:56 [error] 14154#14154: *1553 no live upstreams while connecting to upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET /favicon.ico HTTP/1.1", upstream: "http://localhost/favicon.ico", host: "farukfotografcilik.com", referrer: "https://farukfotografcilik.com/"
+2026/04/04 09:20:30 [error] 14153#14153: *1562 upstream prematurely closed connection while reading response header from upstream, client: 103.4.250.147, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:3000/", host: "farukfotografcilik.com"
+2026/04/04 09:20:30 [error] 14153#14153: *1562 upstream prematurely closed connection while reading response header from upstream, client: 103.4.250.147, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://[::1]:3000/", host: "farukfotografcilik.com"
+2026/04/04 09:20:30 [error] 14153#14153: *1563 no live upstreams while connecting to upstream, client: 154.28.229.42, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://localhost/", host: "farukfotografcilik.com"
+2026/04/04 09:20:39 [error] 14153#14153: *1566 no live upstreams while connecting to upstream, client: 154.28.229.67, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://localhost/", host: "farukfotografcilik.com"
+2026/04/04 09:21:48 [error] 14153#14153: *1567 upstream prematurely closed connection while reading response header from upstream, client: 152.53.195.17, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:3000/", host: "farukfotografcilik.com"
+2026/04/04 09:21:48 [error] 14153#14153: *1567 upstream prematurely closed connection while reading response header from upstream, client: 152.53.195.17, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://[::1]:3000/", host: "farukfotografcilik.com"
+2026/04/04 09:21:51 [error] 14153#14153: *1570 no live upstreams while connecting to upstream, client: 216.73.216.217, server: farukfotografcilik.com, request: "GET /robots.txt HTTP/1.1", upstream: "http://localhost/robots.txt", host: "farukfotografcilik.com"
+2026/04/04 09:22:54 [error] 14443#14443: *1571 upstream prematurely closed connection while reading response header from upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "HEAD / HTTP/1.1", upstream: "http://127.0.0.1:3000/", host: "farukfotografcilik.com"
+2026/04/04 09:22:54 [error] 14443#14443: *1571 upstream prematurely closed connection while reading response header from upstream, client: 85.104.2.161, server: farukfotografcilik.com, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:3000/", host: "farukfotografcilik.com"

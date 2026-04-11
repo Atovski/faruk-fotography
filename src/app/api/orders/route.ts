@@ -4,14 +4,6 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key_to_prevent_crash');
 
-function generateOrderNumber() {
-  const date = new Date();
-  const prefix = 'FF';
-  const datePart = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
-  const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `${prefix}-${datePart}-${rand}`;
-}
-
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -23,13 +15,12 @@ export async function POST(request: Request) {
     }
 
     const supabase = createServerSupabaseClient();
-    const orderNumber = generateOrderNumber();
 
-    // 1. Create order
+    // 1. Create order with a temporary order number
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
-        order_number: orderNumber,
+        order_number: 'TEMP',
         full_name: customer.fullName,
         phone: customer.phone,
         email: customer.email,
@@ -51,7 +42,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Sipariş oluşturulamadı.' }, { status: 500 });
     }
 
-    // 2. Create order items
+    // 2. Build the real order number using total order count
+    //    Count includes the row we just inserted, so first ever order → count=1 → 1001
+    const { count } = await supabase
+      .from('orders')
+      .select('*', { count: 'exact', head: true });
+
+    const date = new Date();
+    const datePart = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
+    const seq = (count || 1) + 1000;
+    const orderNumber = `FF-${datePart}-${seq}`;
+
+    // 3. Update the order with the real order number
+    await supabase
+      .from('orders')
+      .update({ order_number: orderNumber })
+      .eq('id', order.id);
+
+    // 4. Create order items
     const orderItems = items.map((item: any) => ({
       order_id: order.id,
       product_id: item.product_id,

@@ -4,9 +4,10 @@ import styled from 'styled-components';
 import { theme } from '@/styles/theme';
 import { fadeInUp } from '@/styles/animations';
 import { useLanguage } from '@/hooks/useLanguage';
+import { getLocalizedHref } from '@/i18n/config';
 import SectionTitle from '@/components/ui/SectionTitle';
 import { Card } from '@/components/ui/Card';
-import { HiCamera, HiFilm, HiPhotograph, HiGift, HiUsers, HiShoppingBag } from 'react-icons/hi';
+import { HiCamera, HiFilm, HiPhotograph, HiGift, HiUsers, HiShoppingBag, HiCube } from 'react-icons/hi';
 import Link from 'next/link';
 
 const Section = styled.section`
@@ -41,6 +42,9 @@ const ServiceCard = styled(Card)`
   animation: ${fadeInUp} 0.6s ease forwards;
   animation-delay: ${({ style }) => style?.animationDelay || '0s'};
   opacity: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     .icon-wrapper {
@@ -81,7 +85,8 @@ const ServiceDesc = styled.p`
 const FeatureList = styled.ul`
   list-style: none;
   padding: 0;
-  margin-top: ${theme.spacing.md};
+  margin-top: auto;
+  padding-top: ${theme.spacing.md};
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -98,8 +103,8 @@ const FeatureTag = styled.li`
 `;
 
 const services = [
-  { icon: HiCamera, key: 'passport' as const },
-  { icon: HiUsers, key: 'studio' as const },
+  { icon: HiUsers, key: 'passport' as const },
+  { icon: HiCube, key: 'studio' as const },
   { icon: HiFilm, key: 'film' as const },
   { icon: HiPhotograph, key: 'print' as const },
   { icon: HiShoppingBag, key: 'equipment' as const },
@@ -107,7 +112,7 @@ const services = [
 ];
 
 export default function ServicesPreview() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   return (
     <Section id="services-preview">
@@ -121,7 +126,7 @@ export default function ServicesPreview() {
             const Icon = service.icon;
             const data = t.services[service.key];
             return (
-              <Link href="/hizmetler" key={service.key} style={{ textDecoration: 'none' }}>
+              <Link href={getLocalizedHref('/hizmetler', language)} key={service.key} style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
                 <ServiceCard style={{ animationDelay: `${index * 0.15}s` }}>
                   <IconWrapper className="icon-wrapper">
                     <Icon />

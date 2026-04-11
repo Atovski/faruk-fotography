@@ -12,48 +12,48 @@ const tr = {
 
   // Hero Section
   hero: {
-    badge: '1969\'dan Beri',
-    title: 'İstanbul\'un Fotoğraf Merkezi',
-    subtitle: 'Vesikalık • Film Banyo • Baskı • Hatıra Ürünleri',
-    description: 'Sirkeci\'nin kalbinde, dijital dünyanın hızına meydan okuyan bir yer. Her kareyi özenle işliyoruz.',
-    cta: 'WhatsApp ile Ulaşın',
-    ctaSecondary: 'Hizmetlerimizi Keşfet',
+    badge: '1969\'DAN BERİ SİRKECİ, İSTANBUL',
+    title: 'Fotoğrafa Dair Her Şey: Sirkeci\'nin Fotoğraf Stüdyosu',
+    subtitle: 'Biyometrik Vesikalık • Film Banyo • 2. El Kamera • Fotoğraf Baskı',
+    description: 'İstanbul Sirkeci\'nin köklü fotoğraf stüdyosunda, profesyonel ekipmanlarla anında biyometrik vesikalık çekimi, analog film banyo & tarama, ikinci el fotoğraf makinesi alım-satımı ve yüksek kalite dijital baskı hizmetleri sunuyoruz.',
+    cta: 'Hizmetlerimizi İncele',
+    ctaSecondary: 'WhatsApp Destek',
     filmGallery: 'Filmlerimi Görüntüle',
   },
 
   // Services
   services: {
     title: 'Hizmetlerimiz',
-    subtitle: 'Profesyonel fotoğrafçılık hizmetleri',
+    subtitle: 'Sirkeci\'de Profesyonel Fotoğrafçılık Hizmetleri',
     passport: {
-      title: 'Vesikalık Fotoğraf',
-      description: 'Biyometrik uyumlu, tüm resmi başvurular için geçerli profesyonel vesikalık fotoğraf. 5 dakikada teslim.',
-      features: ['Biyometrik uyumlu', 'Tüm ülke standartları', '5 dakikada teslim', 'Dijital kopya dahil'],
+      title: 'Vesikalık, Biyometrik & Kurumsal Portre Stüdyosu',
+      description: 'Vize, pasaport, ehliyet ve yeni kimlik kartı başvuruları için anında biyometrik vesikalık çekimi yapıyoruz. Ayrıca CV, LinkedIn ve şirket profilleriniz için yüksek kaliteli kurumsal kimlik (portre) fotoğraflarınızı özenle hazırlıyoruz.',
+      features: ['Biyometrik & Vesikalık', 'Vize & Pasaport Uyumu', 'LinkedIn & CV Portre', 'Anında Dijital Teslim'],
     },
     film: {
-      title: 'Film Banyo & Tarama',
-      description: '35mm, 120 format ve tek kullanımlık kamera filmlerinizi profesyonel olarak banyo edip yüksek çözünürlüklü tarama yapıyoruz.',
-      features: ['35mm & 120 format', 'Renkli & siyah-beyaz', 'Yüksek çözünürlük tarama', 'Dijital teslim'],
+      title: 'Analog Film Banyo & Yüksek Çözünürlüklü Tarama',
+      description: 'Renkli (C-41) veya siyah beyaz analog fotoğraflarınızı aynı gün içinde dikkatle banyo ediyor ve yüksek çözünürlüklü tarayıcılarımızla dijital formata çeviriyoruz. Tüm Türkiye\'den kargo ile film gönderebilirsiniz.',
+      features: ['35mm & 120 format', 'Renkli (C-41) & siyah-beyaz', 'Yüksek çözünürlük tarama', 'Dijital teslimat'],
     },
     print: {
-      title: 'Fotoğraf Baskı',
-      description: 'Profesyonel Epson ekipmanlarımızla fotoğraflarınızı en yüksek kalitede basıyoruz. Her boyut, her format.',
-      features: ['Profesyonel Epson D700', 'Her boyutta baskı', 'Kanvas & poster', 'Aynı gün teslim'],
+      title: 'Profesyonel Fotoğraf Baskı Merkezi',
+      description: 'Anılarınız telefonda kalmasın. 10x15, 13x18, 15x21, 20x30, 30x40 ve özel boyutlarda; solmaya dayanıklı, tercihinize göre mat veya parlak fotoğraf kağıdına profesyonel baskı yapıyoruz.',
+      features: ['Profesyonel Epson kalitesi', 'Her boyutta baskı', 'Kanvas & poster', 'Aynı gün teslim'],
     },
     sublimation: {
-      title: 'Kişiselleştirilebilir Ürünler',
-      description: 'Kişiye özel kupa, magnet, puzzle ve daha fazlası. İstanbul hatırası veya özel hediyeler için ideal.',
-      features: ['Kişiye özel kupa', 'Magnet & anahtarlık', 'Puzzle', 'Kurumsal hediyeler'],
+      title: 'Kişiye Özel Fotoğraflı Ürünler & Hediyeler',
+      description: 'Sizin fotoğraflarınızla tasarlanan kişiye özel kupa bardak, magnet, puzzle ve daha birçok ürün. İstanbul Sirkeci’den sevdiklerinize unutulmaz ve anlamlı hediyeler hazırlayalım.',
+      features: ['Fotoğraf baskılı kupa', 'Magnet & anahtarlık', 'Fotoğraflı puzzle', 'Kurumsal hediyeler'],
     },
     studio: {
-      title: 'Stüdyo Çekim',
-      description: 'Profesyonel stüdyo ortamımızda vesikalık, biyometrik, portre ve özel gün çekimlerinizi gerçekleştiriyoruz.',
-      features: ['Profesyonel Işık', 'Portre Çekimleri', 'Kurumsal Çekimler', 'Anında Teslim'],
+      title: 'Profesyonel Ürün Çekimi',
+      description: 'E-ticaret mağazalarınız için yüksek kaliteli ve dikkat çekici ürün fotoğrafları hazırlıyoruz. Etsy, Amazon, eBay ve kendi siteniz ile tam uyumlu, profesyonel aydınlatmalı kareler.',
+      features: ['E-Ticaret Uyumlu', 'Etsy, Amazon & eBay', 'Beyaz Fon Çekimi', 'Yüksek Çözünürlük'],
     },
     equipment: {
-      title: 'Fotoğraf & Kamera Malzemeleri',
-      description: 'Analog ve dijital fotoğraf makinesi ekipmanları, piller, filmler ve aksesuarlar mağazamızda sizi bekliyor.',
-      features: ['Kamera Pilleri', 'Analog Filmler', 'Hafıza Kartları', 'Çanta ve Aksesuarlar'],
+      title: 'İkinci El Fotoğraf Makinesi Alım Satım',
+      description: 'İkinci el analog fotoğraf makinelerinizi değerinde satın alıyoruz. Model ve kondisyon bilgisini ileterek anında ön teklif alabilirsiniz. Cihazınız bize ulaşıp ustamız tarafından onaylandığında, anlaşılan tutarı hemen nakit ödüyoruz.',
+      features: ['İkinci El Kameralar', 'Taze Analog Filmler', 'Kamera Pilleri', 'Lens ve Aksesuarlar'],
     },
   },
 
@@ -62,10 +62,16 @@ const tr = {
     title: 'Ürünlerimiz',
     subtitle: 'Analog fotoğrafçılık ve kişisel hatıralar',
     addToCart: 'Sepete Ekle',
-    orderWhatsApp: 'WhatsApp ile Sipariş',
+    orderWhatsApp: 'WhatsApp Sipariş',
     customProduct: 'Kişiselleştirilebilir',
     viewAll: 'Tüm Ürünleri Gör',
     currency: '₺',
+    categoriesTitle: 'Kategoriler',
+    allProducts: 'Tüm Ürünler',
+    productsShowing: 'ürün gösteriliyor',
+    clearFilters: 'Filtreleri Temizle',
+    loadingProducts: 'Ürünler yükleniyor...',
+    internationalWarning: 'Türkiye harici siparişler için önceden iletişime geçin!',
     mainCategories: {
       'photo-supplies': {
         title: 'Fotoğraf Malzemeleri',
@@ -210,6 +216,7 @@ const tr = {
     loading: 'Yükleniyor...',
     startingFrom: 'den başlayan fiyatlarla',
     whatsappDefault: 'Merhaba, web sitenizden ulaşıyorum.',
+    contactUs: 'İletişime Geç',
   },
 
   // Why Us Section
@@ -223,7 +230,7 @@ const tr = {
       },
       location: {
         title: 'Merkezi Konum',
-        description: 'Sirkeci tramvay durağına 3 dakika yürüme mesafesi',
+        description: 'Sirkeci tramvay durağına 3, Marmaray durağına 5 dakika yürüme mesafesi',
       },
       express: {
         title: 'Express Hizmet',

@@ -5,6 +5,7 @@ import { theme } from '@/styles/theme';
 import { fadeInUp } from '@/styles/animations';
 import { FcGoogle } from 'react-icons/fc';
 import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const BadgeContainer = styled.a`
   display: inline-flex;
@@ -53,8 +54,9 @@ const BottomRow = styled.div`
 `;
 
 export default function GoogleReviewsBadge() {
+  const { language } = useLanguage();
   const rating = 4.5;
-  const count = 62;
+  const count = 64;
 
   // Render static 4.5 stars layout directly
   return (
@@ -71,7 +73,7 @@ export default function GoogleReviewsBadge() {
       </TopRow>
       <BottomRow>
         <FcGoogle size={18} />
-        {count} Google değerlendirmesi
+        {count} {language === 'en' ? 'Google Reviews' : 'Google Yorumu'}
       </BottomRow>
     </BadgeContainer>
   );

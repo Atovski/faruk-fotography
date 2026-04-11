@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { theme } from '@/styles/theme';
 import { useLanguage } from '@/hooks/useLanguage';
+import { getLocalizedHref } from '@/i18n/config';
 import { FaInstagram, FaWhatsapp, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 import { HiMail } from 'react-icons/hi';
 import toast from 'react-hot-toast';
@@ -209,8 +210,31 @@ const Copyright = styled.p`
   color: rgba(255, 255, 255, 0.5);
 `;
 
+const LegalLinks = styled.div`
+  display: flex;
+  gap: ${theme.spacing.lg};
+  align-items: center;
+
+  a {
+    font-size: ${theme.fontSizes.xs};
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    transition: color ${theme.transitions.fast};
+
+    &:hover {
+      color: ${theme.colors.secondary};
+    }
+  }
+
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: ${theme.spacing.sm};
+  }
+`;
+
 export default function Footer() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [email, setEmail] = useState('');
 
   const handleNewsletter = async (e: React.FormEvent) => {
@@ -225,15 +249,17 @@ export default function Footer() {
       <FooterContent>
         <FooterSection>
           <FooterLogo>
-            <Image src="/logo.png" alt="Faruk" width={36} height={36} style={{ objectFit: 'contain' }} />
-            <FooterLogoText>
-              <h3>FARUK</h3>
-              <span>SINCE 1969</span>
-            </FooterLogoText>
+            <Image 
+              src="/navbar-logo-v2.png" 
+              alt="Faruk Fotoğrafçılık" 
+              width={180} 
+              height={45} 
+              style={{ objectFit: 'contain' }} 
+            />
           </FooterLogo>
           <FooterText>{t.footer.description}</FooterText>
           <SocialLinks>
-            <SocialLink href="https://www.instagram.com/farukfotografcilik/" target="_blank" aria-label="Instagram">
+            <SocialLink href="https://www.instagram.com/farukfotografcilik1969/" target="_blank" aria-label="Instagram">
               <FaInstagram />
             </SocialLink>
             <SocialLink href="https://wa.me/905324402957" target="_blank" aria-label="WhatsApp">
@@ -244,12 +270,12 @@ export default function Footer() {
 
         <FooterSection>
           <FooterTitle>{t.footer.quickLinks}</FooterTitle>
-          <FooterLink href="/">{t.nav.home}</FooterLink>
-          <FooterLink href="/hizmetler">{t.nav.services}</FooterLink>
-          <FooterLink href="/galeri">{t.nav.gallery}</FooterLink>
-          <FooterLink href="/urunler">{t.nav.products}</FooterLink>
-          <FooterLink href="/hakkimizda">{t.nav.about}</FooterLink>
-          <FooterLink href="/iletisim">{t.nav.contact}</FooterLink>
+          <FooterLink href={`/${language}`}>{t.nav.home}</FooterLink>
+          <FooterLink href={getLocalizedHref('/hizmetler', language)}>{t.nav.services}</FooterLink>
+          <FooterLink href={getLocalizedHref('/galeri', language)}>{t.nav.gallery}</FooterLink>
+          <FooterLink href={getLocalizedHref('/urunler', language)}>{t.nav.products}</FooterLink>
+          <FooterLink href={getLocalizedHref('/hakkimizda', language)}>{t.nav.about}</FooterLink>
+          <FooterLink href={getLocalizedHref('/iletisim', language)}>{t.nav.contact}</FooterLink>
         </FooterSection>
 
         <FooterSection>
@@ -264,7 +290,7 @@ export default function Footer() {
           </ContactItem>
           <ContactItem>
             <HiMail />
-            <span>info@farukphotography.com</span>
+            <span>info@farukfotografcilik.com</span>
           </ContactItem>
         </FooterSection>
 
@@ -286,9 +312,14 @@ export default function Footer() {
 
       <BottomBar>
         <Copyright>{t.footer.copyright}</Copyright>
-        <Copyright>
-          ❤️ Crafted in Sirkeci, Istanbul
-        </Copyright>
+        <LegalLinks>
+          <Link href={getLocalizedHref('/satis-sozlesmesi', language)}>
+            {language === 'en' ? 'Distance Selling Agreement' : 'Mesafeli Satış Sözleşmesi'}
+          </Link>
+          <Link href={getLocalizedHref('/iade-politikasi', language)}>
+            {language === 'en' ? 'Return Policy & Warranty' : 'İade Politikası'}
+          </Link>
+        </LegalLinks>
       </BottomBar>
     </FooterWrapper>
   );

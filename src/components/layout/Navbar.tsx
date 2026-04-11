@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { theme } from '@/styles/theme';
 import { fadeInDown } from '@/styles/animations';
 import { useLanguage } from '@/hooks/useLanguage';
+import { getLocalizedHref } from '@/i18n/config';
 import { HiMenu, HiX } from 'react-icons/hi';
 
 const Nav = styled.nav<{ $scrolled: boolean }>`
@@ -33,10 +34,15 @@ const NavContainer = styled.div`
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 ${theme.spacing.lg};
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   height: 72px;
+
+  @media (max-width: ${theme.breakpoints.laptop}) {
+    display: flex;
+    justify-content: space-between;
+  }
 
   @media (max-width: ${theme.breakpoints.tablet}) {
     padding: 0 ${theme.spacing.md};
@@ -49,36 +55,16 @@ const LogoLink = styled(Link)`
   align-items: center;
   gap: 10px;
   z-index: 10;
+  justify-self: start;
 `;
 
-const LogoText = styled.div`
-  display: flex;
-  flex-direction: column;
 
-  @media (max-width: ${theme.breakpoints.mobile}) {
-    display: none;
-  }
-`;
-
-const LogoTitle = styled.span`
-  font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.lg};
-  font-weight: 700;
-  color: #FFFFFF;
-  line-height: 1;
-`;
-
-const LogoSubtitle = styled.span`
-  font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.secondary};
-  letter-spacing: 2px;
-  text-transform: uppercase;
-`;
 
 const NavLinks = styled.div<{ $open: boolean }>`
   display: flex;
   align-items: center;
   gap: ${theme.spacing.xl};
+  justify-self: center;
 
   @media (max-width: ${theme.breakpoints.laptop}) {
     position: fixed;
@@ -97,7 +83,7 @@ const NavLinks = styled.div<{ $open: boolean }>`
   }
 `;
 
-const NavLink = styled(Link)<{ $active?: boolean; $glow?: boolean }>`
+const NavLink = styled(Link) <{ $active?: boolean; $glow?: boolean }>`
   font-size: ${theme.fontSizes.sm};
   font-weight: 500;
   color: ${({ $active, $glow }) => ($active || $glow ? theme.colors.secondary : 'rgba(255, 255, 255, 0.8)')};
@@ -144,6 +130,7 @@ const RightSection = styled.div`
   display: flex;
   align-items: center;
   gap: ${theme.spacing.md};
+  justify-self: end;
 `;
 
 const LangSwitch = styled.button<{ $active: boolean }>`
@@ -216,41 +203,37 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
+  // Navigation items with Turkish base paths (used for localization)
   const navItems = [
-    { href: '/', label: t.nav.home },
-    { href: '/hizmetler', label: t.nav.services },
-    { href: '/urunler', label: t.nav.products },
-    { href: '/ikinci-el', label: language === 'tr' ? '2. El Kamera' : 'Used Cameras' },
-    { href: '/film-banyo', label: language === 'tr' ? 'Film Banyo' : 'Film Dev.', glow: true },
-    { href: '/galeri', label: t.nav.gallery },
-    { href: '/hakkimizda', label: t.nav.about },
-    { href: '/iletisim', label: t.nav.contact },
+    { basePath: '/hizmetler', label: t.nav.services },
+    { basePath: '/urunler', label: t.nav.products },
+    { basePath: '/ikinci-el', label: language === 'tr' ? '2. El Kamera' : 'Used Cameras' },
+    { basePath: '/film-banyo', label: language === 'tr' ? 'Film Banyo' : 'Film Dev.', glow: true },
+    { basePath: '/galeri', label: t.nav.gallery },
+    { basePath: '/hakkimizda', label: t.nav.about },
+    { basePath: '/iletisim', label: t.nav.contact },
   ];
 
   return (
     <>
       <Nav $scrolled={scrolled} id="navbar">
         <NavContainer>
-          <LogoLink href="/">
+          <LogoLink href={`/${language}`}>
             <Image
-              src="/logo.png"
+              src="/navbar-logo-v2.png"
               alt="Faruk Fotoğrafçılık"
-              width={40}
-              height={40}
+              width={180}
+              height={45}
               style={{ objectFit: 'contain' }}
               priority
             />
-            <LogoText>
-              <LogoTitle>FARUK</LogoTitle>
-              <LogoSubtitle>Since 1969</LogoSubtitle>
-            </LogoText>
           </LogoLink>
 
           <NavLinks $open={menuOpen}>
             {navItems.map(item => (
               <NavLink
-                key={item.href}
-                href={item.href}
+                key={item.basePath}
+                href={getLocalizedHref(item.basePath, language)}
                 $glow={item.glow}
                 onClick={() => setMenuOpen(false)}
               >

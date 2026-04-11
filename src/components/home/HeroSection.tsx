@@ -1,9 +1,11 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { theme } from '@/styles/theme';
 import { fadeIn, fadeInUp, grain } from '@/styles/animations';
 import { useLanguage } from '@/hooks/useLanguage';
+import { getLocalizedHref } from '@/i18n/config';
 import { Button } from '@/components/ui/Button';
 import { FaWhatsapp } from 'react-icons/fa';
 import { HiArrowDown } from 'react-icons/hi';
@@ -13,7 +15,7 @@ import GoogleReviewsBadge from './GoogleReviewsBadge';
 
 const HeroWrapper = styled.section`
   position: relative;
-  min-height: 100vh;
+  min-height: 105vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,14 +23,43 @@ const HeroWrapper = styled.section`
   background: ${theme.colors.background};
 `;
 
+const BackgroundVideo = styled.video`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.8; /* VİDEO NET VE GÖRÜNÜR */
+  pointer-events: none;
+`;
+
 const HeroBg = styled.div`
   position: absolute;
   inset: 0;
-  background: 
-    radial-gradient(ellipse at 20% 50%, rgba(200, 164, 92, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(27, 42, 74, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(200, 164, 92, 0.05) 0%, transparent 50%);
-  z-index: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      linear-gradient(180deg, rgba(10, 22, 40, 0.4) 0%, rgba(10, 22, 40, 0.2) 50%, rgba(10, 22, 40, 0.6) 100%),
+      radial-gradient(ellipse at 20% 50%, rgba(200, 164, 92, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(27, 42, 74, 0.2) 0%, transparent 50%);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 60%, ${theme.colors.background} 100%);
+  }
 `;
 
 const GrainOverlay = styled.div`
@@ -52,44 +83,7 @@ const GrainOverlay = styled.div`
   }
 `;
 
-const FilmBorder = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background: repeating-linear-gradient(
-    90deg,
-    ${theme.colors.primaryDark} 0px,
-    ${theme.colors.primaryDark} 15px,
-    transparent 15px,
-    transparent 20px,
-    ${theme.colors.primaryDark} 20px,
-    ${theme.colors.primaryDark} 35px,
-    transparent 35px,
-    transparent 55px
-  );
-  opacity: 0.3;
-  z-index: 2;
 
-  &::after {
-    content: '';
-    position: absolute;
-    top: 15px;
-    left: 0;
-    right: 0;
-    height: 10px;
-    background: repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent 20px,
-      rgba(200, 164, 92, 0.1) 20px,
-      rgba(200, 164, 92, 0.1) 35px,
-      transparent 35px,
-      transparent 55px
-    );
-  }
-`;
 
 const HeroContent = styled.div`
   position: relative;
@@ -97,34 +91,17 @@ const HeroContent = styled.div`
   text-align: center;
   max-width: 800px;
   padding: 0 ${theme.spacing.lg};
+  margin-top: 80px;
   animation: ${fadeIn} 1s ease;
 `;
 
-const HeroBadge = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 24px;
-  border-radius: ${theme.borderRadius.full};
-  background: ${theme.colors.secondary}15;
-  border: 1px solid ${theme.colors.secondary}40;
-  color: ${theme.colors.secondary};
-  font-size: ${theme.fontSizes.sm};
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: ${theme.spacing.xl};
-  animation: ${fadeInUp} 0.8s ease 0.2s both;
 
-  &::before {
-    content: '📷';
-  }
-`;
 
 const HeroTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['6xl']};
-  color: ${theme.colors.text};
+  color: #FFFFFF;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
   line-height: 1.1;
   margin-bottom: ${theme.spacing.md};
   animation: ${fadeInUp} 0.8s ease 0.4s both;
@@ -145,10 +122,11 @@ const HeroTitle = styled.h1`
 const HeroSubtitle = styled.p`
   font-size: ${theme.fontSizes.lg};
   color: ${theme.colors.secondary};
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
   letter-spacing: 3px;
   margin-bottom: ${theme.spacing.lg};
   animation: ${fadeInUp} 0.8s ease 0.6s both;
-  font-weight: 300;
+  font-weight: 500;
 
   @media (max-width: ${theme.breakpoints.mobile}) {
     font-size: ${theme.fontSizes.md};
@@ -158,7 +136,9 @@ const HeroSubtitle = styled.p`
 
 const HeroDescription = styled.p`
   font-size: ${theme.fontSizes.md};
-  color: ${theme.colors.textSecondary};
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+  font-weight: 400;
   max-width: 600px;
   margin: 0 auto ${theme.spacing['2xl']};
   line-height: 1.8;
@@ -167,16 +147,24 @@ const HeroDescription = styled.p`
 
 const HeroCTAs = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.lg};
+  animation: ${fadeInUp} 0.8s ease 1s both;
+`;
+
+const CTAButtons = styled.div`
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: ${theme.spacing.md};
   flex-wrap: wrap;
-  animation: ${fadeInUp} 0.8s ease 1s both;
 `;
 
 const ScrollIndicator = styled.div`
   position: absolute;
-  bottom: 40px;
+  bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 3;
@@ -223,53 +211,72 @@ const GlowOrb = styled.div<{ $top: string; $left: string; $size: string; $delay:
 `;
 
 export default function HeroSection() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <HeroWrapper id="hero">
+      <BackgroundVideo
+        key={isMobile ? 'mobile' : 'desktop'}
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        <source src={isMobile ? '/hero-bg-mobile.mp4' : '/hero-bg.mp4'} type="video/mp4" />
+      </BackgroundVideo>
       <HeroBg />
-      <GrainOverlay />
-      <FilmBorder />
 
-      <GlowOrb $top="20%" $left="10%" $size="300px" $delay="0s" />
-      <GlowOrb $top="60%" $left="80%" $size="250px" $delay="2s" />
-      <GlowOrb $top="80%" $left="30%" $size="200px" $delay="1s" />
 
       <HeroContent>
-        <HeroBadge>{t.hero.badge}</HeroBadge>
         <HeroTitle>
-          {t.hero.title.split(' ').map((word, i) => 
-            i === 0 ? <span key={i}>{word} </span> : word + ' '
+          {t.hero.title.includes(':') ? (
+            <>
+              <span>{t.hero.title.split(':')[0]}:</span>
+              {t.hero.title.split(':')[1]}
+            </>
+          ) : (
+            t.hero.title
           )}
         </HeroTitle>
         <HeroSubtitle>{t.hero.subtitle}</HeroSubtitle>
         <HeroDescription>{t.hero.description}</HeroDescription>
 
         <HeroCTAs>
-          <Button
-            as="a"
-            href={getWhatsAppUrl(t.common.whatsappDefault)}
-            target="_blank"
-            rel="noopener noreferrer"
-            $variant="whatsapp"
-            $size="lg"
-          >
-            <FaWhatsapp /> {t.hero.cta}
-          </Button>
-          <Button
-            as={Link}
-            href="/hizmetler"
-            $variant="outline"
-            $size="lg"
-          >
-            {t.hero.ctaSecondary}
-          </Button>
+          <CTAButtons>
+            <Button
+              as={Link}
+              href={getLocalizedHref('/urunler', language)}
+              $variant="primary"
+              $size="lg"
+            >
+              {t.hero.cta}
+            </Button>
+            <Button
+              as="a"
+              href={getWhatsAppUrl(t.common.whatsappDefault)}
+              target="_blank"
+              rel="noopener noreferrer"
+              $variant="whatsapp"
+              $size="lg"
+              style={{ backgroundColor: '#25D366', color: '#FFF', border: 'none' }}
+            >
+              <FaWhatsapp /> {t.hero.ctaSecondary}
+            </Button>
+          </CTAButtons>
           <GoogleReviewsBadge />
         </HeroCTAs>
       </HeroContent>
 
       <ScrollIndicator onClick={() => document.getElementById('services-preview')?.scrollIntoView({ behavior: 'smooth' })}>
-        <span>Keşfet</span>
+        <span>{language === 'en' ? 'Explore' : 'Keşfet'}</span>
         <HiArrowDown />
       </ScrollIndicator>
     </HeroWrapper>

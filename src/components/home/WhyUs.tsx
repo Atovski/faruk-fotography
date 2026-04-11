@@ -30,6 +30,7 @@ const Grid = styled.div`
 
   @media (max-width: ${theme.breakpoints.mobile}) {
     grid-template-columns: 1fr;
+    gap: ${theme.spacing.md};
   }
 `;
 
@@ -53,6 +54,14 @@ const Item = styled.div`
       color: ${theme.colors.primaryDark};
     }
   }
+
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: ${theme.spacing.md} ${theme.spacing.md};
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80px;
+  }
 `;
 
 const IconCircle = styled.div`
@@ -67,6 +76,10 @@ const IconCircle = styled.div`
   font-size: 30px;
   margin: 0 auto ${theme.spacing.lg};
   transition: all ${theme.transitions.spring};
+
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    display: none;
+  }
 `;
 
 const ItemTitle = styled.h3`

@@ -1,0 +1,40 @@
+[TAILING] Tailing last 40 lines for [faruk-site] process (change the value with --lines option)
+/root/.pm2/logs/faruk-site-error.log last 40 lines:
+0|faruk-si | Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+0|faruk-si | Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+0|faruk-si |     at ignore-listed frames
+0|faruk-si | Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+0|faruk-si | Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+0|faruk-si |     at ignore-listed frames
+0|faruk-si | Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+0|faruk-si | Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+0|faruk-si |     at ignore-listed frames
+0|faruk-si | Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+0|faruk-si | Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+0|faruk-si |     at ignore-listed frames
+
+/root/.pm2/logs/faruk-site-out.log last 40 lines:
+0|faruk-si | 
+0|faruk-si | > faruk-photography@0.1.0 start
+0|faruk-si | > next start
+0|faruk-si | 
+0|faruk-si | ▲ Next.js 16.2.1
+0|faruk-si | - Local:         http://localhost:3000
+0|faruk-si | - Network:       http://187.124.170.134:3000
+0|faruk-si | ✓ Ready in 111ms
+0|faruk-si | 
+0|faruk-si | > faruk-photography@0.1.0 start
+0|faruk-si | > next start
+0|faruk-si | 
+0|faruk-si | ▲ Next.js 16.2.1
+0|faruk-si | - Local:         http://localhost:3000
+0|faruk-si | - Network:       http://187.124.170.134:3000
+0|faruk-si | ✓ Ready in 105ms
+0|faruk-si | 
+0|faruk-si | > faruk-photography@0.1.0 start
+0|faruk-si | > next start
+0|faruk-si | 
+0|faruk-si | ▲ Next.js 16.2.1
+0|faruk-si | - Local:         http://localhost:3000
+0|faruk-si | - Network:       http://187.124.170.134:3000
+0|faruk-si | ✓ Ready in 117ms
