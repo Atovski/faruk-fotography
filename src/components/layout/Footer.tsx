@@ -148,6 +148,16 @@ const ContactItem = styled.div`
     margin-top: 3px;
     flex-shrink: 0;
   }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color ${theme.transitions.fast};
+
+    &:hover {
+      color: ${theme.colors.secondary};
+    }
+  }
 `;
 
 const NewsletterForm = styled.form`
@@ -282,15 +292,21 @@ export default function Footer() {
           <FooterTitle>{t.footer.contact}</FooterTitle>
           <ContactItem>
             <FaMapMarkerAlt />
-            <span>{t.contact.info.addressValue}</span>
+            <a href="https://maps.google.com/?q=Hobyar,+Ankara+Cd.+No:55/A,+34112+Fatih/İstanbul" target="_blank" rel="noopener noreferrer">
+              {t.contact.info.addressValue}
+            </a>
           </ContactItem>
           <ContactItem>
             <FaPhone />
-            <span>{t.contact.info.phoneValue}</span>
+            <a href="tel:+905324402957">
+              {t.contact.info.phoneValue}
+            </a>
           </ContactItem>
           <ContactItem>
             <HiMail />
-            <span>info@farukfotografcilik.com</span>
+            <a href="mailto:info@farukfotografcilik.com">
+              info@farukfotografcilik.com
+            </a>
           </ContactItem>
         </FooterSection>
 

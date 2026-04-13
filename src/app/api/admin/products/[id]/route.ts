@@ -7,7 +7,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const supabase = createServerSupabaseClient();
   const body = await req.json();
   
-  const { name, description, price, image_url, images, category_id, subcategory_id, stock, is_active, is_customizable } = body;
+  const { name, description, price, image_url, images, category_id, subcategory_id, stock, is_active, is_customizable, is_popular } = body;
   
   const { data, error } = await supabase
     .from('products')
@@ -22,6 +22,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       stock: parseInt(stock) || 0,
       is_active: is_active ?? true,
       is_customizable: is_customizable ?? false,
+      is_popular: is_popular ?? false,
       updated_at: new Date().toISOString(),
     })
     .eq('id', id)

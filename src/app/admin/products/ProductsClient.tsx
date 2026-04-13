@@ -99,6 +99,30 @@ const EmptyState = styled.div`
   p { margin-top: 8px; font-size: 14px; }
 `;
 
+const FilterBar = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: ${theme.spacing.lg};
+`;
+
+const FilterChip = styled.button<{ $active: boolean }>`
+  padding: 6px 16px;
+  border-radius: ${theme.borderRadius.full};
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all ${theme.transitions.fast};
+  border: 1px solid ${({ $active }) => $active ? theme.colors.secondary : theme.colors.glassBorder};
+  background: ${({ $active }) => $active ? theme.colors.secondary : 'transparent'};
+  color: ${({ $active }) => $active ? theme.colors.primaryDark : theme.colors.textSecondary};
+
+  &:hover {
+    border-color: ${theme.colors.secondary};
+    color: ${theme.colors.secondary};
+  }
+`;
+
 /* ─── Modal ─── */
 const Overlay = styled.div`
   position: fixed; inset: 0; background: rgba(0,0,0,0.5);
@@ -329,6 +353,7 @@ export default function ProductsClient() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [filterCategory, setFilterCategory] = useState<string>('all');
 
   // Form state
   const [form, setForm] = useState({
@@ -341,6 +366,7 @@ export default function ProductsClient() {
     subcategory_id: null as string | null,
     stock: '',
     is_customizable: false,
+    is_popular: false,
   });
 
   const fetchData = async () => {
@@ -366,7 +392,7 @@ export default function ProductsClient() {
 
   const openAdd = () => {
     setEditing(null);
-    setForm({ name: '', description: '', price: '', image_url: '', images: [], category_id: null, subcategory_id: null, stock: '', is_customizable: false });
+    setForm({ name: '', description: '', price: '', image_url: '', images: [], category_id: null, subcategory_id: null, stock: '', is_customizable: false, is_popular: false });
     setModalOpen(true);
   };
 
@@ -381,7 +407,8 @@ export default function ProductsClient() {
       category_id: p.category_id,
       subcategory_id: p.subcategory_id,
       stock: String(p.stock),
-      is_customizable: p.is_customizable,
+      is_customizable: p.is_customizable ?? false,
+      is_popular: (p as any).is_popular ?? false,
     });
     setModalOpen(true);
   };
@@ -508,6 +535,21 @@ export default function ProductsClient() {
         <AddBtn onClick={openAdd}><HiPlus /> Yeni Ürün Ekle</AddBtn>
       </Header>
 
+      {/* Category Filter */}
+      <FilterBar>
+        <FilterChip $active={filterCategory === 'all'} onClick={() => setFilterCategory('all')}>
+          Tümü ({products.length})
+        </FilterChip>
+        {mainCategories.map(cat => {
+          const count = products.filter(p => p.category?.slug === cat.slug || (p.category as any)?.id === cat.id).length;
+          return (
+            <FilterChip key={cat.id} $active={filterCategory === cat.slug} onClick={() => setFilterCategory(filterCategory === cat.slug ? 'all' : cat.slug)}>
+              {cat.name} ({count})
+            </FilterChip>
+          );
+        })}
+      </FilterBar>
+
       <ProductTable>
         <TableRow $header>
           <span>Görsel</span>
@@ -526,8 +568,20 @@ export default function ProductsClient() {
             <HiPhotograph size={40} />
             <p>Henüz ürün eklenmemiş.<br />Yukarıdaki butona tıklayarak ilk ürününüzü ekleyin.</p>
           </EmptyState>
-        ) : (
-          products.map(p => (
+        ) : (() => {
+          const displayed = filterCategory === 'all'
+            ? products
+            : products.filter(p => p.category?.slug === filterCategory);
+          
+          if (displayed.length === 0) {
+            return (
+              <EmptyState>
+                <p>Bu kategoride ürün bulunamadı.</p>
+              </EmptyState>
+            );
+          }
+          
+          return displayed.map(p => (
             <TableRow key={p.id}>
               <Thumb $src={(p.images && p.images.length > 0) ? p.images[0] : (p.image_url || undefined)}>
                 {(!p.images?.length && !p.image_url) && <HiPhotograph />}
@@ -552,8 +606,8 @@ export default function ProductsClient() {
                 <ActionBtn $danger onClick={() => handleDelete(p.id)}><HiTrash size={16} /></ActionBtn>
               </div>
             </TableRow>
-          ))
-        )}
+          ));
+        })()}
       </ProductTable>
 
       {/* ─── Add / Edit Modal ─── */}
@@ -662,6 +716,19 @@ export default function ProductsClient() {
                     style={{ width: 16, height: 16 }}
                   />
                   Kişiselleştirilebilir ürün (WhatsApp ile sipariş)
+                </label>
+              </Field>
+
+              {/* Popular toggle */}
+              <Field>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', marginTop: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={form.is_popular}
+                    onChange={e => setForm(prev => ({ ...prev, is_popular: e.target.checked }))}
+                    style={{ width: 16, height: 16 }}
+                  />
+                  Popüler ürün olarak işaretle (En üstte görünür)
                 </label>
               </Field>
             </ModalBody>

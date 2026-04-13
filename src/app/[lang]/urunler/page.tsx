@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import styled, { css } from 'styled-components';
 import { supabase } from '@/lib/supabase';
 import { theme } from '@/styles/theme';
@@ -8,12 +8,13 @@ import { fadeInUp, fadeIn, fadeInLeft } from '@/styles/animations';
 import { useLanguage } from '@/hooks/useLanguage';
 import SectionTitle from '@/components/ui/SectionTitle';
 import { Button } from '@/components/ui/Button';
-import { FaWhatsapp } from 'react-icons/fa';
+import { FaWhatsapp, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { HiShoppingCart } from 'react-icons/hi';
-import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
+import { formatPrice, getWhatsAppUrl, slugify } from '@/lib/utils';
 import { Product, ProductSubCategory, ProductMainCategory } from '@/types';
 import { useCart } from '@/hooks/useCart';
-import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 /* ───── DB Category type ───── */
@@ -351,7 +352,7 @@ const FilmTypeBadge = styled.span<{ $type: 'color' | 'bw' }>`
 /* ───── Product Grid & Cards ───── */
 const ProductGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: ${theme.spacing.lg};
   margin-bottom: ${theme.spacing.xl};
 `;
@@ -373,9 +374,9 @@ const ProductCard = styled.div`
   }
 `;
 
-const ProductImage = styled.div<{ $img?: string }>`
+const ProductImage = styled.div<{ $hasImage?: boolean }>`
   height: 160px;
-  background: ${({ $img }) => $img ? `url(${$img}) center/cover no-repeat` : `${theme.colors.gradientCard}`};
+  background: ${({ $hasImage }) => $hasImage ? 'transparent' : `${theme.colors.gradientCard}`};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -407,6 +408,33 @@ const CustomBadge = styled.div`
   z-index: 2;
 `;
 
+const MiniNavArrow = styled.button<{ $right?: boolean }>`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  ${props => props.$right ? 'right: 8px;' : 'left: 8px;'}
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.4);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  border: 1px solid rgba(255,255,255,0.4);
+  cursor: pointer;
+  z-index: 3;
+  opacity: 0;
+  transition: all 0.2s;
+
+  ${ProductImage}:hover & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background: rgba(0,0,0,0.8);
+    transform: translateY(-50%) scale(1.1);
+  }
+`;
+
 const ProductInfo = styled.div`
   padding: ${theme.spacing.md} ${theme.spacing.lg} ${theme.spacing.lg};
 `;
@@ -423,6 +451,11 @@ const ProductDesc = styled.p`
   color: ${theme.colors.textSecondary};
   line-height: 1.5;
   margin-bottom: ${theme.spacing.sm};
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const PriceRow = styled.div`
@@ -430,6 +463,14 @@ const PriceRow = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: ${theme.spacing.sm};
+  flex-wrap: wrap;
+
+  a, button {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
 `;
 
 const Price = styled.span`
@@ -480,19 +521,114 @@ const categoryEmojis: Record<string, string> = {
   'disposable': '📷', 'mug': '☕', 'magnet': '🧲', 'puzzle': '🧩', 'keychain': '🔑',
 };
 
-type FilterKey = 'all' | ProductMainCategory;
+type FilterKey = 'all' | 'popular-products' | ProductMainCategory;
+
+/* ───── Mini Component for Interactive Card ───── */
+function ProductCardItem({ p, index, language, t, categoryEmojis, router, addToCart }: any) {
+  const [imgIndex, setImgIndex] = useState(0);
+  const images = (p.images && p.images.length > 0) ? p.images : (p.image_url ? [p.image_url] : []);
+  
+  const nextImg = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setImgIndex(prev => prev === images.length - 1 ? 0 : prev + 1);
+  };
+  const prevImg = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setImgIndex(prev => prev === 0 ? images.length - 1 : prev - 1);
+  };
+
+  return (
+    <ProductCard style={{ animationDelay: `${index * 0.04}s` }} onClick={() => router.push(`/urunler/${slugify(language === 'en' && p.name_en ? p.name_en : p.name_tr)}-${p.id}`)}>
+      <ProductImage $hasImage={images.length > 0}>
+        {images.length > 0 && images[imgIndex] && (
+          <Image 
+            src={images[imgIndex]} 
+            alt={p.name_tr} 
+            fill 
+            sizes="(max-width: 768px) 100vw, 300px"
+            style={{ objectFit: 'cover' }} 
+            unoptimized={images[imgIndex].endsWith('.svg')}
+          />
+        )}
+        {(!images.length) && <ProductEmoji>{categoryEmojis[p.category] || '📦'}</ProductEmoji>}
+        {p.is_customizable && <CustomBadge>{t.products.customProduct}</CustomBadge>}
+        
+        {images.length > 1 && (
+          <>
+            <MiniNavArrow onClick={prevImg}><FaChevronLeft /></MiniNavArrow>
+            <MiniNavArrow $right onClick={nextImg}><FaChevronRight /></MiniNavArrow>
+          </>
+        )}
+      </ProductImage>
+      <ProductInfo>
+        <ProductName>{(language === 'en' && p.name_en) ? p.name_en : p.name_tr}</ProductName>
+        <ProductDesc>{(language === 'en' && p.description_en) ? p.description_en : p.description_tr}</ProductDesc>
+        <PriceRow>
+          <Price>₺{formatPrice(p.price)}</Price>
+          {p.is_customizable ? (
+            <Button 
+              as="a" 
+              href={getWhatsAppUrl(`Merhaba, ${p.name_tr} sipariş etmek istiyorum.`)} 
+              target="_blank" 
+              $variant="whatsapp" 
+              $size="sm"
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            >
+              <FaWhatsapp /> {t.products.orderWhatsApp || 'Sipariş Ver'}
+            </Button>
+          ) : (
+            <Button 
+              $variant="primary" 
+              $size="sm" 
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                if (p.stock > 0) {
+                  addToCart({
+                    id: p.id,
+                    name_en: p.name_en,
+                    name_tr: p.name_tr,
+                    price: p.price,
+                    image_url: p.image_url,
+                    images: p.images,
+                    stock: p.stock
+                  }, 1);
+                  toast.success(`${language === 'tr' ? p.name_tr : p.name_en} sepete eklendi!`);
+                } else {
+                  toast.error('Bu ürün şu an stokta yok!');
+                }
+              }}
+            >
+              <HiShoppingCart /> {t.products.addToCart || 'Sepete Ekle'}
+            </Button>
+          )}
+        </PriceRow>
+      </ProductInfo>
+    </ProductCard>
+  );
+}
 
 /* ───── Component ───── */
-export default function ProductsPage() {
+function ProductsPageContent() {
   const { t, language } = useLanguage();
   const { addToCart } = useCart();
-  const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
-  const [activeSub, setActiveSub] = useState<string>('all');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  // Sync URL -> state on mount
+  const urlKategori = searchParams.get('kategori');
+  const urlAlt = searchParams.get('alt');
+
+  const [activeFilter, setActiveFilter] = useState<FilterKey>(() =>
+    (urlKategori as FilterKey) || 'all'
+  );
+  const [activeSub, setActiveSub] = useState<string>(() =>
+    urlAlt || 'all'
+  );
   const [allProducts, setAllProducts] = useState<ProductExt[]>([]);
   const [loading, setLoading] = useState(true);
   const [dbCategories, setDbCategories] = useState<DBCategory[]>([]);
   const [sidebarSections, setSidebarSections] = useState<Record<string, boolean>>({ categories: true, subcategories: true });
-  const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
@@ -549,43 +685,56 @@ export default function ProductsPage() {
   const getSubCategories = (parentId: string) =>
     dbCategories.filter(c => c.parent_id === parentId);
 
+  // Push filter changes to URL
+  const updateUrl = useCallback((main: FilterKey, sub: string) => {
+    const params = new URLSearchParams();
+    if (main !== 'all') params.set('kategori', main);
+    if (sub !== 'all') params.set('alt', sub);
+    const qs = params.toString();
+    router.replace(`${pathname}${qs ? '?' + qs : ''}`, { scroll: false });
+  }, [pathname, router]);
+
   const handleMainFilter = (key: FilterKey) => {
     setActiveFilter(key);
     setActiveSub('all');
+    updateUrl(key, 'all');
   };
 
   const handleSidebarMainClick = (slug: string) => {
     const key = slug as FilterKey;
     if (activeFilter === key) {
-      // Deselect
       setActiveFilter('all');
       setActiveSub('all');
+      updateUrl('all', 'all');
     } else {
       setActiveFilter(key);
       setActiveSub('all');
+      updateUrl(key, 'all');
     }
   };
 
   const handleSidebarSubClick = (mainSlug: string, subSlug: string) => {
-    // First ensure the main category is selected
     if (activeFilter !== mainSlug) {
       setActiveFilter(mainSlug as FilterKey);
     }
-    // Toggle sub
     if (activeSub === subSlug) {
       setActiveSub('all');
+      updateUrl(mainSlug as FilterKey, 'all');
     } else {
       setActiveSub(subSlug);
+      updateUrl(mainSlug as FilterKey, subSlug);
     }
   };
 
   const filtered = activeFilter === 'all'
     ? allProducts
-    : allProducts.filter(p => {
-        if (p.mainCategory !== activeFilter) return false;
-        if (activeSub !== 'all') return p.category === activeSub;
-        return true;
-      });
+    : activeFilter === 'popular-products'
+      ? allProducts.filter(p => (p as any).is_popular)
+      : allProducts.filter(p => {
+          if (p.mainCategory !== activeFilter) return false;
+          if (activeSub !== 'all') return p.category === activeSub;
+          return true;
+        });
 
   // Sub-category options for the active main category (for the top filter bar)
   const activeMainCat = mainCategories.find(c => c.slug === activeFilter);
@@ -599,55 +748,16 @@ export default function ProductsPage() {
   };
 
   const renderCard = (p: ProductExt, i: number) => (
-    <ProductCard key={p.id} style={{ animationDelay: `${i * 0.04}s` }} onClick={() => router.push(`/urunler/${p.id}`)}>
-      <ProductImage $img={(p.images && p.images.length > 0) ? p.images[0] : (p.image_url || undefined)}>
-        {(!p.images?.length && !p.image_url) && <ProductEmoji>{categoryEmojis[p.category] || '📦'}</ProductEmoji>}
-        {p.is_customizable && <CustomBadge>{t.products.customProduct}</CustomBadge>}
-      </ProductImage>
-      <ProductInfo>
-        <ProductName>{(language === 'en' && p.name_en) ? p.name_en : p.name_tr}</ProductName>
-        <ProductDesc>{(language === 'en' && p.description_en) ? p.description_en : p.description_tr}</ProductDesc>
-        <PriceRow>
-          <Price>₺{formatPrice(p.price)}</Price>
-          {p.is_customizable ? (
-            <Button 
-              as="a" 
-              href={getWhatsAppUrl(`Merhaba, ${p.name_tr} sipariş etmek istiyorum.`)} 
-              target="_blank" 
-              $variant="whatsapp" 
-              $size="sm"
-              onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            >
-              <FaWhatsapp /> {t.products.orderWhatsApp || 'Sipariş Ver'}
-            </Button>
-          ) : (
-            <Button 
-              $variant="primary" 
-              $size="sm" 
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation();
-                if (p.stock > 0) {
-                  addToCart({
-                    id: p.id,
-                    name_en: p.name_en,
-                    name_tr: p.name_tr,
-                    price: p.price,
-                    image_url: p.image_url,
-                    images: p.images,
-                    stock: p.stock
-                  }, 1);
-                  toast.success(`${language === 'tr' ? p.name_tr : p.name_en} sepete eklendi!`);
-                } else {
-                  toast.error('Bu ürün şu an stokta yok!');
-                }
-              }}
-            >
-              <HiShoppingCart /> {t.products.addToCart || 'Sepete Ekle'}
-            </Button>
-          )}
-        </PriceRow>
-      </ProductInfo>
-    </ProductCard>
+    <ProductCardItem 
+      key={p.id} 
+      p={p} 
+      index={i} 
+      language={language} 
+      t={t} 
+      categoryEmojis={categoryEmojis} 
+      router={router} 
+      addToCart={addToCart} 
+    />
   );
 
   const renderGroupedAll = () => {
@@ -682,10 +792,28 @@ export default function ProductsPage() {
       }
     }
 
+    // Dinamik kategori ekleme: Sabit olarak tanımlanmayan tüm yeni ana kategorileri gruba al
+    mainCategories.forEach(mainCat => {
+      // Eğer kategori daha önce özel olarak ele alındıysa atla
+      if (['photo-supplies', 'disposable-cameras', 'customizable-products'].includes(mainCat.slug)) return;
+
+      if (activeFilter === 'all' || activeFilter === mainCat.slug) {
+        const items = filtered.filter(p => p.mainCategory === mainCat.slug);
+        if (items.length > 0) {
+          groups.push({ 
+            key: mainCat.slug, 
+            title: t.products.mainCategories[mainCat.slug as ProductMainCategory]?.title || mainCat.name, 
+            emoji: '', 
+            items 
+          });
+        }
+      }
+    });
+
     return groups.map(g => (
       <div key={g.key}>
         <SectionHeading>
-          <h3>{g.emoji} {g.title}</h3>
+          <h3>{g.title}</h3>
           <span>{g.items.length} ürün</span>
         </SectionHeading>
 
@@ -748,7 +876,7 @@ export default function ProductsPage() {
                 <div key={main.id}>
                   <SidebarItem $active={isMainActive} onClick={() => handleSidebarMainClick(main.slug)}>
                     <SidebarCheckbox $checked={isMainActive} />
-                    {categoryEmojis[main.slug] || '📦'} {t.products.mainCategories[main.slug as ProductMainCategory]?.title || main.name}
+                    {t.products.mainCategories[main.slug as ProductMainCategory]?.title || main.name}
                     <SidebarCount>{mainCount}</SidebarCount>
                   </SidebarItem>
 
@@ -765,7 +893,7 @@ export default function ProductsPage() {
                         onClick={() => handleSidebarSubClick(main.slug, sub.slug)}
                       >
                         <SidebarCheckbox $checked={isSubActive} />
-                        {categoryEmojis[sub.slug] || '•'} {((t.products.subCategories as any)[sub.slug]) || sub.name}
+                        {((t.products.subCategories as any)[sub.slug]) || sub.name}
                         <SidebarCount>{subCount}</SidebarCount>
                       </SidebarItem>
                     );
@@ -777,7 +905,7 @@ export default function ProductsPage() {
 
           {/* Reset button */}
           {(activeFilter !== 'all' || activeSub !== 'all') && (
-            <SidebarResetBtn onClick={() => { setActiveFilter('all'); setActiveSub('all'); }}>
+            <SidebarResetBtn onClick={() => { setActiveFilter('all'); setActiveSub('all'); updateUrl('all', 'all'); }}>
               ✕ {t.products.clearFilters || 'Filtreleri Temizle'}
             </SidebarResetBtn>
           )}
@@ -791,7 +919,6 @@ export default function ProductsPage() {
               <>
                 {' — '}
                 <ActiveFilterTag>
-                  {categoryEmojis[activeFilter] || '📦'}{' '}
                   {mainCategories.find(c => c.slug === activeFilter)?.name || activeFilter}
                 </ActiveFilterTag>
               </>
@@ -808,13 +935,20 @@ export default function ProductsPage() {
         <SectionTitle badge={t.products.subtitle} title={t.products.title} as="h1" />
 
         {/* ── Visual Category Cards ── */}
-        <CategoryCardsGrid>
+        <CategoryCardsGrid style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
           {([
-            { key: 'photo-supplies' as FilterKey, img: '/images/cat-photo-supplies.png' },
-            { key: 'disposable-cameras' as FilterKey, img: '/images/cat-disposable-cameras.png' },
-            { key: 'customizable-products' as FilterKey, img: '/images/cat-custom-products.png' },
+            { key: 'popular-products' as FilterKey, img: '/images/cat-popular.png', label: 'Popüler Ürünler' },
+            { key: 'photo-supplies' as FilterKey, img: '/images/cat-photo-supplies.png', label: t.products.mainCategories['photo-supplies'].title },
+            { key: 'customizable-products' as FilterKey, img: '/images/cat-custom-products.png', label: t.products.mainCategories['customizable-products'].title },
+            { key: 'cameras' as FilterKey, img: '/images/cat-cameras.png', label: 'Kameralar' },
           ]).map(cat => {
-            const catCount = allProducts.filter(p => p.mainCategory === cat.key).length;
+            // "popular-products" gerçek bir DB categorisi olmadığı için özel logic gerektirir
+            const isPopularCard = cat.key === 'popular-products';
+            const catCount = isPopularCard 
+               // Şimdilik popüler ürünleri mock gösteriyoruz, backend eklenince değişecek
+               ? allProducts.filter(p => (p as any).is_popular).length
+               : allProducts.filter(p => p.mainCategory === cat.key).length;
+               
             return (
               <CategoryCard
                 key={cat.key}
@@ -824,7 +958,7 @@ export default function ProductsPage() {
               >
                 <CategoryCardCount>{catCount} ürün</CategoryCardCount>
                 <CategoryCardLabel>
-                  {t.products.mainCategories[cat.key as ProductMainCategory].title}
+                  {cat.label}
                 </CategoryCardLabel>
               </CategoryCard>
             );
@@ -834,10 +968,10 @@ export default function ProductsPage() {
         {/* ── Sub-category filter (when a main category is selected) ── */}
         {subOptions.length > 0 && (
           <FilterBar>
-            <FilterBtn $active={activeSub === 'all'} onClick={() => setActiveSub('all')}>Tümü</FilterBtn>
+            <FilterBtn $active={activeSub === 'all'} onClick={() => { setActiveSub('all'); updateUrl(activeFilter, 'all'); }}>Tümü</FilterBtn>
             {subOptions.map(sub => (
-              <FilterBtn key={sub.id} $active={activeSub === sub.slug} onClick={() => setActiveSub(activeSub === sub.slug ? 'all' : sub.slug)}>
-                {categoryEmojis[sub.slug] || '•'} {sub.name}
+              <FilterBtn key={sub.id} $active={activeSub === sub.slug} onClick={() => { const next = activeSub === sub.slug ? 'all' : sub.slug; setActiveSub(next); updateUrl(activeFilter, next); }}>
+                {sub.name}
               </FilterBtn>
             ))}
           </FilterBar>
@@ -854,17 +988,17 @@ export default function ProductsPage() {
                 Filtre:
                 {activeFilter !== 'all' && (
                   <ActiveFilterTag>
-                    {categoryEmojis[activeFilter]} {t.products.mainCategories[activeFilter as ProductMainCategory]?.title || mainCategories.find(c => c.slug === activeFilter)?.name}
+                    {t.products.mainCategories[activeFilter as ProductMainCategory]?.title || mainCategories.find(c => c.slug === activeFilter)?.name}
                   </ActiveFilterTag>
                 )}
                 {activeSub !== 'all' && (
                   <ActiveFilterTag>
-                    {categoryEmojis[activeSub] || '•'} {((t.products.subCategories as any)[activeSub]) || dbCategories.find(c => c.slug === activeSub)?.name}
+                    {((t.products.subCategories as any)[activeSub]) || dbCategories.find(c => c.slug === activeSub)?.name}
                   </ActiveFilterTag>
                 )}
                 <button
                   style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: theme.colors.textMuted, fontSize: '12px' }}
-                  onClick={() => { setActiveFilter('all'); setActiveSub('all'); }}
+                  onClick={() => { setActiveFilter('all'); setActiveSub('all'); updateUrl('all', 'all'); }}
                 >
                   ✕ {t.products.clearFilters || 'Temizle'}
                 </button>
@@ -906,5 +1040,13 @@ export default function ProductsPage() {
         </ContentLayout>
       </Container>
     </PageWrapper>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense>
+      <ProductsPageContent />
+    </Suspense>
   );
 }

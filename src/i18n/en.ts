@@ -121,7 +121,7 @@ const en: Translations = {
   gallery: {
     title: 'Film Gallery',
     subtitle: 'Download your developed films',
-    phonePlaceholder: 'Your phone number',
+    phonePlaceholder: 'Your phone number (+90 XXX XXX XX XX)',
     codePlaceholder: 'Your access code',
     submit: 'Show My Photos',
     downloadAll: 'Download All',

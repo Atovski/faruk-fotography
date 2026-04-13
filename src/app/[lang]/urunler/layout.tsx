@@ -90,16 +90,6 @@ export default async function UrunlerLayout({ children }: { children: React.Reac
             url: `${BASE_URL}/tr/urunler/${p.id}`,
             image: (p.images && p.images.length > 0) ? p.images[0] : (p.image_url || `${BASE_URL}/logo.png`),
             description: p.description ? p.description.slice(0, 160) : `${p.name} — Faruk Fotoğrafçılık`,
-            offers: {
-              '@type': 'Offer',
-              price: p.price.toFixed(2),
-              priceCurrency: 'TRY',
-              availability: p.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-              seller: {
-                '@type': 'Organization',
-                name: 'Faruk Fotoğrafçılık',
-              },
-            },
           },
         })),
       };

@@ -12,13 +12,12 @@ import { analogCameras, getAllBrands, getModelsByBrand } from '@/data/analogCame
 
 /* ───── Styled Components ───── */
 const PageWrapper = styled.div`
-  padding-top: 100px;
   min-height: 100vh;
 `;
 
 const HeroSection = styled.div`
   background: ${theme.colors.gradientPrimary};
-  padding: ${theme.spacing['3xl']} 0;
+  padding: calc(100px + ${theme.spacing['3xl']}) 0 ${theme.spacing['3xl']};
   text-align: center;
   position: relative;
   overflow: hidden;

@@ -19,6 +19,7 @@ export interface Product {
   is_active: boolean;
   sort_order: number;
   is_customizable: boolean;
+  is_popular?: boolean;
   created_at: string;
 }
 

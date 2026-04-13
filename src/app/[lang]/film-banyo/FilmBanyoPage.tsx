@@ -31,8 +31,6 @@ const Hero = styled.section`
     background-image: url('/arkaplan.png');
     background-size: cover;
     background-position: center;
-    opacity: 0.7;
-    filter: contrast(1.3) brightness(0.85); /* Increased opacity and contrast */
     z-index: 0;
   }
 
@@ -40,10 +38,7 @@ const Hero = styled.section`
     content: '';
     position: absolute;
     inset: 0;
-    background: 
-      radial-gradient(ellipse at 30% 50%, rgba(200, 164, 92, 0.06) 0%, transparent 50%),
-      radial-gradient(ellipse at 70% 30%, rgba(27, 42, 74, 0.2) 0%, transparent 50%),
-      linear-gradient(to bottom, transparent 60%, ${theme.colors.background} 100%);
+    background: linear-gradient(to bottom, transparent 85%, ${theme.colors.background} 100%);
     pointer-events: none;
     z-index: 0;
   }
@@ -84,6 +79,7 @@ const HeroTitle = styled.h1`
   line-height: 1.15;
   margin-bottom: ${theme.spacing.md};
   animation: ${fadeInUp} 0.6s ease 0.2s both;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 
   @media (max-width: ${theme.breakpoints.tablet}) {
     font-size: ${theme.fontSizes['3xl']};
@@ -97,6 +93,7 @@ const HeroSub = styled.p`
   margin: 0 auto ${theme.spacing['2xl']};
   line-height: 1.7;
   animation: ${fadeInUp} 0.6s ease 0.35s both;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 `;
 
 const HeroCTAs = styled.div`
@@ -126,7 +123,8 @@ const Stat = styled.div`
   }
   .label {
     font-size: ${theme.fontSizes.sm};
-    color: ${theme.colors.textSecondary};
+    color: #FFFFFF;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
     margin-top: 2px;
   }
 `;
@@ -464,13 +462,14 @@ const AddressBox = styled.div`
 /* ───── Configurator ───── */
 const ConfiguratorWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.25fr 1fr;
   gap: ${theme.spacing['2xl']};
-  align-items: start;
+  align-items: stretch;
   animation: ${fadeInUp} 0.6s ease;
 
   @media (max-width: ${theme.breakpoints.laptop}) {
     grid-template-columns: 1fr;
+    align-items: start;
   }
 `;
 
@@ -478,7 +477,8 @@ const ConfiguratorImage = styled.div`
   position: relative;
   border-radius: ${theme.borderRadius.xl};
   overflow: hidden;
-  aspect-ratio: 4/3;
+  height: 100%;
+  min-height: 400px;
   background:
     radial-gradient(ellipse at 30% 40%, ${theme.colors.secondary}15 0%, transparent 60%),
     ${theme.colors.surface};

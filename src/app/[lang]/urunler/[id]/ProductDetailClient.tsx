@@ -12,6 +12,7 @@ import { HiShoppingCart, HiArrowLeft } from 'react-icons/hi';
 import { useRouter } from 'next/navigation';
 import { fadeInUp, fadeIn } from '@/styles/animations';
 import Breadcrumb from '@/components/ui/Breadcrumb';
+import Image from 'next/image';
 
 interface ProductData {
   id: string;
@@ -56,37 +57,62 @@ const ImageGallery = styled.div`
   display: flex; flex-direction: column; gap: 16px;
 `;
 
-const MainImage = styled.div<{ $src: string }>`
+const MainImage = styled.div`
   width: 100%; aspect-ratio: 1; border-radius: ${theme.borderRadius['2xl']};
   background: ${theme.colors.surface};
-  background-image: url(${({ $src }) => $src});
-  background-size: cover; background-position: center;
-  border: 1px solid ${theme.colors.glassBorder};
-  box-shadow: ${theme.shadows.md};
   cursor: pointer;
   transition: transform ${theme.transitions.fast};
   position: relative;
+`;
+
+const MainImageWrapper = styled.div`
+  position: relative;
+  width: 100%; aspect-ratio: 1; border-radius: ${theme.borderRadius['2xl']};
+  border: 1px solid ${theme.colors.glassBorder};
+  box-shadow: ${theme.shadows.md};
+  overflow: hidden;
 
   &::after {
     content: '🔍 Büyütmek için tıkla';
     position: absolute;
     bottom: 20px;
     right: 20px;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.7);
     color: white;
     padding: 6px 12px;
     border-radius: 20px;
     font-size: 12px;
     opacity: 0;
     transition: opacity ${theme.transitions.fast};
+    pointer-events: none;
+    z-index: 2;
   }
 
-  &:hover {
-    transform: scale(1.02);
-    &::after { opacity: 1; }
-  }
+  &:hover::after { opacity: 1; }
 `;
 
+const NavArrow = styled.button<{ $right?: boolean }>`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  ${props => props.$right ? 'right: 16px;' : 'left: 16px;'}
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: white;
+    transform: translateY(-50%) scale(1.1);
+  }
+`;
 const ThumbnailList = styled.div`
   display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px;
   &::-webkit-scrollbar { height: 6px; }
@@ -94,12 +120,14 @@ const ThumbnailList = styled.div`
   &::-webkit-scrollbar-thumb { background: ${theme.colors.glassBorder}; border-radius: 4px; }
 `;
 
-const Thumbnail = styled.button<{ $src: string; $active: boolean }>`
+const Thumbnail = styled.button<{ $active: boolean }>`
   flex: 0 0 80px; height: 80px; border-radius: ${theme.borderRadius.lg};
-  background: ${theme.colors.surface} url(${({ $src }) => $src}) center/cover;
+  background: ${theme.colors.surface};
   border: 2px solid ${({ $active }) => ($active ? theme.colors.secondary : 'transparent')};
   cursor: pointer; opacity: ${({ $active }) => ($active ? 1 : 0.6)};
   transition: all ${theme.transitions.fast};
+  position: relative;
+  overflow: hidden;
   &:hover { opacity: 1; }
 `;
 
@@ -170,14 +198,9 @@ const LightboxOverlay = styled.div`
 
 const LightboxImgContainer = styled.div`
   position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
+  width: 90vw;
+  height: 90vh;
   display: flex; align-items: center; justify-content: center;
-`;
-
-const LightboxImg = styled.img`
-  max-width: 100%; max-height: 90vh; object-fit: contain;
-  border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 `;
 
 const LightboxCloseBtn = styled.button`
@@ -194,12 +217,12 @@ const LightboxCloseBtn = styled.button`
 const LightboxNavBtn = styled.button<{ $right?: boolean }>`
   position: absolute; top: 50%; transform: translateY(-50%);
   ${props => props.$right ? 'right: 20px;' : 'left: 20px;'}
-  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0, 0, 0, 0.7); border: 2px solid rgba(255, 255, 255, 0.5);
   color: white; width: 50px; height: 50px; border-radius: 50%; font-size: 20px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.2s; backdrop-filter: blur(4px);
   
-  &:hover { background: rgba(255,255,255,0.2); color: ${theme.colors.secondary}; border-color: ${theme.colors.secondary}; }
+  &:hover { background: rgba(0, 0, 0, 0.9); border-color: white; transform: translateY(-50%) scale(1.1); }
   
   @media (min-width: 768px) {
     width: 64px; height: 64px; font-size: 24px;
@@ -282,19 +305,44 @@ export default function ProductDetailClient({ product }: { product: ProductData 
       <DetailGrid>
         {/* Images */}
         <ImageGallery>
-          <MainImage 
-            $src={images[activeImageIndex] || ''} 
-            onClick={() => setIsLightboxOpen(true)}
-          />
+          <MainImageWrapper>
+            <MainImage onClick={() => setIsLightboxOpen(true)}>
+              {images[activeImageIndex] && (
+                <Image
+                  src={images[activeImageIndex]}
+                  alt={product.name}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
+                  unoptimized={images[activeImageIndex].endsWith('.svg')}
+                />
+              )}
+            </MainImage>
+            {images.length > 1 && (
+              <>
+                <NavArrow onClick={prevImage}><FaChevronLeft /></NavArrow>
+                <NavArrow $right onClick={nextImage}><FaChevronRight /></NavArrow>
+              </>
+            )}
+          </MainImageWrapper>
           {images.length > 1 && (
             <ThumbnailList>
               {images.map((img, i) => (
                 <Thumbnail
                   key={i}
-                  $src={img}
                   $active={activeImageIndex === i}
                   onClick={() => setActiveImageIndex(i)}
-                />
+                >
+                  <Image
+                    src={img}
+                    alt={`${product.name} thumbnail ${i + 1}`}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="80px"
+                    unoptimized={img.endsWith('.svg')}
+                  />
+                </Thumbnail>
               ))}
             </ThumbnailList>
           )}
@@ -365,7 +413,13 @@ export default function ProductDetailClient({ product }: { product: ProductData 
               <FaTimes />
             </LightboxCloseBtn>
             
-            <LightboxImg src={images[activeImageIndex] || ''} alt={product.name} />
+            <Image 
+              src={images[activeImageIndex] || ''} 
+              alt={product.name} 
+              fill 
+              style={{ objectFit: 'contain', borderRadius: 8 }}
+              unoptimized={(images[activeImageIndex] || '').endsWith('.svg')}
+            />
 
             {images.length > 1 && (
               <>

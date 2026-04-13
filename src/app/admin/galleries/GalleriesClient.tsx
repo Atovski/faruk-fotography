@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { theme } from '@/styles/theme';
 import { fadeInUp } from '@/styles/animations';
 import { Button } from '@/components/ui/Button';
-import { FaPlus, FaTrash, FaFolderOpen } from 'react-icons/fa';
+import { FaPlus, FaTrash, FaFolderOpen, FaLink } from 'react-icons/fa';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { createGallery, deleteGallery } from './actions';
@@ -133,6 +133,13 @@ const ActionRow = styled.div`
   gap: 10px;
 `;
 
+function getSiteUrl() {
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+  return '';
+}
+
 export default function GalleriesClient({ galleries }: { galleries: any[] }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -158,6 +165,22 @@ export default function GalleriesClient({ galleries }: { galleries: any[] }) {
     const res = await deleteGallery(id);
     if (res.error) toast.error('Hata: Silinemedi');
     else toast.success('Galeri silindi');
+  };
+
+  const handleCopyLink = (accessToken: string) => {
+    const url = `${getSiteUrl()}/tr/galeri?token=${accessToken}`;
+    navigator.clipboard.writeText(url).then(() => {
+      toast.success('Galeri bağlantısı kopyalandı! WhatsApp ile müşteriye gönderebilirsiniz.');
+    }).catch(() => {
+      // Fallback
+      const textarea = document.createElement('textarea');
+      textarea.value = url;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      toast.success('Galeri bağlantısı kopyalandı!');
+    });
   };
 
   return (
@@ -197,6 +220,15 @@ export default function GalleriesClient({ galleries }: { galleries: any[] }) {
                 <td>{g.status}</td>
                 <td>
                   <ActionRow>
+                    <Button
+                      $variant="outline"
+                      $size="sm"
+                      onClick={() => handleCopyLink(g.access_token)}
+                      title="Galeri Bağlantısını Kopyala"
+                      style={{ color: theme.colors.success, borderColor: theme.colors.success + '40' }}
+                    >
+                      <FaLink />
+                    </Button>
                     <Link href={`/admin/galleries/${g.id}`}>
                       <Button $variant="outline" $size="sm" title="Fotoğraf Yükle">
                         <FaFolderOpen />
@@ -219,8 +251,8 @@ export default function GalleriesClient({ galleries }: { galleries: any[] }) {
             <h2>Yeni Galeri Oluştur</h2>
             <form onSubmit={handleCreate}>
               <FormGroup>
-                <label>Telefon Numarası (Giriş için gerekli)*</label>
-                <input type="tel" name="phone_number" placeholder="Örn: 05551234567" required />
+                <label>Telefon Numarası (+ ile başlayın)*</label>
+                <input type="tel" name="phone_number" placeholder="Örn: +905551234567" required />
               </FormGroup>
               <FormGroup>
                 <label>Müşteri Adı - Soyadı (Opsiyonel)</label>

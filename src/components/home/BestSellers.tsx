@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import SectionTitle from '@/components/ui/SectionTitle';
 import Link from 'next/link';
 import Image from 'next/image';
+import { formatPrice, getWhatsAppUrl, slugify } from '@/lib/utils';
 import { HiChevronLeft, HiChevronRight, HiShoppingCart } from 'react-icons/hi';
 import { useCart } from '@/hooks/useCart';
 import { toast } from 'react-hot-toast';
@@ -260,7 +261,7 @@ export default function BestSellers() {
 
           <SliderTrack ref={trackRef}>
             {bestSellerProducts.map((p) => (
-              <ProductCard key={p.id} href={getLocalizedHref(`/urunler/${p.id}`, language)}>
+              <ProductCard key={p.id} href={getLocalizedHref(`/urunler/${slugify(p.name)}-${p.id}`, language)}>
                 <ImageBox>
                   <Image
                     src={p.image}

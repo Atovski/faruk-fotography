@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { HiCamera, HiFilm, HiPhotograph, HiGift, HiCheck, HiUsers, HiShoppingBag, HiCube } from 'react-icons/hi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { getWhatsAppUrl } from '@/lib/utils';
+import Image from 'next/image';
 
 const PageWrapper = styled.div`
   padding-top: 100px;
@@ -164,6 +165,7 @@ const services = [
     key: 'studio' as const,
     icon: HiCube,
     priceStr: { en: 'Pricing based on quantity', tr: 'Ürün adedine göre fiyatlandırma' },
+    image: '/urun-cekim.webp',
     whatsappMsg: 'Merhaba, e-ticaret (Etsy, Amazon vb.) mağazalarım için profesyonel ürün çekimi hizmetiniz hakkında bilgi almak istiyorum.',
   },
   {
@@ -246,7 +248,17 @@ export default function ServicesPage() {
               </ServiceInfo>
 
               <ServiceVisual>
-                <BigIcon><Icon /></BigIcon>
+                {'image' in service && service.image ? (
+                  <Image
+                    src={service.image}
+                    alt={data.title}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                ) : (
+                  <BigIcon><Icon /></BigIcon>
+                )}
               </ServiceVisual>
             </ServiceBlock>
           );

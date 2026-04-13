@@ -49,41 +49,45 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic product pages from Supabase (both languages)
   let productPages: MetadataRoute.Sitemap = [];
   try {
+    const { slugify } = await import('@/lib/utils');
     const supabase = createServerSupabaseClient();
     const { data: products } = await supabase
       .from('products')
-      .select('id, created_at')
+      .select('id, name, created_at')
       .eq('is_active', true);
 
     if (products) {
-      productPages = products.flatMap((product) => [
-        {
-          url: `${baseUrl}/tr/urunler/${product.id}`,
-          lastModified: new Date(product.created_at),
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
-          alternates: {
-            languages: {
-              tr: `${baseUrl}/tr/urunler/${product.id}`,
-              en: `${baseUrl}/en/products/${product.id}`,
-              'x-default': `${baseUrl}/tr/urunler/${product.id}`,
+      productPages = products.flatMap((product) => {
+        const slug = `${slugify(product.name)}-${product.id}`;
+        return [
+          {
+            url: `${baseUrl}/tr/urunler/${slug}`,
+            lastModified: new Date(product.created_at),
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+            alternates: {
+              languages: {
+                tr: `${baseUrl}/tr/urunler/${slug}`,
+                en: `${baseUrl}/en/products/${slug}`,
+                'x-default': `${baseUrl}/tr/urunler/${slug}`,
+              },
             },
           },
-        },
-        {
-          url: `${baseUrl}/en/products/${product.id}`,
-          lastModified: new Date(product.created_at),
-          changeFrequency: 'weekly' as const,
-          priority: 0.75,
-          alternates: {
-            languages: {
-              tr: `${baseUrl}/tr/urunler/${product.id}`,
-              en: `${baseUrl}/en/products/${product.id}`,
-              'x-default': `${baseUrl}/tr/urunler/${product.id}`,
+          {
+            url: `${baseUrl}/en/products/${slug}`,
+            lastModified: new Date(product.created_at),
+            changeFrequency: 'weekly' as const,
+            priority: 0.75,
+            alternates: {
+              languages: {
+                tr: `${baseUrl}/tr/urunler/${slug}`,
+                en: `${baseUrl}/en/products/${slug}`,
+                'x-default': `${baseUrl}/tr/urunler/${slug}`,
+              },
             },
           },
-        },
-      ]);
+        ];
+      });
     }
   } catch (err) {
     console.error('Error fetching products for sitemap:', err);

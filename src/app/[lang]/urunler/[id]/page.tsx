@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
+import { slugify, extractIdFromSlug } from '@/lib/utils';
 import ProductDetailClient from './ProductDetailClient';
 import type { Locale } from '@/i18n/config';
 
@@ -20,12 +21,13 @@ interface ProductRow {
 }
 
 /* ───── Fetch product helper (server-side) ───── */
-async function getProduct(id: string): Promise<ProductRow | null> {
+async function getProduct(slugOrId: string): Promise<ProductRow | null> {
+  const actualId = extractIdFromSlug(slugOrId);
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from('products')
     .select('*, category:category_id(name, slug)')
-    .eq('id', id)
+    .eq('id', actualId)
     .single();
 
   if (error || !data) return null;
@@ -64,6 +66,8 @@ export async function generateMetadata({
       ? product.images[0]
       : product.image_url || `${BASE_URL}/logo.png`;
 
+  const currentSlug = `${slugify(product.name)}-${product.id}`;
+
   return {
     title,
     description,
@@ -81,7 +85,7 @@ export async function generateMetadata({
       description,
       type: 'website',
       locale: isEn ? 'en_US' : 'tr_TR',
-      url: `${BASE_URL}/${locale === 'en' ? 'en/products' : 'tr/urunler'}/${product.id}`,
+      url: `${BASE_URL}/${locale === 'en' ? 'en/products' : 'tr/urunler'}/${currentSlug}`,
       images: [
         {
           url: imageUrl,
@@ -99,11 +103,11 @@ export async function generateMetadata({
       images: [imageUrl],
     },
     alternates: {
-      canonical: `/${locale === 'en' ? 'en/products' : 'tr/urunler'}/${product.id}`,
+      canonical: `/${locale === 'en' ? 'en/products' : 'tr/urunler'}/${currentSlug}`,
       languages: {
-        'tr': `${BASE_URL}/tr/urunler/${product.id}`,
-        'en': `${BASE_URL}/en/products/${product.id}`,
-        'x-default': `${BASE_URL}/tr/urunler/${product.id}`,
+        'tr': `${BASE_URL}/tr/urunler/${currentSlug}`,
+        'en': `${BASE_URL}/en/products/${currentSlug}`,
+        'x-default': `${BASE_URL}/tr/urunler/${currentSlug}`,
       },
     },
   };
@@ -126,14 +130,14 @@ function getProductJsonLd(product: ProductRow) {
       product.description ||
       `${product.name} — Faruk Fotoğrafçılık online mağazası`,
     image: allImages,
-    url: `${BASE_URL}/tr/urunler/${product.id}`,
+    url: `${BASE_URL}/tr/urunler/${slugify(product.name)}-${product.id}`,
     brand: {
       '@type': 'Brand',
       name: 'Faruk Fotoğrafçılık',
     },
     offers: {
       '@type': 'Offer',
-      url: `${BASE_URL}/tr/urunler/${product.id}`,
+      url: `${BASE_URL}/tr/urunler/${slugify(product.name)}-${product.id}`,
       price: product.price.toFixed(2),
       priceCurrency: 'TRY',
       availability:
@@ -151,6 +155,41 @@ function getProductJsonLd(product: ProductRow) {
         11,
         31
       ).toISOString().split('T')[0],
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'TR',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 14,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn'
+      },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: {
+          '@type': 'MonetaryAmount',
+          value: '0',
+          currency: 'TRY'
+        },
+        shippingDestination: {
+          '@type': 'DefinedRegion',
+          addressCountry: 'TR'
+        },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 0,
+            maxValue: 1,
+            unitCode: 'd'
+          },
+          transitTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 1,
+            maxValue: 3,
+            unitCode: 'd'
+          }
+        }
+      }
     },
     category: product.category?.name || undefined,
     sku: product.id,
@@ -192,7 +231,7 @@ export default async function ProductDetailPage({
         '@type': 'ListItem',
         'position': 3,
         'name': product.name,
-        'item': BASE_URL + (lang === 'en' ? '/en/products/' : '/tr/urunler/') + product.id
+        'item': BASE_URL + (lang === 'en' ? '/en/products/' : '/tr/urunler/') + `${slugify(product.name)}-${product.id}`
       }
     ]
   };

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import JSZip from 'jszip';
 import styled from 'styled-components';
 import { theme } from '@/styles/theme';
@@ -8,8 +9,13 @@ import { fadeInUp, fadeIn, scaleIn } from '@/styles/animations';
 import { useLanguage } from '@/hooks/useLanguage';
 import SectionTitle from '@/components/ui/SectionTitle';
 import { Button } from '@/components/ui/Button';
-import { HiFilm, HiDownload, HiX, HiChevronLeft, HiChevronRight, HiLockClosed } from 'react-icons/hi';
+import { HiFilm, HiDownload, HiX, HiChevronLeft, HiChevronRight, HiLockClosed, HiShoppingCart, HiPhone, HiShare } from 'react-icons/hi';
 import toast from 'react-hot-toast';
+import { useCart } from '@/hooks/useCart';
+import { supabase } from '@/lib/supabase';
+import { getLocalizedHref } from '@/i18n/config';
+import Link from 'next/link';
+import Image from 'next/image';
 
 const PageWrapper = styled.div`
   padding-top: 100px;
@@ -312,7 +318,119 @@ const LightboxCounter = styled.span`
 
 // No more demo photos. State will handle real data.
 
-export default function GalleryPage() {
+const SliderSection = styled.div`
+  margin-top: ${theme.spacing['4xl']};
+  padding-top: ${theme.spacing['2xl']};
+  border-top: 1px solid ${theme.colors.glassBorder};
+  animation: ${fadeInUp} 0.6s ease;
+`;
+
+const SliderTitle = styled.h3`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xl};
+  margin-bottom: ${theme.spacing.xl};
+  text-align: center;
+`;
+
+const SliderTrack = styled.div`
+  display: flex;
+  gap: ${theme.spacing.lg};
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: ${theme.spacing.md} 0 ${theme.spacing.xl};
+
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { display: none; }
+`;
+
+const ProductCard = styled(Link)`
+  flex: 0 0 240px;
+  scroll-snap-align: start;
+  background: ${theme.colors.glassBg};
+  backdrop-filter: blur(10px);
+  border: 1px solid ${theme.colors.glassBorder};
+  border-radius: ${theme.borderRadius.xl};
+  overflow: hidden;
+  text-decoration: none;
+  transition: all ${theme.transitions.normal};
+
+  &:hover {
+    border-color: ${theme.colors.secondary}60;
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  }
+`;
+
+const ImageBox = styled.div`
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: ${theme.colors.surface};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  img {
+    object-fit: contain;
+    transition: transform ${theme.transitions.normal};
+  }
+
+  ${ProductCard}:hover & img {
+    transform: scale(1.08);
+  }
+`;
+
+const CardBody = styled.div`
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+`;
+
+const ProductName = styled.h4`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.md};
+  color: ${theme.colors.text};
+  margin-bottom: 4px;
+`;
+
+const PriceRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: ${theme.spacing.md};
+`;
+
+const Price = styled.span`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.lg};
+  font-weight: 700;
+  color: ${theme.colors.secondary};
+`;
+
+const CartIconBtn = styled.button`
+  width: 36px;
+  height: 36px;
+  border-radius: ${theme.borderRadius.md};
+  background: ${theme.colors.secondary}15;
+  color: ${theme.colors.secondary};
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all ${theme.transitions.fast};
+
+  ${ProductCard}:hover & {
+    background: ${theme.colors.secondary};
+    color: ${theme.colors.primaryDark};
+  }
+`;
+
+function GalleryPageContent() {
   const { t } = useLanguage();
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
@@ -322,6 +440,65 @@ export default function GalleryPage() {
   const [photos, setPhotos] = useState<any[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [downloadingZip, setDownloadingZip] = useState(false);
+  const [tokenLoading, setTokenLoading] = useState(false);
+
+  // Cart & Upsell logic
+  const { language } = useLanguage();
+  const { addToCart } = useCart();
+  const [filmProducts, setFilmProducts] = useState<any[]>([]);
+
+  // Magic Link: auto-login via ?token= parameter
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const token = searchParams.get('token');
+    if (!token || authenticated) return;
+
+    setTokenLoading(true);
+    fetch(`/api/gallery/magic-link?token=${encodeURIComponent(token)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setGalleryData(data.gallery);
+          setPhotos(data.photos);
+          setAuthenticated(true);
+        } else {
+          toast.error(data.error || 'Bağlantı geçersiz veya süresi dolmuş.');
+        }
+      })
+      .catch(() => {
+        toast.error('Bağlantı doğrulanamadı.');
+      })
+      .finally(() => setTokenLoading(false));
+  }, [searchParams]);
+
+  useEffect(() => {
+    async function fetchFilmProducts() {
+      if (!authenticated) return;
+      try {
+        // Fetch specific subcategories
+        const { data: categories } = await supabase
+          .from('categories')
+          .select('id')
+          .in('slug', ['35mm-color', '35mm-bw', '120mm-color', '120mm-bw']);
+
+        const tempIds = categories?.map((c) => c.id) || [];
+        
+        if (tempIds.length > 0) {
+          const { data: products } = await supabase
+            .from('products')
+            .select('*')
+            .in('subcategory_id', tempIds)
+            .eq('is_active', true)
+            .order('sort_order', { ascending: true });
+            
+          setFilmProducts(products || []);
+        }
+      } catch (err) {
+        console.error('Failed to fetch film products:', err);
+      }
+    }
+    fetchFilmProducts();
+  }, [authenticated]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -431,13 +608,20 @@ export default function GalleryPage() {
     <PageWrapper>
       <Container>
         <SectionTitle
-          badge="🎞️"
           title={t.gallery.title}
           subtitle={t.gallery.subtitle}
           as="h1"
         />
 
-        {!authenticated ? (
+        {tokenLoading ? (
+          <AccessSection>
+            <AccessCard>
+              <AccessIcon><HiLockClosed /></AccessIcon>
+              <AccessTitle>{language === 'en' ? 'Verifying access...' : 'Erişim doğrulanıyor...'}</AccessTitle>
+              <AccessSubtitle>{language === 'en' ? 'Please wait while we load your gallery.' : 'Galeriniz yüklenirken lütfen bekleyin.'}</AccessSubtitle>
+            </AccessCard>
+          </AccessSection>
+        ) : !authenticated ? (
           <AccessSection>
             <AccessCard>
               <AccessIcon><HiLockClosed /></AccessIcon>
@@ -446,7 +630,7 @@ export default function GalleryPage() {
 
               <Form onSubmit={handleAccess}>
                 <InputGroup>
-                  <InputIcon>📱</InputIcon>
+                  <InputIcon><HiPhone /></InputIcon>
                   <Input
                     type="tel"
                     placeholder={t.gallery.phonePlaceholder}
@@ -496,9 +680,35 @@ export default function GalleryPage() {
                 <span>{t.gallery.photos}</span>
                 <span>{photos.length}</span>
               </OrderInfoItem>
-              <Button $variant="primary" $size="md" onClick={handleDownloadAll} disabled={downloadingZip || photos.length === 0}>
-                <HiDownload /> {downloadingZip ? 'Hazırlanıyor...' : t.gallery.downloadAll}
-              </Button>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <Button
+                  $variant="outline"
+                  $size="md"
+                  onClick={() => {
+                    const token = searchParams.get('token') || galleryData?.access_token;
+                    const shareUrl = token
+                      ? `${window.location.origin}/${language}/galeri?token=${token}`
+                      : window.location.href;
+
+                    navigator.clipboard.writeText(shareUrl).then(() => {
+                      toast.success(language === 'en' ? 'Link copied!' : 'Bağlantı kopyalandı!');
+                    }).catch(() => {
+                      const textarea = document.createElement('textarea');
+                      textarea.value = shareUrl;
+                      document.body.appendChild(textarea);
+                      textarea.select();
+                      document.execCommand('copy');
+                      document.body.removeChild(textarea);
+                      toast.success(language === 'en' ? 'Link copied!' : 'Bağlantı kopyalandı!');
+                    });
+                  }}
+                >
+                  <HiShare /> {language === 'en' ? 'Share' : 'Paylaş'}
+                </Button>
+                <Button $variant="primary" $size="md" onClick={handleDownloadAll} disabled={downloadingZip || photos.length === 0}>
+                  <HiDownload /> {downloadingZip ? 'Hazırlanıyor...' : t.gallery.downloadAll}
+                </Button>
+              </div>
             </OrderInfoBar>
 
             <PhotoGrid>
@@ -518,6 +728,59 @@ export default function GalleryPage() {
                 </PhotoCard>
               ))}
             </PhotoGrid>
+
+            {/* Upsell Slider for Film Products */}
+            {filmProducts.length > 0 && (
+              <SliderSection>
+                <SliderTitle>
+                  {language === 'tr' ? 'Yeni Filmler Satın Alın' : 'Buy New Films'}
+                </SliderTitle>
+                <SliderTrack>
+                  {filmProducts.map((p) => {
+                    const primaryImage = (p.images && p.images.length > 0) ? p.images[0] : (p.image_url || '/placeholder-image.png');
+                    return (
+                      <ProductCard key={p.id} href={getLocalizedHref(`/urunler/${p.id}`, language)}>
+                        <ImageBox>
+                          <Image
+                            src={primaryImage.startsWith('/') ? primaryImage : `/${primaryImage}`}
+                            alt={p.name}
+                            fill
+                            sizes="240px"
+                            style={{ objectFit: 'contain', padding: '16px' }}
+                          />
+                        </ImageBox>
+                        <CardBody>
+                          <ProductName>{p.name}</ProductName>
+                          <PriceRow>
+                            <Price>₺{p.price}</Price>
+                            <CartIconBtn
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                addToCart({
+                                  id: p.id,
+                                  name_tr: p.name,
+                                  name_en: p.name,
+                                  price: p.price,
+                                  image_url: primaryImage,
+                                  images: p.images || [],
+                                  stock: p.stock || 99
+                                }, 1);
+                                toast.success(language === 'tr' ? `${p.name} sepete eklendi!` : `${p.name} added to cart!`);
+                              }}
+                              aria-label="Sepete Ekle"
+                            >
+                              <HiShoppingCart />
+                            </CartIconBtn>
+                          </PriceRow>
+                        </CardBody>
+                      </ProductCard>
+                    );
+                  })}
+                </SliderTrack>
+              </SliderSection>
+            )}
+
           </GalleryWrapper>
         )}
 
@@ -551,5 +814,13 @@ export default function GalleryPage() {
         )}
       </Container>
     </PageWrapper>
+  );
+}
+
+export default function GalleryPage() {
+  return (
+    <Suspense>
+      <GalleryPageContent />
+    </Suspense>
   );
 }

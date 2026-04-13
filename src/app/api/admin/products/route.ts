@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   const supabase = createServerSupabaseClient();
   const body = await req.json();
   
-  const { name, description, price, image_url, images, category_id, subcategory_id, stock, is_customizable } = body;
+  const { name, description, price, image_url, images, category_id, subcategory_id, stock, is_customizable, is_popular } = body;
   
   if (!name || price === undefined) {
     return NextResponse.json({ error: 'Name and price are required' }, { status: 400 });
@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
       subcategory_id: subcategory_id || null,
       stock: parseInt(stock) || 0,
       is_customizable: is_customizable || false,
+      is_popular: is_popular || false,
     })
     .select()
     .single();

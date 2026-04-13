@@ -124,7 +124,7 @@ const tr = {
   gallery: {
     title: 'Film Galerisi',
     subtitle: 'Banyo edilen filmlerinizi indirin',
-    phonePlaceholder: 'Telefon numaranız (05XX XXX XX XX)',
+    phonePlaceholder: 'Telefon numaranız (+90 5XX XXX XX XX)',
     codePlaceholder: 'Erişim kodunuz',
     submit: 'Fotoğraflarımı Göster',
     downloadAll: 'Hepsini İndir',

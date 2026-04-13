@@ -1,29 +1,35 @@
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   try {
-    const { phone, code } = await request.json();
+    const { searchParams } = new URL(request.url);
+    const token = searchParams.get('token');
 
-    if (!phone || !code) {
-      return NextResponse.json({ error: 'Telefon numarası ve erişim kodu gereklidir.' }, { status: 400 });
+    if (!token) {
+      return NextResponse.json({ error: 'Token gereklidir.' }, { status: 400 });
+    }
+
+    // Validate UUID format to prevent injection
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(token)) {
+      return NextResponse.json({ error: 'Geçersiz token formatı.' }, { status: 400 });
     }
 
     const supabase = createServerSupabaseClient();
 
-    // 1. Check if gallery exists and credentials match
+    // 1. Find gallery by access_token
     const { data: gallery, error: galleryError } = await supabase
       .from('film_galleries')
       .select('*')
-      .eq('phone_number', phone)
-      .eq('access_code', code.toUpperCase())
+      .eq('access_token', token)
       .single();
 
     if (galleryError || !gallery) {
-      return NextResponse.json({ error: 'Galeri bulunamadı veya bilgiler hatalı.' }, { status: 404 });
+      return NextResponse.json({ error: 'Galeri bulunamadı veya bağlantı geçersiz.' }, { status: 404 });
     }
 
-    // 2. Fetch the photos for this gallery
+    // 2. Fetch photos
     const { data: photos, error: photosError } = await supabase
       .from('gallery_photos')
       .select('id, file_name, public_url, created_at')
@@ -35,20 +41,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Fotoğraflar yüklenirken bir sorun oluştu.' }, { status: 500 });
     }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       gallery: {
         id: gallery.id,
         film_type: gallery.film_type,
         status: gallery.status,
         created_at: gallery.created_at,
-        access_token: gallery.access_token
       },
-      photos: photos || [] 
+      photos: photos || [],
     });
 
   } catch (error) {
-    console.error('Gallery Access API Error:', error);
+    console.error('Magic Link API Error:', error);
     return NextResponse.json({ error: 'Sunucu hatası.' }, { status: 500 });
   }
 }
