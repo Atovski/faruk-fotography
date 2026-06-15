@@ -646,10 +646,10 @@ export default function FilmBanyoPage() {
   const unitPrice = useMemo(() => {
     if (!filmType || !filmFormat || !scanRes) return 0;
     if (filmType === 'dia') {
-      return scanRes === '4k' ? 900 : 700;
+      return scanRes === '4k' ? 1000 : 800;
     }
     // Renkli or Siyah/Beyaz
-    return scanRes === '4k' ? 700 : 500;
+    return scanRes === '4k' ? 800 : 600;
   }, [filmType, filmFormat, scanRes]);
 
   const totalPrice = unitPrice * quantity;
@@ -716,7 +716,7 @@ export default function FilmBanyoPage() {
                 {allSelected ? (
                   <>{`₺${unitPrice.toLocaleString('tr-TR')},00`}</>
                 ) : (
-                  <>₺500,00 <span> — </span> ₺900,00</>
+                  <>₺600,00 <span> — </span> ₺1.000,00</>
                 )}
               </PriceRange>
 
