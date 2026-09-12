@@ -30,7 +30,20 @@ async function getProduct(slugOrId: string): Promise<ProductRow | null> {
     .eq('id', actualId)
     .single();
 
-  if (error || !data) return null;
+  if (error || !data) {
+    // Every product URL is 404ing in production while the rows exist and are
+    // active in Supabase, and the silent null made the cause invisible in the
+    // Vercel logs. Say which id failed and why.
+    console.error('[product] lookup failed', {
+      slugOrId,
+      extractedId: actualId,
+      code: error?.code,
+      message: error?.message,
+      details: error?.details,
+      hint: error?.hint,
+    });
+    return null;
+  }
   return data as ProductRow;
 }
 
