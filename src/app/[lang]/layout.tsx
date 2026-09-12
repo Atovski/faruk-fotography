@@ -143,9 +143,11 @@ export default async function LangLayout({
       addressCountry: 'TR',
     },
     geo: {
+      // Matches the verified Google Business Profile pin; the previous pair
+      // sat roughly 300 m away from the shop.
       '@type': 'GeoCoordinates',
-      latitude: 41.0119,
-      longitude: 28.9725,
+      latitude: 41.0142935,
+      longitude: 28.9751434,
     },
     openingHoursSpecification: [
       {
@@ -155,13 +157,15 @@ export default async function LangLayout({
         closes: '19:00',
       },
     ],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.5',
-      reviewCount: '62',
-      bestRating: '5',
-    },
-    sameAs: ['https://maps.app.goo.gl/chVzqcUKCrLfxT9Q9'],
+    // aggregateRating intentionally omitted: the figures were hardcoded (4.5 / 62
+    // while Google shows 66) and Google treats self-serving rating markup with no
+    // reviews rendered on the page as a rich-result violation. Reinstate it only
+    // once real reviews are displayed on the site and the numbers come from a feed.
+    sameAs: [
+      'https://maps.app.goo.gl/chVzqcUKCrLfxT9Q9',
+      'https://www.instagram.com/farukfotografcilik1969/',
+      'https://yandex.com.tr/maps/org/faruk_fotografcilik_sirkeci/1007296226/',
+    ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: isEn ? 'Photography Services' : 'Fotoğrafçılık Hizmetleri',

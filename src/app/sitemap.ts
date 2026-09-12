@@ -1,6 +1,14 @@
 import { MetadataRoute } from 'next';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
 
+/**
+ * sitemap.ts is a Route Handler that Next.js caches at build time by default,
+ * so the product list was frozen at whatever was in Supabase on the last deploy.
+ * Products removed since then kept being advertised to Google and returned 404.
+ * Regenerate hourly instead.
+ */
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://farukfotografcilik.com';
   const now = new Date();

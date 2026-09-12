@@ -14,6 +14,7 @@ import { formatPrice, getWhatsAppUrl, slugify } from '@/lib/utils';
 import { Product, ProductSubCategory, ProductMainCategory } from '@/types';
 import { useCart } from '@/hooks/useCart';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
 
@@ -446,6 +447,17 @@ const ProductName = styled.h3`
   margin-bottom: 4px;
 `;
 
+/* Real anchor so crawlers can reach the product detail pages.
+   The card's onClick alone is invisible to Googlebot. */
+const ProductNameLink = styled(Link)`
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 const ProductDesc = styled.p`
   font-size: ${theme.fontSizes.xs};
   color: ${theme.colors.textSecondary};
@@ -527,7 +539,12 @@ type FilterKey = 'all' | 'popular-products' | ProductMainCategory;
 function ProductCardItem({ p, index, language, t, categoryEmojis, router, addToCart }: any) {
   const [imgIndex, setImgIndex] = useState(0);
   const images = (p.images && p.images.length > 0) ? p.images : (p.image_url ? [p.image_url] : []);
-  
+
+  const productSlug = `${slugify(language === 'en' && p.name_en ? p.name_en : p.name_tr)}-${p.id}`;
+  const productHref = language === 'en'
+    ? `/en/products/${productSlug}`
+    : `/tr/urunler/${productSlug}`;
+
   const nextImg = (e: React.MouseEvent) => {
     e.stopPropagation();
     setImgIndex(prev => prev === images.length - 1 ? 0 : prev + 1);
@@ -538,7 +555,7 @@ function ProductCardItem({ p, index, language, t, categoryEmojis, router, addToC
   };
 
   return (
-    <ProductCard style={{ animationDelay: `${index * 0.04}s` }} onClick={() => router.push(`/urunler/${slugify(language === 'en' && p.name_en ? p.name_en : p.name_tr)}-${p.id}`)}>
+    <ProductCard style={{ animationDelay: `${index * 0.04}s` }} onClick={() => router.push(productHref)}>
       <ProductImage $hasImage={images.length > 0}>
         {images.length > 0 && images[imgIndex] && (
           <Image 
@@ -561,7 +578,11 @@ function ProductCardItem({ p, index, language, t, categoryEmojis, router, addToC
         )}
       </ProductImage>
       <ProductInfo>
-        <ProductName>{(language === 'en' && p.name_en) ? p.name_en : p.name_tr}</ProductName>
+        <ProductName>
+          <ProductNameLink href={productHref} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+            {(language === 'en' && p.name_en) ? p.name_en : p.name_tr}
+          </ProductNameLink>
+        </ProductName>
         <ProductDesc>{(language === 'en' && p.description_en) ? p.description_en : p.description_tr}</ProductDesc>
         <PriceRow>
           <Price>₺{formatPrice(p.price)}</Price>

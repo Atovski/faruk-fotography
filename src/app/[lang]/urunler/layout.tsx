@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { Locale } from '@/i18n/config';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
+import { slugify } from '@/lib/utils';
 
 const BASE_URL = 'https://farukfotografcilik.com';
 
@@ -87,7 +88,9 @@ export default async function UrunlerLayout({ children }: { children: React.Reac
           item: {
             '@type': 'Product',
             name: p.name,
-            url: `${BASE_URL}/tr/urunler/${p.id}`,
+            // Must match the canonical slug-plus-id form the detail page emits,
+            // otherwise the schema advertises a second URL for the same product.
+            url: `${BASE_URL}/tr/urunler/${slugify(p.name)}-${p.id}`,
             image: (p.images && p.images.length > 0) ? p.images[0] : (p.image_url || `${BASE_URL}/logo.png`),
             description: p.description ? p.description.slice(0, 160) : `${p.name} — Faruk Fotoğrafçılık`,
           },
