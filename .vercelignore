@@ -1,0 +1,10 @@
+# CLI deploys upload the working directory; keep secrets and local artifacts out.
+.env*
+.git
+.next
+node_modules
+.npm-cache
+faruk.tar.gz
+deploy.zip
+*.txt
+tsconfig.tsbuildinfo
