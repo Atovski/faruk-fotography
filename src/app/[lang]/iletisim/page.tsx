@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { HiLocationMarker, HiClock, HiPhone, HiMail } from 'react-icons/hi';
 import { FaWhatsapp } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import { trackEvent } from '@/lib/analytics';
 
 const PageWrapper = styled.div`
   padding-top: 100px;
@@ -183,11 +184,21 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Without an email or phone there is no way to answer the message.
+    if (!formData.email.trim() && !formData.phone.trim()) {
+      toast.error(`${t.contact.form.email} / ${t.contact.form.phone}?`);
+      return;
+    }
     setLoading(true);
     
     try {
-      // API call would go here
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error(`Contact form failed: ${res.status}`);
+      trackEvent('generate_lead', { lead_type: 'contact_form' });
       toast.success(t.contact.form.success);
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch {

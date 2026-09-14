@@ -9,6 +9,7 @@ import { HiCamera, HiPhotograph, HiPhone, HiPaperAirplane, HiX, HiCheckCircle } 
 import toast from 'react-hot-toast';
 import { useLanguage } from '@/hooks/useLanguage';
 import { analogCameras, getAllBrands, getModelsByBrand } from '@/data/analogCameras';
+import { trackEvent } from '@/lib/analytics';
 
 /* ───── Styled Components ───── */
 const PageWrapper = styled.div`
@@ -370,6 +371,7 @@ export default function SecondHandPage() {
 
       const data = await res.json();
       if (res.ok && data.success) {
+        trackEvent('generate_lead', { lead_type: 'used_camera' });
         setSubmitted(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {

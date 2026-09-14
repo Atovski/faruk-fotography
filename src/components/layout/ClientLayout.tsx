@@ -10,6 +10,7 @@ import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import { CartProvider } from '@/hooks/useCart';
 import GlobalCart from '@/components/layout/GlobalCart';
+import ContactClickTracker from '@/components/layout/ContactClickTracker';
 
 interface ClientLayoutProps {
   children: ReactNode;
@@ -52,6 +53,7 @@ export default function ClientLayout({ children, lang }: ClientLayoutProps) {
           <Footer />
           <WhatsAppButton />
           <GlobalCart />
+          <ContactClickTracker />
         </CartProvider>
       </LanguageProvider>
     </StyledComponentsRegistry>

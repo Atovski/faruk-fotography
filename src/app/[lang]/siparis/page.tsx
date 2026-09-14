@@ -13,6 +13,7 @@ import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/hooks/useCart';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getLocalizedHref } from '@/i18n/config';
+import { trackEvent } from '@/lib/analytics';
 
 /* ───── Types ───── */
 interface CartProduct {
@@ -489,6 +490,13 @@ export default function CheckoutPage() {
 
       const data = await res.json();
       if (res.ok && data.success) {
+        trackEvent('purchase', {
+          transaction_id: data.orderNumber,
+          value: grandTotal,
+          currency: 'TRY',
+          shipping: shippingCost,
+          items: cart.map(i => ({ item_id: i.product.id, item_name: i.product.name_tr, price: i.product.price, quantity: i.quantity })),
+        });
         clearCart(); // Empties the cart using global context mapping.
         router.push(`/siparis/basarili?orderNumber=${data.orderNumber}`);
       } else {
