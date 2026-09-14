@@ -39,7 +39,24 @@ export async function createGallery(formData: FormData) {
 
 export async function deleteGallery(id: string) {
   const supabase = createServerSupabaseClient();
-  
+
+  // The row delete cascades to gallery_photos but never touches Storage, so
+  // the files have to be removed explicitly or they pile up against the quota.
+  const { data: photos } = await supabase
+    .from('gallery_photos')
+    .select('storage_path')
+    .eq('gallery_id', id);
+
+  const paths = (photos || []).map((p) => p.storage_path);
+  for (let i = 0; i < paths.length; i += 100) {
+    const { error: storageError } = await supabase.storage
+      .from('galleries')
+      .remove(paths.slice(i, i + 100));
+    if (storageError) {
+      return { error: storageError.message };
+    }
+  }
+
   const { error } = await supabase
     .from('film_galleries')
     .delete()

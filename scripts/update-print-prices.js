@@ -1,8 +1,11 @@
 const { createClient } = require('@supabase/supabase-js');
+const { loadEnvConfig } = require('@next/env');
+
+loadEnvConfig('./');
 
 const supabase = createClient(
-  'https://sfowiigzqllhgwkqbvpo.supabase.co',
-  'sb_secret_hiMJK89tRWsMjF7ftezD2Q_QbBuCmCX'
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 const newDescription = `En değerli anılarınızı yüksek kaliteli fotoğraf kağıtlarına basarak ölümsüzleştirin. Renkleri canlı, detayları keskin ve uzun ömürlü baskılarla anılarınızı duvarlarınızda veya albümlerinizde yaşatın.
