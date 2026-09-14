@@ -205,6 +205,7 @@ export default function Navbar() {
 
   // Navigation items with Turkish base paths (used for localization)
   const navItems = [
+    { basePath: '/vesikalik-fotograf', label: language === 'tr' ? 'Vesikalık' : 'Passport Photo' },
     { basePath: '/hizmetler', label: t.nav.services },
     { basePath: '/urunler', label: t.nav.products },
     { basePath: '/film-banyo', label: language === 'tr' ? 'Film Banyo' : 'Film Dev.', glow: true },

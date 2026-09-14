@@ -1,5 +1,9 @@
 import { MetadataRoute } from 'next';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
+import { baskiGroup } from '@/content/landing/baski';
+import { ikametGroup } from '@/content/landing/ikamet';
+import { vesikalikGroup } from '@/content/landing/vesikalik';
+import { vizeGroup } from '@/content/landing/vize';
 
 /**
  * sitemap.ts is a Route Handler that Next.js caches at build time by default,
@@ -22,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { tr: '/galeri', en: '/gallery', priority: 0.7, changeFreq: 'weekly' as const },
     { tr: '/hakkimizda', en: '/about', priority: 0.6, changeFreq: 'monthly' as const },
     { tr: '/iletisim', en: '/contact', priority: 0.8, changeFreq: 'monthly' as const },
-    { tr: '/ikinci-el', en: '/used-cameras', priority: 0.7, changeFreq: 'monthly' as const },
+    { tr: '/ikinci-el', en: '/used-cameras', priority: 0.4, changeFreq: 'monthly' as const },
   ];
 
   const staticPages: MetadataRoute.Sitemap = staticRoutes.flatMap((route) => [
@@ -53,6 +57,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     },
   ]);
+
+  // Service landing pages, including the ar/ru/fa residence permit pages
+  const landingPages: MetadataRoute.Sitemap = [vesikalikGroup, ikametGroup, vizeGroup, baskiGroup].flatMap((group) => {
+    const entries = Object.values(group).filter((e) => e !== undefined);
+    const languages: Record<string, string> = Object.fromEntries(
+      Object.entries(group).map(([locale, e]) => [locale, `${baseUrl}${e!.path}`])
+    );
+    languages['x-default'] = `${baseUrl}${(group.tr ?? group.en)!.path}`;
+    return entries.map((e) => ({
+      url: `${baseUrl}${e.path}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: e.content.locale === 'tr' ? 0.95 : 0.9,
+      alternates: { languages },
+    }));
+  });
 
   // Dynamic product pages from Supabase (both languages)
   let productPages: MetadataRoute.Sitemap = [];
@@ -101,5 +121,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Error fetching products for sitemap:', err);
   }
 
-  return [...staticPages, ...productPages];
+  return [...staticPages, ...landingPages, ...productPages];
 }

@@ -253,7 +253,7 @@ export default function HeroSection() {
           <CTAButtons>
             <Button
               as={Link}
-              href={getLocalizedHref('/urunler', language)}
+              href={getLocalizedHref('/vesikalik-fotograf', language)}
               $variant="primary"
               $size="lg"
             >

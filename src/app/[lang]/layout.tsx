@@ -15,7 +15,8 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   const { lang } = await params;
-  const locale = (lang === 'en' ? 'en' : 'tr') as Locale;
+  // Landing-only languages (ar/ru/fa) use the English site chrome.
+  const locale = (lang === 'tr' ? 'tr' : 'en') as Locale;
   const t = await getDictionary(locale);
 
   const isEn = locale === 'en';
@@ -115,7 +116,8 @@ export default async function LangLayout({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const locale = (lang === 'en' ? 'en' : 'tr') as Locale;
+  // Landing-only languages (ar/ru/fa) use the English site chrome.
+  const locale = (lang === 'tr' ? 'tr' : 'en') as Locale;
   const isEn = locale === 'en';
 
   const jsonLd = {

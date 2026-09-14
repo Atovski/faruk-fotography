@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect, Rea
 import { usePathname, useRouter } from 'next/navigation';
 import tr, { Translations } from '@/i18n/tr';
 import en from '@/i18n/en';
-import { localizePathname } from '@/i18n/config';
+import { isLandingLocale, localizePathname } from '@/i18n/config';
 
 type Language = 'tr' | 'en';
 
@@ -49,10 +49,12 @@ export function LanguageProvider({ children, lang }: LanguageProviderProps) {
     }
   }, [pathname, getLanguageFromUrl, language]);
 
-  // Update html lang attribute
+  // Update html lang attribute. Landing-only languages (ar/ru/fa) render the
+  // English chrome, but the server already set the page's real language.
   useEffect(() => {
+    if (isLandingLocale(pathname.split('/')[1] ?? '')) return;
     document.documentElement.lang = language;
-  }, [language]);
+  }, [language, pathname]);
 
   const setLanguage = useCallback(
     (newLang: Language) => {

@@ -10,6 +10,8 @@ import { HiCamera, HiFilm, HiPhotograph, HiGift, HiCheck, HiUsers, HiShoppingBag
 import { FaWhatsapp } from 'react-icons/fa';
 import { getWhatsAppUrl } from '@/lib/utils';
 import Image from 'next/image';
+import Link from 'next/link';
+import { getLocalizedHref } from '@/i18n/config';
 
 const PageWrapper = styled.div`
   padding-top: 100px;
@@ -158,7 +160,9 @@ const services = [
   {
     key: 'passport' as const,
     icon: HiUsers,
-    price: '450',
+    // The owner prefers not to publish passport photo prices.
+    priceStr: { en: 'Ask on WhatsApp for prices', tr: "Fiyat için WhatsApp'tan yazın" },
+    detailPath: '/vesikalik-fotograf',
     whatsappMsg: 'Merhaba, vesikalık/biyometrik fotoğraf veya kurumsal portre çekimi hakkında bilgi almak istiyorum.',
   },
   {
@@ -171,13 +175,15 @@ const services = [
   {
     key: 'film' as const,
     icon: HiFilm,
-    price: '500',
+    price: '600',
+    detailPath: '/film-banyo',
     whatsappMsg: 'Merhaba, film banyo yaptırmak istiyorum.',
   },
   {
     key: 'print' as const,
     icon: HiPhotograph,
     price: '50',
+    detailPath: '/fotograf-baski',
     whatsappMsg: 'Merhaba, fotoğraf baskı yaptırmak istiyorum.',
   },
   {
@@ -245,6 +251,11 @@ export default function ServicesPage() {
                 >
                   <FaWhatsapp /> {t.common.contactUs}
                 </Button>
+                {'detailPath' in service && service.detailPath && (
+                  <Button as={Link} href={getLocalizedHref(service.detailPath, language)} $variant="outline" $size="md" style={{ marginInlineStart: '12px' }}>
+                    {language === 'en' ? 'Learn More' : 'Detaylı Bilgi'}
+                  </Button>
+                )}
               </ServiceInfo>
 
               <ServiceVisual>

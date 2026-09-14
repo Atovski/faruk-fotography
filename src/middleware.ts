@@ -1,23 +1,14 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { isLandingLocale, landingLocalePages, landingLocales, slugMap } from '@/i18n/config';
 
-const locales = ['tr', 'en'];
+const locales = ['tr', 'en', ...landingLocales];
 const defaultLocale = 'tr';
 
 /**
  * English slug → Turkish slug (file system uses Turkish folder names)
  */
-const enToTrSlug: Record<string, string> = {
-  'services': 'hizmetler',
-  'products': 'urunler',
-  'film-developing': 'film-banyo',
-  'gallery': 'galeri',
-  'about': 'hakkimizda',
-  'contact': 'iletisim',
-  'used-cameras': 'ikinci-el',
-  'order': 'siparis',
-  'success': 'basarili',
-};
+const enToTrSlug: Record<string, string> = slugMap.enToTr;
 
 const trToEnSlug: Record<string, string> = Object.fromEntries(
   Object.entries(enToTrSlug).map(([en, tr]) => [tr, en])
@@ -143,9 +134,17 @@ export function middleware(request: NextRequest) {
   const locale = firstSegment;
   const restSegments = pathnameSegments.slice(1);
 
-  // For English locale: rewrite English slugs to Turkish slugs (internal routing)
+  // Landing-only languages exist on a handful of pages; anything else under
+  // their prefix gets the English version instead of a Turkish fallback.
+  if (isLandingLocale(locale) && !landingLocalePages[locale].includes(restSegments[0])) {
+    const newUrl = request.nextUrl.clone();
+    newUrl.pathname = `/en${restSegments.length ? '/' + restSegments.join('/') : ''}`;
+    return NextResponse.redirect(newUrl, 307);
+  }
+
+  // Non-Turkish locales: rewrite English slugs to Turkish slugs (internal routing)
   // The file system uses Turkish folder names, so /en/services → /en/hizmetler internally
-  if (locale === 'en' && restSegments.length > 0) {
+  if (locale !== 'tr' && restSegments.length > 0) {
     const hasEnglishSlug = restSegments.some((seg) => enToTrSlug[seg]);
 
     if (hasEnglishSlug) {
