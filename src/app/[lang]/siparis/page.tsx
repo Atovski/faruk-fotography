@@ -5,11 +5,12 @@ import styled from 'styled-components';
 import { theme } from '@/styles/theme';
 import { fadeInUp, fadeIn } from '@/styles/animations';
 import { Button } from '@/components/ui/Button';
-import { HiArrowLeft, HiShoppingCart, HiLocationMarker, HiCreditCard, HiCheck, HiShieldCheck } from 'react-icons/hi';
+import { HiArrowLeft, HiShoppingCart, HiLocationMarker, HiCheck } from 'react-icons/hi';
+import { FaWhatsapp } from 'react-icons/fa';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
 import { useCart } from '@/hooks/useCart';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getLocalizedHref } from '@/i18n/config';
@@ -321,21 +322,6 @@ const SummaryTotal = styled.div`
   }
 `;
 
-const SecureBadge = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: ${theme.spacing.md};
-  border-radius: ${theme.borderRadius.lg};
-  background: ${theme.colors.success}10;
-  border: 1px solid ${theme.colors.success}30;
-  color: ${theme.colors.success};
-  font-size: ${theme.fontSizes.xs};
-  font-weight: 600;
-  margin-top: ${theme.spacing.md};
-`;
-
 const EmptyState = styled.div`
   text-align: center;
   padding: ${theme.spacing['4xl']};
@@ -375,7 +361,8 @@ const TermsCheckboxContainer = styled.label`
 
   span {
     font-size: ${theme.fontSizes.sm};
-    color: ${theme.colors.textSecondary};
+    /* Sits on the dark confirmation card, so it needs a light text colour. */
+    color: rgba(245, 240, 235, 0.8);
     line-height: 1.5;
 
     a {
@@ -467,6 +454,11 @@ export default function CheckoutPage() {
       return;
     }
     
+    // Card payments aren't available, so the order is finished on WhatsApp.
+    // Open the window synchronously inside the click handler; opening it after
+    // the await below would be blocked as a popup.
+    const waWindow = window.open('', '_blank');
+
     setSubmitting(true);
     try {
       const res = await fetch('/api/orders', {
@@ -490,19 +482,41 @@ export default function CheckoutPage() {
 
       const data = await res.json();
       if (res.ok && data.success) {
-        trackEvent('purchase', {
+        trackEvent('generate_lead', {
+          lead_type: 'whatsapp_order',
           transaction_id: data.orderNumber,
           value: grandTotal,
           currency: 'TRY',
-          shipping: shippingCost,
-          items: cart.map(i => ({ item_id: i.product.id, item_name: i.product.name_tr, price: i.product.price, quantity: i.quantity })),
         });
+
+        const lines = [
+          isEn ? `Hello, I placed order #${data.orderNumber} on your website.` : `Merhaba, web sitenizden #${data.orderNumber} numaralı siparişi oluşturdum.`,
+          '',
+          ...cart.map(i => `• ${isEn ? i.product.name_en : i.product.name_tr} x${i.quantity} — ₺${formatPrice(i.product.price * i.quantity)}`),
+          `${isEn ? 'Shipping' : 'Kargo'}: ${shippingCost === 0 ? (isEn ? 'Free' : 'Ücretsiz') : `₺${shippingCost}`}`,
+          `${isEn ? 'Total' : 'Toplam'}: ₺${formatPrice(grandTotal)}`,
+          '',
+          `${fullName} — ${phone}`,
+          `${address}, ${district} / ${city}`,
+          '',
+          isEn ? 'Could you send me the payment details?' : 'Ödeme bilgilerini iletebilir misiniz?',
+        ];
+        const waUrl = getWhatsAppUrl(lines.join('\n'));
+        try {
+          sessionStorage.setItem('faruk_last_order_wa', waUrl);
+        } catch {
+          // The success page falls back to a generic message.
+        }
+
+        if (waWindow) waWindow.location.href = waUrl;
         clearCart(); // Empties the cart using global context mapping.
         router.push(`/siparis/basarili?orderNumber=${data.orderNumber}`);
       } else {
+        waWindow?.close();
         toast.error(data.error || (isEn ? 'Order could not be created.' : 'Sipariş oluşturulamadı.'));
       }
     } catch {
+      waWindow?.close();
       toast.error(isEn ? 'Connection error.' : 'Bağlantı hatası.');
     } finally {
       setSubmitting(false);
@@ -536,7 +550,7 @@ export default function CheckoutPage() {
 
         <PageTitle>
           <h1>{isEn ? 'Complete Checkout' : 'Sipariş Tamamla'}</h1>
-          <p>{isEn ? 'Enter your address details and pay securely' : 'Adres bilgilerinizi girin ve güvenli ödeme yapın'}</p>
+          <p>{isEn ? 'Enter your details and send your order via WhatsApp' : 'Bilgilerinizi girin, siparişinizi WhatsApp ile gönderin'}</p>
         </PageTitle>
 
         {/* Steps */}
@@ -548,7 +562,7 @@ export default function CheckoutPage() {
           <StepConnector $done={currentStep > 1} />
           <Step $active={currentStep === 2} $done={false}>
             <span className="num">2</span>
-            <span className="label">{isEn ? 'Payment' : 'Ödeme'}</span>
+            <span className="label">{isEn ? 'WhatsApp' : 'WhatsApp Onayı'}</span>
           </Step>
         </StepsBar>
 
@@ -661,14 +675,14 @@ export default function CheckoutPage() {
                   onClick={handleContinueToPayment}
                   style={{ marginTop: theme.spacing.md }}
                 >
-                  {isEn ? 'Proceed to Payment →' : 'Ödemeye Geç →'}
+                  {isEn ? 'Continue →' : 'Devam Et →'}
                 </Button>
               </FormCard>
             )}
 
             {currentStep === 2 && (
               <FormCard>
-                <FormTitle><HiCreditCard /> {isEn ? 'Payment' : 'Ödeme'}</FormTitle>
+                <FormTitle><FaWhatsapp /> {isEn ? 'Confirm Order' : 'Sipariş Onayı'}</FormTitle>
 
                 {cart.some(item => item.product.id.startsWith('film-banyo-')) && (
                   <div style={{
@@ -690,8 +704,8 @@ export default function CheckoutPage() {
                       margin: 0,
                     }}>
                       {isEn
-                        ? 'Film developing order: Don\'t forget to note your order number inside the package when shipping your films. (Your order number will be displayed on the next page after payment and sent to your e-mail.)'
-                        : 'Banyo işlemi: Filmlerinizi paketlerken içine sipariş numaranızı not etmeyi unutmayınız. (Sipariş numaranız ödeme sonrası ekranda görüntülenecek ve e-posta adresinize iletilecektir.)'}
+                        ? 'Film developing order: Don\'t forget to note your order number inside the package when shipping your films. (Your order number will be shown on the next page and sent to your e-mail.)'
+                        : 'Banyo işlemi: Filmlerinizi paketlerken içine sipariş numaranızı not etmeyi unutmayınız. (Sipariş numaranız bir sonraki ekranda görüntülenecek ve e-posta adresinize iletilecektir.)'}
                     </p>
                   </div>
                 )}
@@ -740,23 +754,24 @@ export default function CheckoutPage() {
                   border: `1px solid ${theme.colors.secondary}30`,
                   textAlign: 'center',
                 }}>
-                  <HiCreditCard style={{ fontSize: '48px', color: theme.colors.secondary, marginBottom: '12px' }} />
+                  <FaWhatsapp style={{ fontSize: '48px', color: '#25D366', marginBottom: '12px' }} />
                   <h3 style={{
                     fontFamily: theme.fonts.heading,
                     fontSize: theme.fontSizes.xl,
-                    color: theme.colors.text,
+                    color: '#F5F0EB',
                     marginBottom: '8px',
                   }}>
-                    {isEn ? 'Secure Payment' : 'Güvenli Ödeme'}
+                    {isEn ? 'Complete Your Order on WhatsApp' : 'Siparişinizi WhatsApp ile Tamamlayın'}
                   </h3>
                   <p style={{
-                    color: theme.colors.textSecondary,
+                    color: 'rgba(245, 240, 235, 0.8)',
                     fontSize: theme.fontSizes.sm,
                     marginBottom: theme.spacing.xl,
                     lineHeight: 1.6,
                   }}>
-                    {isEn ? 'Pay securely with your credit card, debit card, or virtual card.' : 'Kredi kartı, banka kartı veya sanal kart ile güvenle ödeme yapın.'}<br />
-                    {isEn ? 'All your details are encrypted with 256-bit SSL.' : 'Tüm bilgileriniz 256-bit SSL ile şifrelenir.'}
+                    {isEn
+                      ? 'Your order summary will open in WhatsApp as a ready message — just press send. We will reply with payment details (bank transfer or cash on delivery).'
+                      : 'Sipariş özetiniz WhatsApp\'ta hazır mesaj olarak açılır, sadece gönder tuşuna basın. Ödeme bilgilerini (Havale/EFT veya kapıda ödeme) size WhatsApp\'tan iletiriz.'}
                   </p>
 
                   <TermsCheckboxContainer>
@@ -775,10 +790,11 @@ export default function CheckoutPage() {
                   </TermsCheckboxContainer>
 
                   <Button
-                    $variant="primary"
+                    $variant="whatsapp"
                     $size="lg"
                     $fullWidth
                     onClick={handlePayment}
+                    disabled={submitting}
                     style={{
                       padding: '18px 32px',
                       fontSize: '18px',
@@ -786,12 +802,8 @@ export default function CheckoutPage() {
                       letterSpacing: '0.5px',
                     }}
                   >
-                    💳 {submitting ? (isEn ? 'Processing...' : 'İşleniyor...') : `${isEn ? 'Pay ₺' : '₺'}${formatPrice(grandTotal)}${isEn ? '' : ' Öde'}`}
+                    <FaWhatsapp /> {submitting ? (isEn ? 'Processing...' : 'İşleniyor...') : (isEn ? 'Send Order via WhatsApp' : 'WhatsApp ile Siparişi Gönder')}
                   </Button>
-
-                  <SecureBadge style={{ marginTop: '16px' }}>
-                    <HiShieldCheck size={16} /> {isEn ? 'Secure Payment with 256-bit SSL' : '256-bit SSL ile Güvenli Ödeme'}
-                  </SecureBadge>
                 </div>
               </FormCard>
             )}

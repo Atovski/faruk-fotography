@@ -105,7 +105,7 @@ export async function POST(request: Request) {
 
             <div style="background:#1B2A4A;padding:20px;border-radius:12px;margin-bottom:20px;">
               <h2 style="color:#C8A45C;font-size:18px;margin:0 0 8px;">${isEn ? 'Order' : 'Sipariş'} #${orderNumber}</h2>
-              <p style="color:#aaa;font-size:14px;margin:0;">${isEn ? 'Your order has been successfully received. Thank you!' : 'Siparişiniz başarıyla alınmıştır. Teşekkür ederiz!'}</p>
+              <p style="color:#aaa;font-size:14px;margin:0;">${isEn ? 'Your order has been received. We will send payment details (bank transfer or cash on delivery) via WhatsApp. Thank you!' : 'Siparişiniz alınmıştır. Ödeme bilgilerini (Havale/EFT veya kapıda ödeme) WhatsApp üzerinden ileteceğiz. Teşekkür ederiz!'}</p>
             </div>
 
             <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">

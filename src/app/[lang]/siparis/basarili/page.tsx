@@ -1,6 +1,8 @@
 'use client';
 
 import { Suspense } from 'react';
+import { FaWhatsapp } from 'react-icons/fa';
+import { getWhatsAppUrl } from '@/lib/utils';
 import styled from 'styled-components';
 import { theme } from '@/styles/theme';
 import { fadeInUp } from '@/styles/animations';
@@ -117,24 +119,42 @@ function SuccessContent() {
 
   const isEn = language === 'en';
 
+  const fallbackWaUrl = getWhatsAppUrl(isEn ? `Hello, I placed order #${orderNumber} on your website.` : `Merhaba, web sitenizden #${orderNumber} numaralı siparişi oluşturdum.`);
+
+  // The checkout stores the full order message; if the WhatsApp tab was
+  // blocked or closed, the customer can still send it from here. Swapping the
+  // href at click time keeps server and client renders identical.
+  const applyStoredOrderMessage = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    try {
+      const stored = sessionStorage.getItem('faruk_last_order_wa');
+      if (stored) e.currentTarget.href = stored;
+    } catch {
+      // Keep the generic message.
+    }
+  };
+
   return (
     <SuccessCard>
       <IconWrapper>
         <HiCheckCircle />
       </IconWrapper>
       
-      <Title>{isEn ? 'Thank you for your order!' : 'Siparişiniz İçin Teşekkür Ederiz!'}</Title>
-      
+      <Title>{isEn ? 'Your order has been received!' : 'Siparişiniz Alındı!'}</Title>
+
       <Description>
-        {isEn 
-          ? 'Your order has been successfully placed. Order details and status have been sent to your email address.'
-          : 'Siparişiniz başarıyla alınmıştır. Sipariş detayları ve siparişinizin durumu e-posta adresinize gönderilmiştir.'}
+        {isEn
+          ? 'Last step: send the prepared message on WhatsApp. We will reply with payment details (bank transfer or cash on delivery) and prepare your order.'
+          : 'Son adım: WhatsApp\'ta hazırlanan mesajı gönderin. Ödeme bilgilerini (Havale/EFT veya kapıda ödeme) size iletip siparişinizi hazırlayacağız.'}
       </Description>
 
       <OrderNumberBox>
         <p>{isEn ? 'Your Order Number' : 'Sipariş Numaranız'}</p>
         <strong>{orderNumber}</strong>
       </OrderNumberBox>
+
+      <Button as="a" href={fallbackWaUrl} onClick={applyStoredOrderMessage} target="_blank" rel="noopener noreferrer" $variant="whatsapp" $size="lg" $fullWidth style={{ marginBottom: theme.spacing.lg }}>
+        <FaWhatsapp /> {isEn ? 'Send Order on WhatsApp' : 'Siparişi WhatsApp\'tan Gönder'}
+      </Button>
 
       <Actions>
         <Link href={getLocalizedHref('/urunler', language)} passHref>

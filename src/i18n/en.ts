@@ -14,7 +14,7 @@ const en: Translations = {
   hero: {
     badge: 'IN SIRKECI, ISTANBUL SINCE 1969',
     title: 'Everything About Photography: Sirkeci\'s Premier Photo Studio',
-    subtitle: 'Biometric Passport • Film Developing • Used Cameras • Photo Printing',
+    subtitle: 'Biometric Passport • Residence Permit & Visa Photos • Film Developing • Photo Printing',
     description: 'At Istanbul Sirkeci\'s established photo studio, we offer professional instant biometric passport photos, analog film developing & scanning, used camera trading, and high-quality digital printing services.',
     cta: 'Explore Our Services',
     ctaSecondary: 'WhatsApp Support',

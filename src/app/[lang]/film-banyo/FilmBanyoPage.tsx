@@ -695,7 +695,7 @@ export default function FilmBanyoPage() {
           <SectionHeader>
             <h2>{isEn ? 'Film Developing Prices' : 'Film Banyo Fiyatları'}</h2>
             <GoldLine />
-            <p>{isEn ? 'Choose your options, see the price instantly and pay online' : 'Seçeneklerinizi belirleyin, fiyatı anında görün ve online ödeme yapın'}</p>
+            <p>{isEn ? 'Choose your options, see the price instantly and order via WhatsApp' : 'Seçeneklerinizi belirleyin, fiyatı anında görün, siparişinizi WhatsApp ile verin'}</p>
           </SectionHeader>
 
           <ConfiguratorWrapper>
@@ -799,11 +799,11 @@ export default function FilmBanyoPage() {
 
               <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.textMuted, textAlign: 'center', lineHeight: 1.6 }}>
                 {isEn
-                  ? 'After payment, you can ship your film to the specified address.'
-                  : 'Ödeme sonrası filminizi belirtilen adrese kargolayabilirsiniz.'}<br />
+                  ? 'Your order is completed on WhatsApp; we send payment details (bank transfer) there.'
+                  : 'Siparişiniz WhatsApp üzerinden tamamlanır, ödeme bilgilerini (Havale/EFT) oradan iletiriz.'}<br />
                 {isEn
-                  ? 'You can also pay via bank transfer — contact us on WhatsApp.'
-                  : 'Havale/EFT ile de ödeme yapabilirsiniz — WhatsApp ile iletişime geçin.'}
+                  ? 'Then ship your film to our address.'
+                  : 'Ardından filminizi adresimize kargolayın.'}
               </p>
             </ConfiguratorPanel>
           </ConfiguratorWrapper>
@@ -824,7 +824,7 @@ export default function FilmBanyoPage() {
             <StepCard style={{ animationDelay: '0s' }}>
               <StepNumber>1</StepNumber>
               <StepIcon><FaBoxOpen /></StepIcon>
-              <StepTitle>{isEn ? 'Pay & Ship Your Film' : 'Ödeme Yapın & Kargolayın'}</StepTitle>
+              <StepTitle>{isEn ? 'Order & Ship Your Film' : 'Sipariş Verin & Kargolayın'}</StepTitle>
               <StepDesc>{isEn ? 'Follow the instructions and ship your films to our address.' : 'Talimatları izleyerek filmlerinizi adresimize kargolayın.'}</StepDesc>
             </StepCard>
 

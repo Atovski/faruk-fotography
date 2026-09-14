@@ -207,7 +207,6 @@ export default function Navbar() {
   const navItems = [
     { basePath: '/hizmetler', label: t.nav.services },
     { basePath: '/urunler', label: t.nav.products },
-    { basePath: '/ikinci-el', label: language === 'tr' ? '2. El Kamera' : 'Used Cameras' },
     { basePath: '/film-banyo', label: language === 'tr' ? 'Film Banyo' : 'Film Dev.', glow: true },
     { basePath: '/galeri', label: t.nav.gallery },
     { basePath: '/hakkimizda', label: t.nav.about },

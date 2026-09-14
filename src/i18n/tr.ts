@@ -14,7 +14,7 @@ const tr = {
   hero: {
     badge: '1969\'DAN BERİ SİRKECİ, İSTANBUL',
     title: 'Fotoğrafa Dair Her Şey: Sirkeci\'nin Fotoğraf Stüdyosu',
-    subtitle: 'Biyometrik Vesikalık • Film Banyo • 2. El Kamera • Fotoğraf Baskı',
+    subtitle: 'Biyometrik Vesikalık • İkamet & Vize Fotoğrafı • Film Banyo • Fotoğraf Baskı',
     description: 'İstanbul Sirkeci\'nin köklü fotoğraf stüdyosunda, profesyonel ekipmanlarla anında biyometrik vesikalık çekimi, analog film banyo & tarama, ikinci el fotoğraf makinesi alım-satımı ve yüksek kalite dijital baskı hizmetleri sunuyoruz.',
     cta: 'Hizmetlerimizi İncele',
     ctaSecondary: 'WhatsApp Destek',
