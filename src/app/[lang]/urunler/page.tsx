@@ -492,6 +492,27 @@ const Price = styled.span`
   font-weight: 700;
 `;
 
+/* Products we no longer carry stay listed for SEO, but without a price. */
+const SoldOut = styled.span`
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 600;
+  color: ${theme.colors.textSecondary};
+  letter-spacing: 0.3px;
+`;
+
+const SoldOutBadge = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 3px 10px;
+  border-radius: ${theme.borderRadius.full};
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.7);
+  color: #FFFFFF;
+  z-index: 2;
+`;
+
 /* ───── Active filters indicator ───── */
 const ActiveFiltersBar = styled.div`
   display: flex;
@@ -569,6 +590,9 @@ function ProductCardItem({ p, index, language, t, categoryEmojis, router, addToC
         )}
         {(!images.length) && <ProductEmoji>{categoryEmojis[p.category] || '📦'}</ProductEmoji>}
         {p.is_customizable && <CustomBadge>{t.products.customProduct}</CustomBadge>}
+        {p.stock === 0 && (
+          <SoldOutBadge>{language === 'en' ? 'Out of stock' : 'Stokta Yok'}</SoldOutBadge>
+        )}
         
         {images.length > 1 && (
           <>
@@ -585,8 +609,16 @@ function ProductCardItem({ p, index, language, t, categoryEmojis, router, addToC
         </ProductName>
         <ProductDesc>{(language === 'en' && p.description_en) ? p.description_en : p.description_tr}</ProductDesc>
         <PriceRow>
-          <Price>₺{formatPrice(p.price)}</Price>
-          {p.is_customizable ? (
+          {p.stock === 0 ? (
+            <SoldOut>{language === 'en' ? 'Currently unavailable' : 'Şu an temin edilemiyor'}</SoldOut>
+          ) : (
+            <Price>₺{formatPrice(p.price)}</Price>
+          )}
+          {p.stock === 0 ? (
+            <Button $variant="primary" $size="sm" disabled onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+              {language === 'en' ? 'Out of stock' : 'Stokta Yok'}
+            </Button>
+          ) : p.is_customizable ? (
             <Button 
               as="a" 
               href={getWhatsAppUrl(`Merhaba, ${p.name_tr} sipariş etmek istiyorum.`)} 

@@ -352,7 +352,14 @@ export default function ProductDetailClient({ product }: { product: ProductData 
         <ProductInfo>
           <CategoryLabel>{product.category_name || 'Kategori Yok'}</CategoryLabel>
           <Title>{product.name}</Title>
-          <Price>₺{formatPrice(product.price)}</Price>
+          {/* Discontinued items stay online for SEO, but we don't quote a price we can't honour. */}
+          {product.stock === 0 ? (
+            <Price as="div" style={{ color: theme.colors.textSecondary, fontSize: '1.1rem' }}>
+              Şu an temin edilemiyor
+            </Price>
+          ) : (
+            <Price>₺{formatPrice(product.price)}</Price>
+          )}
           <Description>{product.description || 'Bu ürün için henüz bir açıklama bulunmamaktadır.'}</Description>
 
           <ActionSection>
@@ -374,12 +381,16 @@ export default function ProductDetailClient({ product }: { product: ProductData 
               </>
             ) : (
               <>
-                <QtyLabel>Adet (Maksimum: {product.stock})</QtyLabel>
-                <QtySelector>
-                  <QtyBtn onClick={() => setQty(q => Math.max(1, q - 1))} disabled={qty <= 1 || !canAddMore}>−</QtyBtn>
-                  <QtyInput type="number" value={qty} onChange={handleQtyChange} disabled={!canAddMore} />
-                  <QtyBtn onClick={() => setQty(q => Math.min(product.stock, q + 1))} disabled={qty >= remainingStock || !canAddMore}>+</QtyBtn>
-                </QtySelector>
+                {product.stock > 0 && (
+                  <>
+                    <QtyLabel>Adet (Maksimum: {product.stock})</QtyLabel>
+                    <QtySelector>
+                      <QtyBtn onClick={() => setQty(q => Math.max(1, q - 1))} disabled={qty <= 1 || !canAddMore}>−</QtyBtn>
+                      <QtyInput type="number" value={qty} onChange={handleQtyChange} disabled={!canAddMore} />
+                      <QtyBtn onClick={() => setQty(q => Math.min(product.stock, q + 1))} disabled={qty >= remainingStock || !canAddMore}>+</QtyBtn>
+                    </QtySelector>
+                  </>
+                )}
 
                 {product.stock === 0 ? (
                   <StockWarning>Ürün şu an stokta yok.</StockWarning>
