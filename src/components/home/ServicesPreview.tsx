@@ -102,13 +102,18 @@ const FeatureTag = styled.li`
   border: 1px solid ${theme.colors.glassBorder};
 `;
 
+/**
+ * Every card used to point at /hizmetler, so a visitor who clicked "Vesikalık"
+ * landed on a generic list instead of the page written for that service.
+ * Cards that have a dedicated page now link straight to it.
+ */
 const services = [
-  { icon: HiUsers, key: 'passport' as const },
-  { icon: HiCube, key: 'studio' as const },
-  { icon: HiFilm, key: 'film' as const },
-  { icon: HiPhotograph, key: 'print' as const },
-  { icon: HiShoppingBag, key: 'equipment' as const },
-  { icon: HiGift, key: 'sublimation' as const },
+  { icon: HiUsers, key: 'passport' as const, href: '/vesikalik-fotograf' },
+  { icon: HiCube, key: 'studio' as const, href: '/hizmetler' },
+  { icon: HiFilm, key: 'film' as const, href: '/film-banyo' },
+  { icon: HiPhotograph, key: 'print' as const, href: '/fotograf-baski' },
+  { icon: HiShoppingBag, key: 'equipment' as const, href: '/urunler' },
+  { icon: HiGift, key: 'sublimation' as const, href: '/hizmetler' },
 ];
 
 export default function ServicesPreview() {
@@ -126,7 +131,7 @@ export default function ServicesPreview() {
             const Icon = service.icon;
             const data = t.services[service.key];
             return (
-              <Link href={getLocalizedHref('/hizmetler', language)} key={service.key} style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
+              <Link href={getLocalizedHref(service.href, language)} key={service.key} style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
                 <ServiceCard style={{ animationDelay: `${index * 0.15}s` }}>
                   <IconWrapper className="icon-wrapper">
                     <Icon />

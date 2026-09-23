@@ -275,7 +275,7 @@ export default function HeroSection() {
         </HeroCTAs>
       </HeroContent>
 
-      <ScrollIndicator onClick={() => document.getElementById('services-preview')?.scrollIntoView({ behavior: 'smooth' })}>
+      <ScrollIndicator onClick={() => document.getElementById('document-photos')?.scrollIntoView({ behavior: 'smooth' })}>
         <span>{language === 'en' ? 'Explore' : 'Keşfet'}</span>
         <HiArrowDown />
       </ScrollIndicator>

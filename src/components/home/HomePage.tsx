@@ -1,6 +1,7 @@
 'use client';
 
 import HeroSection from './HeroSection';
+import DocumentPhotoSection from './DocumentPhotoSection';
 import BestSellers from './BestSellers';
 import ServicesPreview from './ServicesPreview';
 import FilmBanyoCTA from './FilmBanyoCTA';
@@ -11,6 +12,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <DocumentPhotoSection />
       <BestSellers />
       <ServicesPreview />
       <FilmBanyoCTA />
