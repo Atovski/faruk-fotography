@@ -716,6 +716,8 @@ function ProductsPageContent() {
             is_active: p.is_active,
             sort_order: p.sort_order,
             is_customizable: p.is_customizable,
+            // Without this the "Popüler Ürünler" card counted 0 and its filter was empty.
+            is_popular: p.is_popular,
             created_at: p.created_at,
           })) as ProductExt[];
           setAllProducts(mapped);
