@@ -14,66 +14,21 @@ import { formatPrice, getWhatsAppUrl, slugify } from '@/lib/utils';
 import { HiChevronLeft, HiChevronRight, HiShoppingCart } from 'react-icons/hi';
 import { useCart } from '@/hooks/useCart';
 import { toast } from 'react-hot-toast';
+import { supabase } from '@/lib/supabase';
 
-/* ── Statik ürün verisi ── */
-const bestSellerProducts = [
-  {
-    id: 'cd12e3e5-c8b1-4f1f-a39c-1ba21d5a371c',
-    name: 'Kodak ColorPlus 200',
-    subtitle: '35mm Renkli Film',
-    price: 550,
-    image: '/images/products/kodak_35.png',
-  },
-  {
-    id: 'a63b27b5-2244-4688-9bb3-5e20d0f50b4a',
-    name: 'Kodak Ultramax 400',
-    subtitle: '35mm Renkli Film',
-    price: 550,
-    image: '/images/products/kodak_35.png',
-  },
-  {
-    id: '12437dd3-fd48-4b69-8dff-cbe1d5e2ffa1',
-    name: 'Fujicolor Superia X-TRA 400',
-    subtitle: '35mm Renkli Film',
-    price: 550,
-    image: '/images/products/fuji_35.png',
-  },
-  {
-    id: '3c87a75a-3b36-4b60-a321-e2bff9a75d6c',
-    name: 'Ilford HP5 Plus 400',
-    subtitle: '35mm Siyah-Beyaz Film',
-    price: 550,
-    image: '/images/products/ilford_35.png',
-  },
-  {
-    id: '20f562e5-3794-44d7-9011-9afaf9bffdfa',
-    name: 'Fujifilm Instax Mini 12',
-    subtitle: 'Çek-At Kamera',
-    price: 550,
-    image: '/images/products/disp_instax.png',
-  },
-  {
-    id: '1fe284c4-d689-462a-99c0-6f97c0514519',
-    name: 'Kişiye Özel Kupa',
-    subtitle: 'Kişiselleştirilebilir',
-    price: 170,
-    image: '/images/products/custom_mug.png',
-  },
-  {
-    id: '5cc198a3-4283-4690-b1e2-4cc833ea2259',
-    name: 'Fotoğraf Baskılı Puzzle',
-    subtitle: 'Kişiselleştirilebilir',
-    price: 200,
-    image: '/images/products/custom_puzzle.png',
-  },
-  {
-    id: '96026665-5905-4018-b43b-7c923f18dba5',
-    name: 'Doğal Taş Fotoğraf',
-    subtitle: 'Kişiselleştirilebilir',
-    price: 500,
-    image: '/images/products/custom_rock.png',
-  },
-];
+/**
+ * This list used to be hardcoded: stale ₺550 prices, sold-out items, and
+ * product ids from the Supabase project we migrated away from — so every card
+ * linked to a 404. Read the real catalogue instead, same as /urunler does.
+ */
+interface BestSeller {
+  id: string;
+  name: string;
+  subtitle: string;
+  price: number;
+  image: string;
+  stock: number;
+}
 
 /* ── Styled Components ── */
 const Section = styled.section`
@@ -239,6 +194,41 @@ export default function BestSellers() {
   const { language } = useLanguage();
   const { addToCart } = useCart();
   const trackRef = useRef<HTMLDivElement>(null);
+  const [bestSellerProducts, setBestSellerProducts] = useState<BestSeller[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, name, price, image_url, images, stock, category:category_id(name), subcategory:subcategory_id(name)')
+        .eq('is_active', true)
+        .eq('is_popular', true)
+        .gt('stock', 0)
+        .order('sort_order', { ascending: true })
+        .limit(12);
+
+      if (cancelled || error || !data) return;
+
+      setBestSellerProducts(
+        data.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          subtitle: p.subcategory?.name || p.category?.name || '',
+          price: p.price,
+          image: (p.images && p.images.length > 0) ? p.images[0] : p.image_url,
+          stock: p.stock,
+        }))
+      );
+    }
+
+    load();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Nothing to show until the catalogue loads; the section would just be an empty rail.
+  if (bestSellerProducts.length === 0) return null;
 
   const scroll = (dir: 'left' | 'right') => {
     if (!trackRef.current) return;
@@ -263,19 +253,21 @@ export default function BestSellers() {
             {bestSellerProducts.map((p) => (
               <ProductCard key={p.id} href={getLocalizedHref(`/urunler/${slugify(p.name)}-${p.id}`, language)}>
                 <ImageBox>
-                  <Image
-                    src={p.image}
-                    alt={p.name}
-                    fill
-                    sizes="260px"
-                    style={{ objectFit: 'contain', padding: '16px' }}
-                  />
+                  {p.image && (
+                    <Image
+                      src={p.image}
+                      alt={p.name}
+                      fill
+                      sizes="260px"
+                      style={{ objectFit: 'contain', padding: '16px' }}
+                    />
+                  )}
                 </ImageBox>
                 <CardBody>
                   <ProductName>{p.name}</ProductName>
                   <ProductSubtitle>{p.subtitle}</ProductSubtitle>
                   <PriceRow>
-                    <Price>₺{p.price}</Price>
+                    <Price>₺{formatPrice(p.price)}</Price>
                     <CartIconBtn
                       onClick={(e) => {
                         e.preventDefault();
@@ -286,8 +278,8 @@ export default function BestSellers() {
                           name_en: p.name,
                           price: p.price,
                           image_url: p.image,
-                          images: [],
-                          stock: 99
+                          images: p.image ? [p.image] : [],
+                          stock: p.stock
                         }, 1);
                         toast.success(`${p.name} sepete eklendi!`);
                       }}
