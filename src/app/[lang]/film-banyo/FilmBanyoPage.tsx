@@ -11,6 +11,35 @@ import { FaWhatsapp, FaShippingFast, FaBoxOpen, FaFilm, FaCheckCircle } from 're
 import { HiCamera, HiMail, HiPhone, HiLocationMarker, HiClipboardList, HiPhotograph, HiDownload, HiClock, HiCheck, HiExclamation, HiInformationCircle, HiShoppingCart } from 'react-icons/hi';
 import { getWhatsAppUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
+
+/** Cross-links to the disposable-camera pages, shown under the shipping CTA. */
+const RelatedLinks = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${theme.spacing.md};
+  justify-content: center;
+  margin-top: ${theme.spacing.xl};
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: ${theme.borderRadius.full};
+    border: 1px solid ${theme.colors.glassBorder};
+    background: ${theme.colors.surface};
+    color: ${theme.colors.text};
+    font-size: ${theme.fontSizes.sm};
+    font-weight: 600;
+    transition: all ${theme.transitions.fast};
+
+    &:hover {
+      border-color: ${theme.colors.secondary};
+      color: ${theme.colors.secondary};
+    }
+  }
+`;
 
 /* ───── Layout ───── */
 const PageWrapper = styled.div`
@@ -665,8 +694,8 @@ export default function FilmBanyoPage() {
           </HeroTitle>
           <HeroSub>
             {isEn
-              ? "We professionally develop your 35mm black & white, 35mm color (C-41), 120mm medium format or disposable camera films same-day with over 55 years of craftsmanship. Bring your memories to our Sirkeci workshop or ship from anywhere in Turkey."
-              : "35mm siyah-beyaz, 35mm renkli (C-41), 120mm orta format veya kullan-at (disposable) kameralarınızla çektiğiniz fotoğrafları aynı gün içinde yüksek kalitede banyo (tab) ediyor, isteğinize göre de baskı işlemlerini gerçekleştiriyoruz. Anılarınızı Sirkeci'deki atölyemize getirin veya Türkiye'nin her yerinden kargo ile yollayın."}
+              ? "Your film is developed and scanned within two hours of reaching us — 35mm black & white, 35mm colour (C-41), 120 medium format and disposable cameras, with over 55 years of craftsmanship. Bring your memories to our Sirkeci workshop or post them from anywhere in Turkey."
+              : "Filminiz elimize ulaştıktan sonra 2 saat içinde banyo edilip taranır ve kareleriniz dijital olarak size ulaşır. 35mm siyah-beyaz, 35mm renkli (C-41), 120 orta format ve çek-at (kullan-at) kameralar. Sirkeci'deki atölyemize getirin ya da Türkiye'nin her yerinden kargoyla yollayın."}
           </HeroSub>
           <HeroCTAs>
             <Button
@@ -832,7 +861,7 @@ export default function FilmBanyoPage() {
               <StepNumber>2</StepNumber>
               <StepIcon><FaFilm /></StepIcon>
               <StepTitle>{isEn ? 'Same-Day Develop & Scan' : 'Aynı Gün Banyo & Tarama'}</StepTitle>
-              <StepDesc>{isEn ? 'We develop color films same day. Black & white films are scanned on Tuesdays and Fridays.' : 'Renkli filmleri aynı gün, siyah beyaz filmleri ise Salı ve Cuma günü tarıyoruz.'}</StepDesc>
+              <StepDesc>{isEn ? 'Colour film is developed and scanned within two hours of arriving. Black & white goes into the tank every evening at 18:00.' : 'Renkli filmler elimize ulaştıktan sonra 2 saat içinde banyo edilip taranır. Siyah-beyaz filmler her akşam 18:00’de banyo edilir.'}</StepDesc>
             </StepCard>
 
             <StepCard style={{ animationDelay: '0.2s' }}>
@@ -921,7 +950,7 @@ export default function FilmBanyoPage() {
           <FAQGrid>
             <FAQCard style={{ animationDelay: '0s' }}>
               <h4>{isEn ? 'How long does film developing take?' : 'Film banyo ne kadar sürer?'}</h4>
-              <p>{isEn ? 'Once your film reaches us, it\'s usually developed the same day or the next day. During peak periods it may take up to 2 business days. Scanned photos are delivered digitally.' : 'Filminiz elimize ulaştığında genellikle aynı gün veya ertesi gün banyo edilir. Yoğun dönemlerde en fazla 2 iş günü sürebilir. Taranmış fotoğraflarınız dijital olarak size iletilir.'}</p>
+              <p>{isEn ? 'Colour film is developed and scanned within two hours of reaching us, and your frames are delivered digitally the same day. Black & white goes into the tank every evening at 18:00. The total time depends mostly on the courier — usually one or two days.' : 'Renkli filminiz elimize ulaştıktan sonra 2 saat içinde banyo edilip taranır ve kareleriniz aynı gün dijital olarak size ulaşır. Siyah-beyaz filmler her akşam 18:00’de banyo edilir. Toplam süre büyük ölçüde kargonun hızına bağlıdır; çoğu şehirden 1-2 günde ulaşır.'}</p>
             </FAQCard>
             <FAQCard style={{ animationDelay: '0.08s' }}>
               <h4>{isEn ? 'How much is shipping?' : 'Kargo ücreti ne kadar?'}</h4>
@@ -975,6 +1004,16 @@ export default function FilmBanyoPage() {
               <span className="note">* {isEn ? 'Please contact us via WhatsApp before shipping' : 'Lütfen gönderimden önce WhatsApp ile bize bilgi verin'}</span>
             </AddressBox>
           </CTABanner>
+
+          {/* Most films posted to us are disposables, so point those visitors at the pages written for them. */}
+          <RelatedLinks>
+            <Link href={isEn ? '/en/disposable-camera-developing' : '/tr/cek-at-kamera-banyo'}>
+              📷 {isEn ? 'Disposable Camera Developing' : 'Çek-At Kamera Banyosu'}
+            </Link>
+            {!isEn && (
+              <Link href="/tr/dugun-cek-at-kamera">💍 Düğün Çek-At Kamera Paketi</Link>
+            )}
+          </RelatedLinks>
         </Container>
       </Section>
     </PageWrapper>

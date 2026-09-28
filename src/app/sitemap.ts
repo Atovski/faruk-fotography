@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
 import { baskiGroup } from '@/content/landing/baski';
+import { cekAtGroup } from '@/content/landing/cekat';
+import { dugunGroup } from '@/content/landing/dugun';
 import { ikametGroup } from '@/content/landing/ikamet';
 import { vesikalikGroup } from '@/content/landing/vesikalik';
 import { vizeGroup } from '@/content/landing/vize';
@@ -59,7 +61,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   // Service landing pages, including the ar/ru/fa residence permit pages
-  const landingPages: MetadataRoute.Sitemap = [vesikalikGroup, ikametGroup, vizeGroup, baskiGroup].flatMap((group) => {
+  const landingPages: MetadataRoute.Sitemap = [
+    vesikalikGroup,
+    ikametGroup,
+    vizeGroup,
+    baskiGroup,
+    cekAtGroup,
+    dugunGroup,
+  ].flatMap((group) => {
     const entries = Object.values(group).filter((e) => e !== undefined);
     const languages: Record<string, string> = Object.fromEntries(
       Object.entries(group).map(([locale, e]) => [locale, `${baseUrl}${e!.path}`])
