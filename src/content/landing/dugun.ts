@@ -13,9 +13,9 @@ export const dugunGroup: LandingGroup = {
     content: {
       locale: 'tr',
       dir: 'ltr',
-      metaTitle: 'Düğün Çek-At Kamera Paketi | Kamera + Banyo + Dijital Tarama – Kargoyla',
+      metaTitle: 'Düğün Çek-At Kamera Paketi | 5, 10, 20’li Paketler – Kargoyla Türkiye',
       metaDescription:
-        'Düğün, kına ve nişan masalarınıza çek-at kamera koyun, misafirleriniz çeksin. 5, 10 ve 20 kameralı paketler: kameralar kargoyla size gelir, düğünden sonra bize dönen kameralar 2 saatte taranır.',
+        'Düğün, kına ve nişan masalarınıza çek-at kamera koyun, misafirleriniz çeksin. Fujifilm QuickSnap paketleri: 5’li ₺7.500, 10’lu ₺14.000, 20’li ₺27.000. Kargoyla tüm Türkiye; banyoyu düğünden sonra ödersiniz.',
       keywords: [
         'düğün çek at kamera',
         'düğün tek kullanımlık fotoğraf makinesi',
@@ -35,8 +35,8 @@ export const dugunGroup: LandingGroup = {
       directionsLabel: 'Yol Tarifi Al',
       highlights: [
         {
-          title: 'Kamera + banyo + tarama bir arada',
-          text: 'Kameraları biz gönderiyoruz, dönüşte banyo ve taramayı da biz yapıyoruz. Tek muhatap, tek paket.',
+          title: 'Şimdi sadece kamera parası',
+          text: 'Pakette kamera ücretini ödersiniz. Banyo ve taramayı düğünden sonra, sadece kullandığınız kameralar için ödersiniz.',
         },
         {
           title: 'Misafirin gözünden düğün',
@@ -52,16 +52,16 @@ export const dugunGroup: LandingGroup = {
         },
       ],
       table: {
-        h2: 'Paketler',
-        intro: 'Masa sayınıza göre seçin; emin değilseniz WhatsApp’tan yazın, birlikte belirleyelim.',
-        columns: ['Paket', 'Kime uygun'],
+        h2: 'Paketler ve Fiyatlar',
+        intro: 'Fujifilm QuickSnap flaşlı tek kullanımlık kamera. Tek kamera fiyatı ₺1.600; pakette adet fiyatı düşer.',
+        columns: ['Paket', 'Adet fiyatı / Toplam'],
         rows: [
-          ['5 kamera', 'Küçük nişan, kına veya aile yemeği'],
-          ['10 kamera', 'Orta ölçekli düğün (yaklaşık 15-20 masa)'],
-          ['20 kamera', 'Büyük düğün ve salon organizasyonları'],
+          ['5 kamera — nişan, kına, aile yemeği', '₺1.500 → toplam ₺7.500'],
+          ['10 kamera — orta ölçekli düğün', '₺1.400 → toplam ₺14.000'],
+          ['20 kamera — büyük düğün, salon', '₺1.350 → toplam ₺27.000'],
           ['Özel adet', 'Masa sayınıza göre birlikte belirleyelim'],
         ],
-        note: 'Her pakete banyo ve dijital tarama dahildir. Güncel fiyat için WhatsApp’tan yazın.',
+        note: 'Fiyatlara kamera dahildir. Banyo ve tarama düğünden sonra, siz istediğinizde yapılır — paket müşterilerimize indirimli.',
       },
       sections: [
         {
@@ -78,6 +78,13 @@ export const dugunGroup: LandingGroup = {
             'Flaşlı analog kareler o geceye özgü bir doku verir; telefon fotoğrafına benzemez.',
             'Çocuklar ve yaşlı misafirler için kullanımı çok kolay: bas, çek.',
             'Düğünden sonra elinizde hem dijital dosyalar hem bastırılabilir kareler olur.',
+          ],
+        },
+        {
+          h2: 'Banyo Ücretini Şimdi Ödemiyorsunuz',
+          paragraphs: [
+            'Paket fiyatına yalnızca kameralar dahildir. Düğünden sonra kameraları bize gönderdiğinizde banyo ve taramayı o zaman ödersiniz — kaç kamera kullandıysanız onun ücretini.',
+            'Paket müşterilerimize banyo indirimlidir: 5’li pakette film başı ₺600, 10’lu pakette ₺550, 20’li pakette ₺500. Kullanmadığınız kamera için ödeme yapmazsınız.',
           ],
         },
         {
@@ -115,6 +122,10 @@ export const dugunGroup: LandingGroup = {
           {
             q: 'Poz bitmezse ne olur?',
             a: 'Sorun değil. Çekilmemiş kareler boş çıkar, çekilenler normal şekilde banyo edilip taranır.',
+          },
+          {
+            q: 'Banyo ücreti pakete dahil mi?',
+            a: 'Hayır, paket fiyatına yalnızca kameralar dahildir. Banyoyu düğünden sonra, sadece kullandığınız kameralar için ödersiniz: 5’li pakette film başı ₺600, 10’luda ₺550, 20’lide ₺500.',
           },
           {
             q: 'Fotoğrafları ne zaman görürüz?',

@@ -53,17 +53,15 @@ export const cekAtGroup: LandingGroup = {
         },
       ],
       table: {
-        h2: 'Hangi Makineleri Banyo Ediyoruz?',
-        columns: ['Makine / Film', 'Durum'],
+        h2: 'Fiyatlar',
+        intro: 'Banyo ve tarama fiyatına dahildir. Tarama çözünürlüğünü siz seçersiniz.',
+        columns: ['Tarama çözünürlüğü', 'Fiyat (kamera başı)'],
         rows: [
-          ['Kodak FunSaver', 'Banyo + tarama yapılır'],
-          ['Fujifilm QuickSnap', 'Banyo + tarama yapılır'],
-          ['Ilford HP5+ tek kullanımlık', 'Siyah-beyaz banyo yapılır'],
-          ['Diğer tek kullanımlık makineler', 'Banyo + tarama yapılır'],
-          ['35mm renkli film', 'Banyo + tarama yapılır'],
-          ['120 orta format (roll) film', 'Banyo + tarama yapılır'],
+          ['1080p — standart', '₺600'],
+          ['2K — yüksek', '₺700'],
+          ['4K — en yüksek', '₺750'],
         ],
-        note: 'Emin değilseniz makinenin fotoğrafını WhatsApp’tan atın, biz söyleyelim.',
+        note: 'Siyah-beyaz tek kullanımlık makinelerde +₺50. Kargo ücreti size aittir. Kodak FunSaver, Fujifilm QuickSnap ve diğer tüm tek kullanımlık makineleri banyo ediyoruz; emin değilseniz makinenin fotoğrafını WhatsApp’tan atın.',
       },
       sections: [
         {
@@ -171,17 +169,15 @@ export const cekAtGroup: LandingGroup = {
         { title: 'In Sirkeci since 1969', text: 'A family shop with more than half a century of darkroom experience.' },
       ],
       table: {
-        h2: 'What We Develop',
-        columns: ['Camera / Film', 'Service'],
+        h2: 'Prices',
+        intro: 'Developing and scanning are both included. You choose the scan resolution.',
+        columns: ['Scan resolution', 'Price per camera'],
         rows: [
-          ['Kodak FunSaver', 'Develop + scan'],
-          ['Fujifilm QuickSnap', 'Develop + scan'],
-          ['Ilford HP5+ single use', 'Black & white develop'],
-          ['Other single-use cameras', 'Develop + scan'],
-          ['35mm colour film', 'Develop + scan'],
-          ['120 medium format film', 'Develop + scan'],
+          ['1080p — standard', '₺600'],
+          ['2K — high', '₺700'],
+          ['4K — maximum', '₺750'],
         ],
-        note: 'Not sure what you have? Send us a photo of it on WhatsApp and we will tell you.',
+        note: 'Black & white single-use cameras +₺50. Shipping is paid by you. We develop Kodak FunSaver, Fujifilm QuickSnap and every other single-use camera — send us a photo on WhatsApp if you are unsure.',
       },
       sections: [
         {

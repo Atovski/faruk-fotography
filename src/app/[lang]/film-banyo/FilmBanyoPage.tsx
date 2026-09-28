@@ -672,13 +672,15 @@ export default function FilmBanyoPage() {
   const [scanRes, setScanRes] = useState('');
   const [quantity, setQuantity] = useState(1);
 
+  /** Scan resolution sets the base price; ₺600 is the headline figure. */
+  const SCAN_PRICE: Record<string, number> = { '1080p': 600, '2k': 700, '4k': 750 };
+
   const unitPrice = useMemo(() => {
     if (!filmType || !filmFormat || !scanRes) return 0;
-    if (filmType === 'dia') {
-      return scanRes === '4k' ? 1000 : 800;
-    }
-    // Renkli or Siyah/Beyaz
-    return scanRes === '4k' ? 800 : 600;
+    const base = SCAN_PRICE[scanRes] ?? 600;
+    if (filmType === 'dia') return base + 200;
+    if (filmType === 'siyahbeyaz') return base + 50;
+    return base;
   }, [filmType, filmFormat, scanRes]);
 
   const totalPrice = unitPrice * quantity;
@@ -711,7 +713,7 @@ export default function FilmBanyoPage() {
 
           <StatsRow>
             <Stat><div className="num">55+</div><div className="label">{isEn ? 'Years Experience' : 'Yıllık Tecrübe'}</div></Stat>
-            <Stat><div className="num">{isEn ? 'Same Day' : 'Aynı Gün'}</div><div className="label">{isEn ? 'Develop & Digital Delivery' : 'Banyo & Dijital Teslim'}</div></Stat>
+            <Stat><div className="num">{isEn ? '2 Hours' : '2 Saat'}</div><div className="label">{isEn ? 'From arrival to digital delivery' : 'Elimize ulaştıktan sonra dijital teslim'}</div></Stat>
             <Stat><div className="num">{isEn ? 'Print' : 'Baskı'}</div><div className="label">{isEn ? 'Optional Photo Printing' : 'İsteğe Bağlı Fotoğraf Baskısı'}</div></Stat>
             <Stat><div className="num">{isEn ? '81 Cities' : '81 İl'}</div><div className="label">{isEn ? 'Shipping Service' : 'Kargo Hizmeti'}</div></Stat>
           </StatsRow>
@@ -745,7 +747,7 @@ export default function FilmBanyoPage() {
                 {allSelected ? (
                   <>{`₺${unitPrice.toLocaleString('tr-TR')},00`}</>
                 ) : (
-                  <>₺600,00 <span> — </span> ₺1.000,00</>
+                  <>₺600,00<span>{isEn ? ' and up' : "'den başlayan fiyatlarla"}</span></>
                 )}
               </PriceRange>
 
@@ -772,8 +774,9 @@ export default function FilmBanyoPage() {
                 <SelectLabel>{isEn ? 'Scanning' : 'Tarama'}</SelectLabel>
                 <StyledSelect value={scanRes} onChange={(e) => setScanRes(e.target.value)} id="film-scan-select">
                   <option value="">{isEn ? 'Select an option' : 'Bir seçim yapın'}</option>
-                  <option value="2k">{isEn ? '2K (Standard Resolution)' : '2K (Standart Çözünürlük)'}</option>
-                  <option value="4k">{isEn ? '4K (High Resolution)' : '4K (Yüksek Çözünürlük)'}</option>
+                  <option value="1080p">{isEn ? '1080p (Standard) — ₺600' : '1080p (Standart) — ₺600'}</option>
+                  <option value="2k">{isEn ? '2K (High) — ₺700' : '2K (Yüksek) — ₺700'}</option>
+                  <option value="4k">{isEn ? '4K (Maximum) — ₺750' : '4K (En Yüksek) — ₺750'}</option>
                 </StyledSelect>
               </SelectGroup>
 
@@ -796,7 +799,7 @@ export default function FilmBanyoPage() {
                 onClick={() => {
                   // Build a descriptive name from the selections
                   const typeLabel = filmType === 'dia' ? 'Dia (E-6)' : filmType === 'renkli' ? (isEn ? 'Color (C-41)' : 'Renkli (C-41)') : (isEn ? 'B&W' : 'Siyah/Beyaz');
-                  const scanLabel = scanRes === '4k' ? '4K' : '2K';
+                  const scanLabel = scanRes === '4k' ? '4K' : scanRes === '2k' ? '2K' : '1080p';
 
                   const product: CartProduct = {
                     id: `film-banyo-${filmType}-${filmFormat}-${scanRes}`,
