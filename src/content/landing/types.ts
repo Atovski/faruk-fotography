@@ -10,6 +10,8 @@ export interface LandingContent {
   badge: string;
   h1: string;
   intro: string;
+  /** Optional illustration under the hero, e.g. the product the page is selling. */
+  heroImage?: { src: string; alt: string };
 
   whatsappLabel: string;
   whatsappMessage: string;

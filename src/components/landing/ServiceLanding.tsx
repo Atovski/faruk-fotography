@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import styled from 'styled-components';
 import { FaWhatsapp } from 'react-icons/fa';
 import { HiCheck, HiLocationMarker, HiPhone, HiClock } from 'react-icons/hi';
@@ -60,6 +61,15 @@ const Badge = styled.span`
   border: 1px solid ${theme.colors.secondary}30;
   margin-bottom: ${theme.spacing.md};
   letter-spacing: 1px;
+`;
+
+/** Product shot under the hero copy; kept small so the text still leads. */
+const HeroImage = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 4 / 3;
+  margin: ${theme.spacing.xl} auto 0;
 `;
 
 const H1 = styled.h1`
@@ -330,6 +340,11 @@ export default function ServiceLanding({ content: c, languages }: ServiceLanding
           <Badge>{c.badge}</Badge>
           <H1>{c.h1}</H1>
           <Intro>{c.intro}</Intro>
+          {c.heroImage && (
+            <HeroImage>
+              <Image src={c.heroImage.src} alt={c.heroImage.alt} fill sizes="(max-width: 640px) 90vw, 420px" style={{ objectFit: 'contain' }} priority />
+            </HeroImage>
+          )}
           {ctas}
         </Hero>
 

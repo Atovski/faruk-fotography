@@ -678,7 +678,6 @@ export default function FilmBanyoPage() {
   const unitPrice = useMemo(() => {
     if (!filmType || !filmFormat || !scanRes) return 0;
     const base = SCAN_PRICE[scanRes] ?? 600;
-    if (filmType === 'dia') return base + 200;
     if (filmType === 'siyahbeyaz') return base + 50;
     return base;
   }, [filmType, filmFormat, scanRes]);
@@ -755,9 +754,8 @@ export default function FilmBanyoPage() {
                 <SelectLabel>{isEn ? 'Type' : 'Tür'}</SelectLabel>
                 <StyledSelect value={filmType} onChange={(e) => setFilmType(e.target.value)} id="film-type-select">
                   <option value="">{isEn ? 'Select an option' : 'Bir seçim yapın'}</option>
-                  <option value="dia">Dia (E-6 Slide)</option>
-                  <option value="renkli">{isEn ? 'Color (C-41)' : 'Renkli (C-41)'}</option>
-                  <option value="siyahbeyaz">{isEn ? 'Black & White' : 'Siyah / Beyaz'}</option>
+                  <option value="renkli">{isEn ? 'Colour (C-41)' : 'Renkli (C-41)'}</option>
+                  <option value="siyahbeyaz">{isEn ? 'Black & White (+₺50)' : 'Siyah / Beyaz (+₺50)'}</option>
                 </StyledSelect>
               </SelectGroup>
 
@@ -798,7 +796,7 @@ export default function FilmBanyoPage() {
                 as="button"
                 onClick={() => {
                   // Build a descriptive name from the selections
-                  const typeLabel = filmType === 'dia' ? 'Dia (E-6)' : filmType === 'renkli' ? (isEn ? 'Color (C-41)' : 'Renkli (C-41)') : (isEn ? 'B&W' : 'Siyah/Beyaz');
+                  const typeLabel = filmType === 'renkli' ? (isEn ? 'Colour (C-41)' : 'Renkli (C-41)') : (isEn ? 'B&W' : 'Siyah/Beyaz');
                   const scanLabel = scanRes === '4k' ? '4K' : scanRes === '2k' ? '2K' : '1080p';
 
                   const product: CartProduct = {
@@ -921,11 +919,12 @@ export default function FilmBanyoPage() {
             </InfoCard>
 
             <InfoCard>
-              <InfoTitle>🌈 {isEn ? 'Slide Films (E-6)' : 'Slide Filmler (E-6)'}</InfoTitle>
+              <InfoTitle>📷 {isEn ? 'Disposable Cameras' : 'Çek-At Kameralar'}</InfoTitle>
               <CheckList>
-                <CheckItem $type="check"><HiCheck size={16} /> Fujifilm Provia 100F</CheckItem>
-                <CheckItem $type="check"><HiCheck size={16} /> Fujifilm Velvia 50/100</CheckItem>
-                <CheckItem $type="check"><HiCheck size={16} /> Kodak Ektachrome E100</CheckItem>
+                <CheckItem $type="check"><HiCheck size={16} /> Kodak FunSaver</CheckItem>
+                <CheckItem $type="check"><HiCheck size={16} /> Fujifilm QuickSnap</CheckItem>
+                <CheckItem $type="check"><HiCheck size={16} /> Ilford HP5+ tek kullanımlık</CheckItem>
+                <CheckItem $type="check"><HiCheck size={16} /> {isEn ? 'All other single-use cameras' : 'Diğer tüm tek kullanımlık makineler'}</CheckItem>
               </CheckList>
             </InfoCard>
 

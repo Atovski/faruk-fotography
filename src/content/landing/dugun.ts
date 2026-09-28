@@ -29,6 +29,7 @@ export const dugunGroup: LandingGroup = {
       h1: 'Düğün Çek-At Kamera Paketi',
       intro:
         'Fotoğrafçınızın göremediği kareler misafirlerinizin elindedir. Masalara birer çek-at kamera bırakın; herkes kendi açısından çeksin. Düğünden sonra kameraları tek kutuda bize gönderin, iki saat içinde bütün kareler tek bir galeride toplansın.',
+      heroImage: { src: '/images/products/disp_kodak.png', alt: 'Flaşlı tek kullanımlık çek-at fotoğraf makinesi' },
       whatsappLabel: "WhatsApp'tan Bilgi Alın",
       whatsappMessage: 'Merhaba, düğün çek-at kamera paketi için bilgi almak istiyorum.',
       callLabel: 'Hemen Arayın',
