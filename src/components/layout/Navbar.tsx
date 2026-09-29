@@ -126,6 +126,87 @@ const NavLink = styled(Link) <{ $active?: boolean; $glow?: boolean }>`
   }
 `;
 
+/**
+ * "Film Banyo" covers three pages now, so it gets a submenu instead of three
+ * more top-level items. On desktop it opens on hover; in the mobile slide-out
+ * the children are simply listed underneath, since there is nothing to hover.
+ */
+const NavGroup = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  @media (max-width: ${theme.breakpoints.laptop}) {
+    flex-direction: column;
+    gap: ${theme.spacing.md};
+  }
+`;
+
+const Dropdown = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-top: 18px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity ${theme.transitions.fast};
+
+  ${NavGroup}:hover &,
+  ${NavGroup}:focus-within & {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media (max-width: ${theme.breakpoints.laptop}) {
+    position: static;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    padding-top: 0;
+  }
+`;
+
+const DropdownInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 240px;
+  padding: 8px;
+  border-radius: ${theme.borderRadius.lg};
+  background: ${theme.colors.primaryDark};
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: ${theme.shadows.lg};
+
+  a {
+    padding: 10px 14px;
+    border-radius: ${theme.borderRadius.md};
+    font-size: ${theme.fontSizes.sm};
+    color: rgba(255, 255, 255, 0.8);
+    white-space: nowrap;
+    transition: all ${theme.transitions.fast};
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: ${theme.colors.secondary};
+    }
+  }
+
+  @media (max-width: ${theme.breakpoints.laptop}) {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    min-width: 0;
+    align-items: center;
+    padding: 0;
+
+    a {
+      font-size: ${theme.fontSizes.md};
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+`;
+
 const RightSection = styled.div`
   display: flex;
   align-items: center;
@@ -208,7 +289,18 @@ export default function Navbar() {
     { basePath: '/vesikalik-fotograf', label: language === 'tr' ? 'Vesikalık' : 'Passport Photo' },
     { basePath: '/hizmetler', label: t.nav.services },
     { basePath: '/urunler', label: t.nav.products },
-    { basePath: '/film-banyo', label: language === 'tr' ? 'Film Banyo' : 'Film Dev.', glow: true },
+    {
+      basePath: '/film-banyo',
+      label: language === 'tr' ? 'Film Banyo' : 'Film Dev.',
+      glow: true,
+      children: [
+        { basePath: '/film-banyo', label: language === 'tr' ? 'Film Banyo & Tarama' : 'Film Developing & Scanning' },
+        { basePath: '/cek-at-kamera-banyo', label: language === 'tr' ? 'Çek-At Kamera Banyosu' : 'Disposable Camera' },
+        ...(language === 'tr'
+          ? [{ basePath: '/dugun-cek-at-kamera', label: 'Düğün Çek-At Paketi' }]
+          : []),
+      ],
+    },
     { basePath: '/galeri', label: t.nav.gallery },
     { basePath: '/hakkimizda', label: t.nav.about },
     { basePath: '/iletisim', label: t.nav.contact },
@@ -230,16 +322,41 @@ export default function Navbar() {
           </LogoLink>
 
           <NavLinks $open={menuOpen}>
-            {navItems.map(item => (
-              <NavLink
-                key={item.basePath}
-                href={getLocalizedHref(item.basePath, language)}
-                $glow={item.glow}
-                onClick={() => setMenuOpen(false)}
-              >
-                {item.label}
-              </NavLink>
-            ))}
+            {navItems.map(item =>
+              item.children ? (
+                <NavGroup key={item.basePath}>
+                  <NavLink
+                    href={getLocalizedHref(item.basePath, language)}
+                    $glow={item.glow}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {item.label}
+                  </NavLink>
+                  <Dropdown>
+                    <DropdownInner>
+                      {item.children.map(child => (
+                        <Link
+                          key={child.basePath}
+                          href={getLocalizedHref(child.basePath, language)}
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </DropdownInner>
+                  </Dropdown>
+                </NavGroup>
+              ) : (
+                <NavLink
+                  key={item.basePath}
+                  href={getLocalizedHref(item.basePath, language)}
+                  $glow={item.glow}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </NavLink>
+              )
+            )}
           </NavLinks>
 
           <RightSection>
