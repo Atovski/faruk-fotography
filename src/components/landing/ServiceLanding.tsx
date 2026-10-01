@@ -2,17 +2,21 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { FaWhatsapp } from 'react-icons/fa';
 import { HiCheck, HiLocationMarker, HiPhone, HiClock } from 'react-icons/hi';
 import { theme } from '@/styles/theme';
-import { fadeInUp } from '@/styles/animations';
+import { fadeIn, fadeInUp, grain } from '@/styles/animations';
 import { Button } from '@/components/ui/Button';
 import { getWhatsAppUrl } from '@/lib/utils';
 import { SHOP, type LandingContent } from '@/content/landing/types';
 
-const Page = styled.div`
-  padding-top: 100px;
+/**
+ * With a photo hero the picture runs under the fixed navbar, so the page
+ * keeps no top padding of its own; without one the copy still needs clearing.
+ */
+const Page = styled.div<{ $photoHero?: boolean }>`
+  padding-top: ${({ $photoHero }) => ($photoHero ? '0' : '100px')};
   min-height: 100vh;
 `;
 
@@ -22,19 +26,23 @@ const Container = styled.div`
   padding: 0 ${theme.spacing.lg} ${theme.spacing['4xl']};
 `;
 
-const LanguageBar = styled.nav`
+const LanguageBar = styled.nav<{ $onDark?: boolean }>`
   display: flex;
   flex-wrap: wrap;
   gap: ${theme.spacing.sm};
   justify-content: center;
-  padding-top: ${theme.spacing.lg};
+  padding-top: ${({ $onDark }) => ($onDark ? '0' : theme.spacing.lg)};
+  margin-bottom: ${({ $onDark }) => ($onDark ? theme.spacing.lg : '0')};
 
   a {
     padding: 4px 14px;
     border-radius: ${theme.borderRadius.full};
-    border: 1px solid ${theme.colors.glassBorder};
     font-size: ${theme.fontSizes.sm};
-    color: ${theme.colors.textSecondary};
+    border: 1px solid
+      ${({ $onDark }) => ($onDark ? 'rgba(255, 255, 255, 0.28)' : theme.colors.glassBorder)};
+    color: ${({ $onDark }) =>
+      $onDark ? 'rgba(255, 255, 255, 0.88)' : theme.colors.textSecondary};
+    backdrop-filter: ${({ $onDark }) => ($onDark ? 'blur(6px)' : 'none')};
   }
 
   a[aria-current='page'] {
@@ -50,17 +58,21 @@ const Hero = styled.header`
   animation: ${fadeInUp} 0.6s ease forwards;
 `;
 
-const Badge = styled.span`
+const Badge = styled.span<{ $onDark?: boolean }>`
   display: inline-block;
   padding: 6px 20px;
   border-radius: ${theme.borderRadius.full};
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
-  background: ${theme.colors.secondary}15;
-  color: ${theme.colors.secondaryDark};
-  border: 1px solid ${theme.colors.secondary}30;
   margin-bottom: ${theme.spacing.md};
   letter-spacing: 1px;
+  background: ${({ $onDark }) =>
+    $onDark ? 'rgba(200, 164, 92, 0.18)' : `${theme.colors.secondary}15`};
+  color: ${({ $onDark }) =>
+    $onDark ? theme.colors.secondaryLight : theme.colors.secondaryDark};
+  border: 1px solid
+    ${({ $onDark }) => ($onDark ? 'rgba(200, 164, 92, 0.55)' : `${theme.colors.secondary}30`)};
+  backdrop-filter: ${({ $onDark }) => ($onDark ? 'blur(6px)' : 'none')};
 `;
 
 /** Cut-out product shot under the hero copy; kept small so the text still leads. */
@@ -73,86 +85,140 @@ const HeroProduct = styled.div`
 `;
 
 /**
- * A photograph of the shop needs the same treatment the home page gives its
- * imagery, or it reads as pasted on: a gold-hairline card on a warm glow,
- * with the bottom edge dissolving into the cream background.
+ * The shop photo is scenery, not a figure in the copy: it runs the full width
+ * behind the heading the way the home page runs its video, with the same
+ * navy wash, grain and fade into the cream page below.
  */
-const HeroPhoto = styled.figure`
+const PhotoHero = styled.header`
   position: relative;
-  width: 100%;
-  max-width: 760px;
-  margin: ${theme.spacing['2xl']} auto 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 78vh;
+  padding: 150px ${theme.spacing.lg} ${theme.spacing['3xl']};
+  overflow: hidden;
+  background: ${theme.colors.primaryDark};
 
-  /* Warm halo so the card sits in an atmosphere, not on blank cream. */
-  &::before {
-    content: '';
-    position: absolute;
-    /* No horizontal bleed: on a phone it would push the page sideways. */
-    inset: -14% 0;
-    background: radial-gradient(
-      ellipse at center,
-      rgba(200, 164, 92, 0.22) 0%,
-      rgba(200, 164, 92, 0.06) 45%,
-      transparent 70%
-    );
-    filter: blur(8px);
-    pointer-events: none;
-  }
-
-  /* 3:2 keeps almost the whole room; 16:9 cropped the backdrop out of frame. */
-  .hero-photo-frame {
-    position: relative;
-    aspect-ratio: 3 / 2;
-    border-radius: ${theme.borderRadius['2xl']};
-    overflow: hidden;
-    border: 1px solid ${theme.colors.glassBorder};
-    box-shadow: ${theme.shadows.lg};
-
-    @media (max-width: ${theme.breakpoints.tablet}) {
-      aspect-ratio: 4 / 3;
-      border-radius: ${theme.borderRadius.xl};
-    }
-  }
-
-  /* Grounds the photo in the page's navy/cream palette. */
-  .hero-photo-frame::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(27, 42, 74, 0) 55%,
-      rgba(27, 42, 74, 0.18) 100%
-    );
-    pointer-events: none;
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    min-height: 0;
+    padding: 120px ${theme.spacing.md} ${theme.spacing['2xl']};
   }
 `;
 
-const H1 = styled.h1`
+const PhotoHeroImage = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  img {
+    object-fit: cover;
+    object-position: center 58%;
+  }
+`;
+
+/** Same three washes the home page lays over its video. */
+const PhotoHeroScrim = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      /* Deeper than the home page's: the studio's white backdrop is bright,
+         and the gold outline buttons have to stay legible over it. */
+      linear-gradient(180deg, rgba(10, 22, 40, 0.74) 0%, rgba(10, 22, 40, 0.6) 38%, rgba(10, 22, 40, 0.9) 100%),
+      radial-gradient(ellipse at 20% 50%, rgba(200, 164, 92, 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(27, 42, 74, 0.28) 0%, transparent 50%);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 62%, ${theme.colors.background} 100%);
+  }
+`;
+
+const PhotoHeroGrain = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: transparent url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E") repeat;
+    animation: ${grain} 8s steps(10) infinite;
+    opacity: 0.4;
+  }
+`;
+
+const PhotoHeroContent = styled.div`
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 820px;
+  text-align: center;
+  animation: ${fadeIn} 1s ease;
+`;
+
+const H1 = styled.h1<{ $onDark?: boolean }>`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['5xl']};
   line-height: 1.15;
-  color: ${theme.colors.text};
+  text-wrap: balance;
   margin-bottom: ${theme.spacing.md};
+  color: ${({ $onDark }) => ($onDark ? theme.colors.white : theme.colors.text)};
+  text-shadow: ${({ $onDark }) => ($onDark ? '0 4px 14px rgba(0, 0, 0, 0.75)' : 'none')};
 
   @media (max-width: ${theme.breakpoints.tablet}) {
     font-size: ${theme.fontSizes['3xl']};
   }
 `;
 
-const Intro = styled.p`
+const Intro = styled.p<{ $onDark?: boolean }>`
   font-size: ${theme.fontSizes.lg};
   line-height: 1.7;
-  color: ${theme.colors.textSecondary};
   max-width: 760px;
   margin: 0 auto ${theme.spacing.xl};
+  color: ${({ $onDark }) => ($onDark ? 'rgba(255, 255, 255, 0.93)' : theme.colors.textSecondary)};
+  text-shadow: ${({ $onDark }) => ($onDark ? '0 2px 10px rgba(0, 0, 0, 0.8)' : 'none')};
 `;
 
-const CtaRow = styled.div`
+const CtaRow = styled.div<{ $onDark?: boolean }>`
   display: flex;
   flex-wrap: wrap;
   gap: ${theme.spacing.md};
   justify-content: center;
+
+  /* The studio's white backdrop falls right behind this row, so the gold
+     outline buttons get a smoked-glass backing to stay readable. */
+  ${({ $onDark }) =>
+    $onDark &&
+    css`
+      a:not([href*='wa.me']) {
+        background: rgba(10, 22, 40, 0.45);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: ${theme.colors.secondaryLight};
+        border-color: ${theme.colors.secondaryLight};
+      }
+
+      a:not([href*='wa.me']):hover {
+        background: ${theme.colors.secondary};
+        color: ${theme.colors.primaryDark};
+      }
+    `}
 `;
 
 const Highlights = styled.div`
@@ -365,8 +431,10 @@ interface ServiceLandingProps {
 export default function ServiceLanding({ content: c, languages }: ServiceLandingProps) {
   const whatsappUrl = getWhatsAppUrl(c.whatsappMessage);
 
+  const photoHero = c.heroImage?.fit === 'cover' ? c.heroImage : null;
+
   const ctas = (
-    <CtaRow>
+    <CtaRow $onDark={!!photoHero}>
       <Button as="a" href={whatsappUrl} target="_blank" rel="noopener noreferrer" $variant="whatsapp" $size="lg">
         <FaWhatsapp /> {c.whatsappLabel}
       </Button>
@@ -379,43 +447,51 @@ export default function ServiceLanding({ content: c, languages }: ServiceLanding
     </CtaRow>
   );
 
-  return (
-    <Page lang={c.locale} dir={c.dir}>
-      <Container>
-        {languages.length > 1 && (
-          <LanguageBar aria-label="Language">
-            {languages.map((l) => (
-              <Link key={l.href} href={l.href} hrefLang={l.hrefLang} aria-current={l.active ? 'page' : undefined}>
-                {l.label}
-              </Link>
-            ))}
-          </LanguageBar>
-        )}
+  const languageBar = languages.length > 1 && (
+    <LanguageBar aria-label="Language" $onDark={!!photoHero}>
+      {languages.map((l) => (
+        <Link key={l.href} href={l.href} hrefLang={l.hrefLang} aria-current={l.active ? 'page' : undefined}>
+          {l.label}
+        </Link>
+      ))}
+    </LanguageBar>
+  );
 
-        <Hero>
-          <Badge>{c.badge}</Badge>
-          <H1>{c.h1}</H1>
-          <Intro>{c.intro}</Intro>
-          {c.heroImage && (c.heroImage.fit === 'cover' ? (
-            <HeroPhoto>
-              <div className="hero-photo-frame">
-                <Image
-                  src={c.heroImage.src}
-                  alt={c.heroImage.alt}
-                  fill
-                  sizes="(max-width: 800px) 92vw, 760px"
-                  style={{ objectFit: 'cover', objectPosition: 'center 62%' }}
-                  priority
-                />
-              </div>
-            </HeroPhoto>
-          ) : (
-            <HeroProduct>
-              <Image src={c.heroImage.src} alt={c.heroImage.alt} fill sizes="(max-width: 640px) 90vw, 420px" style={{ objectFit: 'contain' }} priority />
-            </HeroProduct>
-          ))}
-          {ctas}
-        </Hero>
+  return (
+    <Page lang={c.locale} dir={c.dir} $photoHero={!!photoHero}>
+      {photoHero ? (
+        <PhotoHero>
+          <PhotoHeroImage>
+            <Image src={photoHero.src} alt={photoHero.alt} fill sizes="100vw" priority />
+          </PhotoHeroImage>
+          <PhotoHeroScrim />
+          <PhotoHeroGrain />
+          <PhotoHeroContent>
+            {languageBar}
+            <Badge $onDark>{c.badge}</Badge>
+            <H1 $onDark>{c.h1}</H1>
+            <Intro $onDark>{c.intro}</Intro>
+            {ctas}
+          </PhotoHeroContent>
+        </PhotoHero>
+      ) : null}
+
+      <Container>
+        {!photoHero && languageBar}
+
+        {!photoHero && (
+          <Hero>
+            <Badge>{c.badge}</Badge>
+            <H1>{c.h1}</H1>
+            <Intro>{c.intro}</Intro>
+            {c.heroImage && (
+              <HeroProduct>
+                <Image src={c.heroImage.src} alt={c.heroImage.alt} fill sizes="(max-width: 640px) 90vw, 420px" style={{ objectFit: 'contain' }} priority />
+              </HeroProduct>
+            )}
+            {ctas}
+          </Hero>
+        )}
 
         <Highlights>
           {c.highlights.map((h) => (
