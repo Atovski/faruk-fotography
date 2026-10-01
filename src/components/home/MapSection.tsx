@@ -1,6 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
+import Image from 'next/image';
 import { theme } from '@/styles/theme';
 import { fadeInUp } from '@/styles/animations';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -23,6 +24,7 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: ${theme.spacing['2xl']};
+  align-items: start;
   animation: ${fadeInUp} 0.6s ease forwards;
 
   @media (max-width: ${theme.breakpoints.laptop}) {
@@ -30,11 +32,41 @@ const Grid = styled.div`
   }
 `;
 
+const LeftColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.lg};
+`;
+
+/**
+ * People walking down Ankara Caddesi look for the shop front, not the pin, so
+ * the photo of the blue FOTO FARUK sign goes above the map.
+ */
+const Storefront = styled.figure`
+  border-radius: ${theme.borderRadius.xl};
+  overflow: hidden;
+  border: 1px solid ${theme.colors.glassBorder};
+
+  .storefront-img {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
+  figcaption {
+    padding: ${theme.spacing.md};
+    font-size: ${theme.fontSizes.sm};
+    color: ${theme.colors.textSecondary};
+    background: ${theme.colors.glassBg};
+    text-align: center;
+  }
+`;
+
 const MapWrapper = styled.div`
   border-radius: ${theme.borderRadius.xl};
   overflow: hidden;
   border: 1px solid ${theme.colors.glassBorder};
-  height: 400px;
+  height: 300px;
 
   iframe {
     width: 100%;
@@ -43,7 +75,7 @@ const MapWrapper = styled.div`
   }
 
   @media (max-width: ${theme.breakpoints.laptop}) {
-    height: 300px;
+    height: 260px;
   }
 `;
 
@@ -103,21 +135,45 @@ const CTARow = styled.div`
 `;
 
 export default function MapSection() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isEn = language === 'en';
 
   return (
     <Section id="location">
       <Container>
         <Grid>
-          <MapWrapper>
-            <iframe
-              src="https://maps.google.com/maps?q=Faruk%20Foto%C4%9Fraf%C3%A7%C4%B1l%C4%B1k,%20Hobyar,%20Ankara%20Cd.%20No:55,%2034112%20Fatih%2F%C4%B0stanbul&t=&z=16&ie=UTF8&iwloc=&output=embed"
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Faruk Fotoğrafçılık Konum"
-            />
-          </MapWrapper>
+          <LeftColumn>
+            <Storefront>
+              <div className="storefront-img">
+                <Image
+                  src="/images/sirkeci-dukkan-kare.jpg"
+                  alt={
+                    isEn
+                      ? 'The Foto Faruk shop front on Ankara Caddesi in Sirkeci, with its blue sign'
+                      : "Sirkeci Ankara Caddesi'ndeki Foto Faruk dükkânının mavi tabelalı ön cephesi"
+                  }
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
+              <figcaption>
+                {isEn
+                  ? 'Look for the blue FOTO FARUK sign — Ankara Caddesi No:55/A, two minutes from Sirkeci station.'
+                  : 'Mavi FOTO FARUK tabelasını arayın — Ankara Caddesi No:55/A, Sirkeci Garı’na 2 dakika.'}
+              </figcaption>
+            </Storefront>
+
+            <MapWrapper>
+              <iframe
+                src="https://maps.google.com/maps?q=Faruk%20Foto%C4%9Fraf%C3%A7%C4%B1l%C4%B1k,%20Hobyar,%20Ankara%20Cd.%20No:55,%2034112%20Fatih%2F%C4%B0stanbul&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Faruk Fotoğrafçılık Konum"
+              />
+            </MapWrapper>
+          </LeftColumn>
 
           <InfoPanel>
             <InfoCard>

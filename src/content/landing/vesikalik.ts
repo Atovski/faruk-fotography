@@ -25,6 +25,7 @@ export const vesikalikGroup: LandingGroup = {
       h1: 'Vesikalık ve Biyometrik Fotoğraf',
       intro:
         "Pasaport, kimlik, ehliyet, ikamet izni, çalışma izni ve tüm ülke vizeleri için biyometrik vesikalık fotoğrafınızı Sirkeci'deki stüdyomuzda 5 dakikada hazırlıyoruz. Her çekimde fotoğrafınızın dijital dosyasını da ücretsiz veriyoruz.",
+      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: "Faruk Fotoğrafçılık'ın Sirkeci'deki vesikalık çekim stüdyosu: beyaz fon, softbox ışıklar ve çekim taburesi" },
       whatsappLabel: "WhatsApp'tan Yazın",
       whatsappMessage: 'Merhaba, vesikalık / biyometrik fotoğraf için yazıyorum.',
       callLabel: 'Hemen Arayın',
@@ -118,6 +119,7 @@ export const vesikalikGroup: LandingGroup = {
       h1: 'Passport & Biometric Photos in Istanbul',
       intro:
         'We take biometric photos for passports, Turkish ID cards and driving licences, residence and work permits, and visas for every country – ready in 5 minutes at our studio in Sirkeci. Every shoot includes a free digital copy of your photo.',
+      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: 'The passport photo studio of Faruk Fotoğrafçılık in Sirkeci: white backdrop, softbox lighting and a posing stool' },
       whatsappLabel: 'Message us on WhatsApp',
       whatsappMessage: 'Hello, I need passport / biometric photos. / Merhaba, vesikalık fotoğraf için yazıyorum.',
       callLabel: 'Call Now',
