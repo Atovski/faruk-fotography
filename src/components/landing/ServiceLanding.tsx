@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 import { FaWhatsapp } from 'react-icons/fa';
 import { HiCheck, HiLocationMarker, HiPhone, HiClock } from 'react-icons/hi';
 import { theme } from '@/styles/theme';
-import { fadeIn, fadeInUp, grain } from '@/styles/animations';
+import { fadeIn, fadeInUp } from '@/styles/animations';
 import { Button } from '@/components/ui/Button';
 import { getWhatsAppUrl } from '@/lib/utils';
 import { SHOP, type LandingContent } from '@/content/landing/types';
@@ -42,7 +42,7 @@ const LanguageBar = styled.nav<{ $onDark?: boolean }>`
       ${({ $onDark }) => ($onDark ? 'rgba(255, 255, 255, 0.28)' : theme.colors.glassBorder)};
     color: ${({ $onDark }) =>
       $onDark ? 'rgba(255, 255, 255, 0.88)' : theme.colors.textSecondary};
-    backdrop-filter: ${({ $onDark }) => ($onDark ? 'blur(6px)' : 'none')};
+    background: ${({ $onDark }) => ($onDark ? 'rgba(10, 22, 40, 0.42)' : 'transparent')};
   }
 
   a[aria-current='page'] {
@@ -67,12 +67,11 @@ const Badge = styled.span<{ $onDark?: boolean }>`
   margin-bottom: ${theme.spacing.md};
   letter-spacing: 1px;
   background: ${({ $onDark }) =>
-    $onDark ? 'rgba(200, 164, 92, 0.18)' : `${theme.colors.secondary}15`};
+    $onDark ? 'rgba(27, 42, 74, 0.5)' : `${theme.colors.secondary}15`};
   color: ${({ $onDark }) =>
     $onDark ? theme.colors.secondaryLight : theme.colors.secondaryDark};
   border: 1px solid
     ${({ $onDark }) => ($onDark ? 'rgba(200, 164, 92, 0.55)' : `${theme.colors.secondary}30`)};
-  backdrop-filter: ${({ $onDark }) => ($onDark ? 'blur(6px)' : 'none')};
 `;
 
 /** Cut-out product shot under the hero copy; kept small so the text still leads. */
@@ -143,24 +142,18 @@ const PhotoHeroScrim = styled.div`
   }
 `;
 
+/**
+ * Static, unlike the home page's: animating a full-bleed noise layer repaints
+ * the whole hero ten times every eight seconds, and the texture is the same
+ * either way.
+ */
 const PhotoHeroGrain = styled.div`
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: transparent url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E") repeat;
-    animation: ${grain} 8s steps(10) infinite;
-    opacity: 0.4;
-  }
+  opacity: 0.4;
+  background: transparent url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E") repeat;
 `;
 
 const PhotoHeroContent = styled.div`
@@ -202,14 +195,13 @@ const CtaRow = styled.div<{ $onDark?: boolean }>`
   justify-content: center;
 
   /* The studio's white backdrop falls right behind this row, so the gold
-     outline buttons get a smoked-glass backing to stay readable. */
+     outline buttons get a dark backing to stay readable. A solid wash, not
+     backdrop-filter: several blurred layers over the hero froze the tab. */
   ${({ $onDark }) =>
     $onDark &&
     css`
       a:not([href*='wa.me']) {
-        background: rgba(10, 22, 40, 0.45);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        background: rgba(10, 22, 40, 0.58);
         color: ${theme.colors.secondaryLight};
         border-color: ${theme.colors.secondaryLight};
       }
