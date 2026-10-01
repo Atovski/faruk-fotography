@@ -28,7 +28,7 @@ export const vizeGroup: LandingGroup = {
       h1: 'Vize Fotoğrafı: Schengen, ABD, Çin ve Tüm Ülkeler',
       intro:
         "Her ülkenin konsolosluğu farklı ölçü ve kural ister. Sirkeci'deki stüdyomuzda vize fotoğrafınızı başvurduğunuz ülkenin şartlarına göre 5 dakikada hazırlıyor, online başvuru formları için dijital dosyasını ücretsiz veriyoruz.",
-      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: "Faruk Fotoğrafçılık'ın Sirkeci'deki vesikalık çekim stüdyosu: beyaz fon, softbox ışıklar ve çekim taburesi" },
+      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: "Faruk Fotoğrafçılık'ın Sirkeci'deki vesikalık çekim stüdyosu: beyaz fon, softbox ışıklar ve çekim taburesi" , fit: 'cover' },
       whatsappLabel: "WhatsApp'tan Yazın",
       whatsappMessage: 'Merhaba, vize fotoğrafı için yazıyorum.',
       callLabel: 'Hemen Arayın',
@@ -122,7 +122,7 @@ export const vizeGroup: LandingGroup = {
       h1: 'Visa Photos: Schengen, US, China & Every Country',
       intro:
         "Every consulate asks for a different size and set of rules. At our studio in Sirkeci we take your visa photo to the requirements of the country you're applying to in 5 minutes, and include a free digital file for online application forms.",
-      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: 'The passport photo studio of Faruk Fotoğrafçılık in Sirkeci: white backdrop, softbox lighting and a posing stool' },
+      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: 'The passport photo studio of Faruk Fotoğrafçılık in Sirkeci: white backdrop, softbox lighting and a posing stool' , fit: 'cover' },
       whatsappLabel: 'Message us on WhatsApp',
       whatsappMessage: 'Hello, I need a visa photo. / Merhaba, vize fotoğrafı için yazıyorum.',
       callLabel: 'Call Now',

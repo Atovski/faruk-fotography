@@ -63,13 +63,69 @@ const Badge = styled.span`
   letter-spacing: 1px;
 `;
 
-/** Product shot under the hero copy; kept small so the text still leads. */
-const HeroImage = styled.div`
+/** Cut-out product shot under the hero copy; kept small so the text still leads. */
+const HeroProduct = styled.div`
   position: relative;
   width: 100%;
   max-width: 420px;
   aspect-ratio: 4 / 3;
   margin: ${theme.spacing.xl} auto 0;
+`;
+
+/**
+ * A photograph of the shop needs the same treatment the home page gives its
+ * imagery, or it reads as pasted on: a gold-hairline card on a warm glow,
+ * with the bottom edge dissolving into the cream background.
+ */
+const HeroPhoto = styled.figure`
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  margin: ${theme.spacing['2xl']} auto 0;
+
+  /* Warm halo so the card sits in an atmosphere, not on blank cream. */
+  &::before {
+    content: '';
+    position: absolute;
+    /* No horizontal bleed: on a phone it would push the page sideways. */
+    inset: -14% 0;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(200, 164, 92, 0.22) 0%,
+      rgba(200, 164, 92, 0.06) 45%,
+      transparent 70%
+    );
+    filter: blur(8px);
+    pointer-events: none;
+  }
+
+  /* 3:2 keeps almost the whole room; 16:9 cropped the backdrop out of frame. */
+  .hero-photo-frame {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    border-radius: ${theme.borderRadius['2xl']};
+    overflow: hidden;
+    border: 1px solid ${theme.colors.glassBorder};
+    box-shadow: ${theme.shadows.lg};
+
+    @media (max-width: ${theme.breakpoints.tablet}) {
+      aspect-ratio: 4 / 3;
+      border-radius: ${theme.borderRadius.xl};
+    }
+  }
+
+  /* Grounds the photo in the page's navy/cream palette. */
+  .hero-photo-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(27, 42, 74, 0) 55%,
+      rgba(27, 42, 74, 0.18) 100%
+    );
+    pointer-events: none;
+  }
 `;
 
 const H1 = styled.h1`
@@ -340,11 +396,24 @@ export default function ServiceLanding({ content: c, languages }: ServiceLanding
           <Badge>{c.badge}</Badge>
           <H1>{c.h1}</H1>
           <Intro>{c.intro}</Intro>
-          {c.heroImage && (
-            <HeroImage>
+          {c.heroImage && (c.heroImage.fit === 'cover' ? (
+            <HeroPhoto>
+              <div className="hero-photo-frame">
+                <Image
+                  src={c.heroImage.src}
+                  alt={c.heroImage.alt}
+                  fill
+                  sizes="(max-width: 800px) 92vw, 760px"
+                  style={{ objectFit: 'cover', objectPosition: 'center 62%' }}
+                  priority
+                />
+              </div>
+            </HeroPhoto>
+          ) : (
+            <HeroProduct>
               <Image src={c.heroImage.src} alt={c.heroImage.alt} fill sizes="(max-width: 640px) 90vw, 420px" style={{ objectFit: 'contain' }} priority />
-            </HeroImage>
-          )}
+            </HeroProduct>
+          ))}
           {ctas}
         </Hero>
 

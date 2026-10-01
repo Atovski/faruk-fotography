@@ -29,7 +29,7 @@ export const ikametGroup: LandingGroup = {
       h1: 'İkamet İzni İçin Biyometrik Fotoğraf',
       intro:
         "İkamet izni ilk başvuru, uzatma ve geçiş işlemleriniz için Göç İdaresi'nin istediği ICAO standardında biyometrik fotoğrafınızı Sirkeci'deki stüdyomuzda 5 dakikada hazırlıyoruz. e-İkamet sistemine yüklemeniz için fotoğrafın dijital dosyasını da ücretsiz veriyoruz.",
-      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: "Faruk Fotoğrafçılık'ın Sirkeci'deki vesikalık çekim stüdyosu: beyaz fon, softbox ışıklar ve çekim taburesi" },
+      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: "Faruk Fotoğrafçılık'ın Sirkeci'deki vesikalık çekim stüdyosu: beyaz fon, softbox ışıklar ve çekim taburesi" , fit: 'cover' },
       whatsappLabel: "WhatsApp'tan Yazın",
       whatsappMessage: 'Merhaba, ikamet izni fotoğrafı için yazıyorum.',
       callLabel: 'Hemen Arayın',
@@ -141,7 +141,7 @@ export const ikametGroup: LandingGroup = {
       h1: 'Biometric Photos for Turkish Residence Permits',
       intro:
         'Applying for or renewing your Turkish residence permit (ikamet)? We take ICAO-standard biometric photos that meet the requirements of the Presidency of Migration Management (Göç İdaresi) in 5 minutes at our studio in Sirkeci. The digital file for your e-İkamet application is included free.',
-      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: 'The passport photo studio of Faruk Fotoğrafçılık in Sirkeci: white backdrop, softbox lighting and a posing stool' },
+      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: 'The passport photo studio of Faruk Fotoğrafçılık in Sirkeci: white backdrop, softbox lighting and a posing stool' , fit: 'cover' },
       whatsappLabel: 'Message us on WhatsApp',
       whatsappMessage: 'Hello, I need a residence permit (ikamet) photo. / Merhaba, ikamet fotoğrafı için yazıyorum.',
       callLabel: 'Call Now',
@@ -247,7 +247,7 @@ export const ikametGroup: LandingGroup = {
       h1: 'صور بيومترية لتصريح الإقامة في تركيا',
       intro:
         'هل تتقدم بطلب إقامة في تركيا أو تجددها؟ نلتقط لك صورة بيومترية وفق معايير ICAO التي تطلبها إدارة الهجرة التركية (Göç İdaresi) خلال 5 دقائق في الاستوديو الخاص بنا في سيركجي، ونرسل لك الملف الرقمي للصورة مجاناً لرفعه في طلب e-İkamet.',
-      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: 'استوديو صور جواز السفر لدى Faruk Fotoğrafçılık في سيركجي: خلفية بيضاء وإضاءة احترافية' },
+      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: 'استوديو صور جواز السفر لدى Faruk Fotoğrafçılık في سيركجي: خلفية بيضاء وإضاءة احترافية' , fit: 'cover' },
       whatsappLabel: 'راسلنا على واتساب',
       whatsappMessage: 'مرحباً، أحتاج صورة لتصريح الإقامة. / Merhaba, ikamet fotoğrafı için yazıyorum.',
       callLabel: 'اتصل بنا',
@@ -352,7 +352,7 @@ export const ikametGroup: LandingGroup = {
       h1: 'Биометрическое фото на ВНЖ в Турции',
       intro:
         'Подаёте документы на вид на жительство (ikamet) или продлеваете его? В нашей студии в Сиркеджи за 5 минут сделаем биометрическое фото по стандарту ICAO, которое требует Миграционная служба Турции (Göç İdaresi). Цифровой файл для заявки e-İkamet — бесплатно.',
-      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: 'Студия для фото на документы Faruk Fotoğrafçılık в Сиркеджи: белый фон и профессиональный свет' },
+      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: 'Студия для фото на документы Faruk Fotoğrafçılık в Сиркеджи: белый фон и профессиональный свет' , fit: 'cover' },
       whatsappLabel: 'Написать в WhatsApp',
       whatsappMessage: 'Здравствуйте, мне нужно фото на ВНЖ (ikamet). / Merhaba, ikamet fotoğrafı için yazıyorum.',
       callLabel: 'Позвонить',
@@ -457,7 +457,7 @@ export const ikametGroup: LandingGroup = {
       h1: 'عکس بیومتریک برای اقامت ترکیه',
       intro:
         'برای درخواست یا تمدید اقامت ترکیه (ikamet) اقدام می‌کنید؟ عکس بیومتریک مطابق استاندارد ICAO که اداره مهاجرت ترکیه (Göç İdaresi) درخواست می‌کند را در ۵ دقیقه در استودیوی ما در سیرکجی آماده می‌کنیم. فایل دیجیتال عکس برای درخواست e-İkamet رایگان است.',
-      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: 'استودیوی عکس پاسپورت Faruk Fotoğrafçılık در سیرکجی: پس‌زمینه سفید و نور حرفه‌ای' },
+      heroImage: { src: '/images/sirkeci-studyo.jpg', alt: 'استودیوی عکس پاسپورت Faruk Fotoğrafçılık در سیرکجی: پس‌زمینه سفید و نور حرفه‌ای' , fit: 'cover' },
       whatsappLabel: 'پیام در واتس‌اپ',
       whatsappMessage: 'سلام، برای اقامت عکس بیومتریک لازم دارم. / Merhaba, ikamet fotoğrafı için yazıyorum.',
       callLabel: 'تماس بگیرید',

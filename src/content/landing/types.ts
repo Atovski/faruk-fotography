@@ -10,8 +10,13 @@ export interface LandingContent {
   badge: string;
   h1: string;
   intro: string;
-  /** Optional illustration under the hero, e.g. the product the page is selling. */
-  heroImage?: { src: string; alt: string };
+  /**
+   * Optional illustration under the hero. A cut-out product shot on transparent
+   * background wants `contain` (the default) and no frame; a real photograph
+   * wants `cover`, which puts it in a framed card so it sits in the page
+   * instead of on top of it.
+   */
+  heroImage?: { src: string; alt: string; fit?: 'cover' | 'contain' };
 
   whatsappLabel: string;
   whatsappMessage: string;
