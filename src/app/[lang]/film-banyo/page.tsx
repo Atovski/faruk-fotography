@@ -14,9 +14,12 @@ export async function generateMetadata({
   const isEn = locale === 'en';
 
   return {
+    // The layout's template already appends the brand, so it is left off here.
+    // "Tab ettirme" is the common Turkish phrasing and is worked into the
+    // sentence rather than bracketed on the end, where it read as a mistake.
     title: isEn
-      ? 'Film Developing Service | Ship from Anywhere in Turkey — Faruk Photography'
-      : 'Film Banyo Hizmeti (Film Tab) | Türkiye Geneli Kargo ile — Faruk Fotoğrafçılık',
+      ? 'Film Developing Service | Ship from Anywhere in Turkey'
+      : 'Film Banyo ve Tab Ettirme | Türkiye Geneli Kargo',
     description: isEn
       ? 'Professional analog film developing service from anywhere in Turkey via mail. We carefully develop your 35mm and 120mm films and deliver high-resolution digital scans.'
       : "Türkiye'nin her yerinden kargo ile analog film banyo hizmeti. 35mm ve 120mm filmlerinizi özenle banyo ediyor ve aynı zamanda fotoğraf tab ettirme seçenekleriyle yüksek çözünürlüklü dijital teslimat sağlıyoruz.",

@@ -482,11 +482,84 @@ const AddressBox = styled.div`
     font-weight: 500;
   }
 
+  /* Couriers refuse a shipment without a recipient phone, so it sits with
+     the address rather than somewhere further down the page. */
+  .phone {
+    font-size: ${theme.fontSizes.md};
+    color: ${theme.colors.text};
+    font-weight: 600;
+
+    span {
+      color: ${theme.colors.textSecondary};
+      font-weight: 400;
+    }
+  }
+
   .note {
     font-size: ${theme.fontSizes.xs};
     color: ${theme.colors.textMuted};
   }
+
+  .copy {
+    align-self: center;
+    margin-top: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: ${theme.borderRadius.full};
+    border: 1px solid ${theme.colors.secondary};
+    background: transparent;
+    color: ${theme.colors.secondaryDark};
+    font-size: ${theme.fontSizes.sm};
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all ${theme.transitions.fast};
+
+    &:hover {
+      background: ${theme.colors.secondary};
+      color: ${theme.colors.white};
+    }
+  }
 `;
+
+const SHIPPING_NAME = 'Faruk Fotoğrafçılık';
+const SHIPPING_ADDR = 'Hobyar, Ankara Cd. No:55/A, 34112 Fatih/İstanbul';
+const SHIPPING_PHONE = '0532 440 29 57';
+
+/**
+ * The shipping block people actually copy into a courier form. It carries the
+ * recipient phone because no courier will create a shipment without one.
+ */
+function ShippingAddress({ isEn, ...rest }: { isEn: boolean } & React.ComponentProps<typeof AddressBox>) {
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `${SHIPPING_NAME}\n${SHIPPING_ADDR}\n${SHIPPING_PHONE}`
+      );
+      toast.success(isEn ? 'Address copied' : 'Adres kopyalandı');
+    } catch {
+      toast.error(isEn ? 'Could not copy, please select manually' : 'Kopyalanamadı, elle seçebilirsiniz');
+    }
+  };
+
+  return (
+    <AddressBox {...rest}>
+      <span className="label">📦 {isEn ? 'Shipping Address' : 'Kargo Gönderim Adresi'}</span>
+      <span className="addr">{SHIPPING_NAME} — {SHIPPING_ADDR}</span>
+      <span className="phone">
+        <span>{isEn ? 'Recipient phone: ' : 'Alıcı telefonu: '}</span>{SHIPPING_PHONE}
+      </span>
+      <button type="button" className="copy" onClick={copy}>
+        <HiClipboardList /> {isEn ? 'Copy address' : 'Adresi kopyala'}
+      </button>
+      <span className="note">
+        * {isEn ? 'Please contact us via WhatsApp before shipping' : 'Lütfen gönderimden önce WhatsApp ile bize bilgi verin'}
+      </span>
+    </AddressBox>
+  );
+}
 
 /* ───── Configurator ───── */
 const ConfiguratorWrapper = styled.div`
@@ -873,11 +946,10 @@ export default function FilmBanyoPage() {
             </StepCard>
           </StepsGrid>
 
-          <AddressBox style={{ marginTop: '32px', display: 'flex', width: '100%', maxWidth: '100%', textAlign: 'center', alignItems: 'center' }}>
-            <span className="label">📦 {isEn ? 'Shipping Address' : 'Kargo Gönderim Adresi'}</span>
-            <span className="addr">Faruk Fotoğrafçılık — Hobyar, Ankara Cd. No:55/A, 34112 Fatih/İstanbul</span>
-            <span className="note">* {isEn ? 'Please contact us via WhatsApp before shipping' : 'Lütfen gönderimden önce WhatsApp ile bize bilgi verin'}</span>
-          </AddressBox>
+          <ShippingAddress
+            isEn={isEn}
+            style={{ marginTop: '32px', display: 'flex', width: '100%', maxWidth: '100%', textAlign: 'center', alignItems: 'center' }}
+          />
         </Container>
       </Section>
 
@@ -983,7 +1055,7 @@ export default function FilmBanyoPage() {
         <Container>
           <CTABanner>
             <h2>🎞️ {isEn ? 'Ship Your Film to Us' : 'Filminizi Bize Gönderin'}</h2>
-            <p>{isEn ? 'Wherever you are in Turkey, ship your film and we\'ll develop it.' : 'Türkiye&apos;nin neresinde olursanız olun, filminizi kargolayın, biz banyo edelim.'}</p>
+            <p>{isEn ? 'Wherever you are in Turkey, ship your film and we\'ll develop it.' : 'Türkiye’nin neresinde olursanız olun, filminizi kargolayın, biz banyo edelim.'}</p>
 
             <CTAButtons>
               <Button
@@ -1000,11 +1072,7 @@ export default function FilmBanyoPage() {
               </Button>
             </CTAButtons>
 
-            <AddressBox>
-              <span className="label">📦 {isEn ? 'Shipping Address' : 'Kargo Gönderim Adresi'}</span>
-              <span className="addr">Faruk Fotoğrafçılık — Hobyar, Ankara Cd. No:55/A, 34112 Fatih/İstanbul</span>
-              <span className="note">* {isEn ? 'Please contact us via WhatsApp before shipping' : 'Lütfen gönderimden önce WhatsApp ile bize bilgi verin'}</span>
-            </AddressBox>
+            <ShippingAddress isEn={isEn} />
           </CTABanner>
 
           {/* Most films posted to us are disposables, so point those visitors at the pages written for them. */}
