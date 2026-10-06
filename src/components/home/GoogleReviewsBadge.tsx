@@ -57,7 +57,7 @@ const BottomRow = styled.div`
 // There is no API key on this project, so when the profile moves, change these
 // two numbers — the stars below follow the rating on their own.
 const RATING = 4.6;
-const REVIEW_COUNT = 70;
+const REVIEW_COUNT = 71;
 
 export default function GoogleReviewsBadge() {
   const { language } = useLanguage();
