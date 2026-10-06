@@ -53,27 +53,32 @@ const BottomRow = styled.div`
   font-weight: 500;
 `;
 
+// Read off the Google Business Profile by hand. Last checked 2026-10-06.
+// There is no API key on this project, so when the profile moves, change these
+// two numbers — the stars below follow the rating on their own.
+const RATING = 4.6;
+const REVIEW_COUNT = 70;
+
 export default function GoogleReviewsBadge() {
   const { language } = useLanguage();
-  const rating = 4.5;
-  const count = 64;
 
-  // Render static 4.5 stars layout directly
+  const fullStars = Math.floor(RATING);
+  const hasHalfStar = RATING - fullStars >= 0.25;
+
   return (
     <BadgeContainer href="https://maps.app.goo.gl/chVzqcUKCrLfxT9Q9" target="_blank" rel="noopener noreferrer">
       <TopRow>
-        <RatingText>{rating.toFixed(1)}</RatingText>
+        <RatingText>{RATING.toFixed(1)}</RatingText>
         <Stars>
-          <FaStar />
-          <FaStar />
-          <FaStar />
-          <FaStar />
-          <FaStarHalfAlt />
+          {Array.from({ length: fullStars }, (_, i) => (
+            <FaStar key={i} />
+          ))}
+          {hasHalfStar && <FaStarHalfAlt />}
         </Stars>
       </TopRow>
       <BottomRow>
         <FcGoogle size={18} />
-        {count} {language === 'en' ? 'Google Reviews' : 'Google Yorumu'}
+        {REVIEW_COUNT} {language === 'en' ? 'Google Reviews' : 'Google Yorumu'}
       </BottomRow>
     </BadgeContainer>
   );
