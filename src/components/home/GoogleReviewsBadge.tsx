@@ -53,11 +53,11 @@ const BottomRow = styled.div`
   font-weight: 500;
 `;
 
-// Read off the Google Business Profile by hand. Last checked 2026-10-08.
+// Read off the Google Business Profile by hand. Last checked 2026-10-14.
 // There is no API key on this project, so when the profile moves, change these
 // two numbers — the stars below follow the rating on their own.
 const RATING = 4.6;
-const REVIEW_COUNT = 75;
+const REVIEW_COUNT = 78;
 
 export default function GoogleReviewsBadge() {
   const { language } = useLanguage();
