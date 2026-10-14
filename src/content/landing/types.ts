@@ -45,6 +45,8 @@ export interface LandingContent {
     /** "{size} boyutunda {qty} adet" — both tokens required. */
     ctaTemplate: string;
     ctaLabel: string;
+    /** Summary line for the collapsed full rate ladder. */
+    allTiersLabel: string;
     note?: string;
   };
   table?: { h2: string; intro?: string; columns: [string, string]; rows: [string, string][]; note?: string };

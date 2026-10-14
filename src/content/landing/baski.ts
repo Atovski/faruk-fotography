@@ -53,6 +53,7 @@ export const baskiGroup: LandingGroup = {
         nextTierTemplate: '{qty} adetten itibaren birim fiyat {price}.',
         ctaTemplate: 'Merhaba, {size} boyutunda {qty} adet fotoğraf baskısı istiyorum.',
         ctaLabel: "WhatsApp'tan sipariş ver",
+        allTiersLabel: 'Tüm adet kademeleri',
         note: 'Fiyatlara KDV dahildir. Kanvas, poster ve özel boyutlar ile kurumsal toplu işler için WhatsApp\'tan teklif alabilirsiniz.',
       },
       table: {
@@ -174,6 +175,7 @@ export const baskiGroup: LandingGroup = {
         nextTierTemplate: 'From {qty} prints the unit price drops to {price}.',
         ctaTemplate: 'Hello, I would like {qty} photo prints at {size}.',
         ctaLabel: 'Order on WhatsApp',
+        allTiersLabel: 'All quantity bands',
         note: 'Prices include VAT. For canvas, posters, custom sizes and bulk corporate orders, ask for a quote on WhatsApp.',
       },
       table: {
