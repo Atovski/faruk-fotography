@@ -280,6 +280,20 @@ const Ladder = styled.details`
     }
   }
 
+  table[hidden] {
+    display: none;
+  }
+
+  caption {
+    text-align: start;
+    padding-bottom: 8px;
+    font-size: ${theme.fontSizes.xs};
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: ${theme.colors.textSecondary};
+  }
+
   table {
     width: 100%;
     max-width: 420px;
@@ -430,18 +444,26 @@ export default function PriceCalculator({ calc }: { calc: Calc }) {
         </Button>
       </Order>
 
+      {/*
+        Every size's ladder is rendered, not just the chosen one: the rate card
+        is the thing search engines and assistants quote back at people, and
+        four fifths of it would otherwise exist only after a click.
+      */}
       <Ladder>
         <summary>{calc.allTiersLabel}</summary>
-        <table>
-          <tbody>
-            {size.tiers.map((t) => (
-              <tr key={t.min} data-current={t === tier}>
-                <td>{t.max === null ? `${t.min}+` : t.max === t.min ? `${t.min}` : `${t.min}–${t.max}`}</td>
-                <td>{money(t.price)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {calc.sizes.map((s) => (
+          <table key={s.id} hidden={s.id !== size.id}>
+            <caption>{s.label}</caption>
+            <tbody>
+              {s.tiers.map((t) => (
+                <tr key={t.min} data-current={s.id === size.id && t === tier}>
+                  <td>{t.max === null ? `${t.min}+` : t.max === t.min ? `${t.min}` : `${t.min}–${t.max}`}</td>
+                  <td>{money(t.price)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ))}
       </Ladder>
     </Panel>
   );
