@@ -9,6 +9,7 @@ import { theme } from '@/styles/theme';
 import { fadeIn, fadeInUp } from '@/styles/animations';
 import { Button } from '@/components/ui/Button';
 import { getWhatsAppUrl } from '@/lib/utils';
+import PriceCalculator from './PriceCalculator';
 import { SHOP, type LandingContent } from '@/content/landing/types';
 
 /**
@@ -493,6 +494,15 @@ export default function ServiceLanding({ content: c, languages }: ServiceLanding
             </Card>
           ))}
         </Highlights>
+
+        {c.priceCalculator && (
+          <Section>
+            <h2>{c.priceCalculator.h2}</h2>
+            {c.priceCalculator.intro && <p>{c.priceCalculator.intro}</p>}
+            <PriceCalculator calc={c.priceCalculator} />
+            {c.priceCalculator.note && <Note>{c.priceCalculator.note}</Note>}
+          </Section>
+        )}
 
         {c.table && (
           <Section>

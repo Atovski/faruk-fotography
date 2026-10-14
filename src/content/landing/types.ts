@@ -24,6 +24,29 @@ export interface LandingContent {
   directionsLabel: string;
 
   highlights: { title: string; text: string }[];
+  /**
+   * An optional live price block. The shop prices by volume, so a flat table
+   * of every size against every quantity band is a wall of numbers that
+   * answers nobody's actual question. This asks for the two things the
+   * customer already knows — which size, how many — and gives the figure.
+   */
+  priceCalculator?: {
+    h2: string;
+    intro?: string;
+    sizeLabel: string;
+    quantityLabel: string;
+    unitLabel: string;
+    totalLabel: string;
+    currency: string;
+    /** Tiers are read in order; the first whose range contains the quantity wins. */
+    sizes: { id: string; label: string; tiers: { min: number; max: number | null; price: number }[] }[];
+    /** "{qty} adetten itibaren birim fiyat {price} TL" — both tokens required. */
+    nextTierTemplate: string;
+    /** "{size} boyutunda {qty} adet" — both tokens required. */
+    ctaTemplate: string;
+    ctaLabel: string;
+    note?: string;
+  };
   table?: { h2: string; intro?: string; columns: [string, string]; rows: [string, string][]; note?: string };
   sections: { h2: string; paragraphs?: string[]; bullets?: string[] }[];
   steps?: { h2: string; items: { title: string; text: string }[] };
