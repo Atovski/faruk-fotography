@@ -70,7 +70,7 @@ const Papers = styled.div`
   overflow-x: auto;
 
   @media (max-width: ${theme.breakpoints.mobile}) {
-    gap: 12px;
+    gap: 8px;
   }
 `;
 
@@ -134,8 +134,8 @@ const Paper = styled.label<{ $w: number; $h: number }>`
 
   @media (max-width: ${theme.breakpoints.mobile}) {
     .sheet {
-      width: ${({ $w }) => Math.round($w * 0.72)}px;
-      height: ${({ $h }) => Math.round($h * 0.72)}px;
+      width: ${({ $w }) => Math.round($w * 0.7)}px;
+      height: ${({ $h }) => Math.round($h * 0.7)}px;
     }
   }
 `;
@@ -208,6 +208,22 @@ const Stepper = styled.div`
 const Figure = styled.div`
   text-align: end;
   margin-inline-start: auto;
+
+  /* Once the row wraps, a right-aligned figure floats away from the stepper. */
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    text-align: start;
+    margin-inline-start: 0;
+  }
+`;
+
+const Chosen = styled.span`
+  display: block;
+  margin-bottom: 6px;
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: ${theme.colors.textSecondary};
 `;
 
 const Total = styled.strong`
@@ -354,7 +370,7 @@ export default function PriceCalculator({ calc }: { calc: Calc }) {
                   onChange={() => setSizeId(s.id)}
                 />
                 <span className="sheet" aria-hidden="true" />
-                <span className="cm">{s.label}</span>
+                <span className="cm">{cm ? `${cm[0]}\u00d7${cm[1]}` : s.label}</span>
               </Paper>
             );
           })}
@@ -396,6 +412,7 @@ export default function PriceCalculator({ calc }: { calc: Calc }) {
         </div>
 
         <Figure>
+          <Chosen>{size.label}</Chosen>
           <Total aria-live="polite">{money(total)}</Total>
           <Unit>{calc.unitLabel}: {money(tier.price)}</Unit>
         </Figure>
