@@ -6,6 +6,7 @@ import { fadeInUp } from '@/styles/animations';
 import { FcGoogle } from 'react-icons/fc';
 import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import { useLanguage } from '@/hooks/useLanguage';
+import { RATING, REVIEW_COUNT } from '@/lib/google-reviews';
 
 const BadgeContainer = styled.a`
   display: inline-flex;
@@ -52,12 +53,6 @@ const BottomRow = styled.div`
   color: ${theme.colors.textSecondary};
   font-weight: 500;
 `;
-
-// Read off the Google Business Profile by hand. Last checked 2026-10-14.
-// There is no API key on this project, so when the profile moves, change these
-// two numbers — the stars below follow the rating on their own.
-const RATING = 4.6;
-const REVIEW_COUNT = 78;
 
 export default function GoogleReviewsBadge() {
   const { language } = useLanguage();

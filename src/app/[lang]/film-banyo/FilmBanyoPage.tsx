@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+
+import { RATING, REVIEW_COUNT } from '@/lib/google-reviews';
 import styled, { css } from 'styled-components';
 import { theme } from '@/styles/theme';
 import { fadeInUp, fadeIn, fadeInLeft, fadeInRight } from '@/styles/animations';
@@ -786,7 +788,7 @@ export default function FilmBanyoPage() {
           <StatsRow>
             <Stat><div className="num">55+</div><div className="label">{isEn ? 'Years Experience' : 'Yıllık Tecrübe'}</div></Stat>
             <Stat><div className="num">{isEn ? '2 Hours' : '2 Saat'}</div><div className="label">{isEn ? 'From arrival to digital delivery' : 'Elimize ulaştıktan sonra dijital teslim'}</div></Stat>
-            <Stat><div className="num">{isEn ? 'Print' : 'Baskı'}</div><div className="label">{isEn ? 'Optional Photo Printing' : 'İsteğe Bağlı Fotoğraf Baskısı'}</div></Stat>
+            <Stat><div className="num">{RATING.toLocaleString(isEn ? 'en' : 'tr', { minimumFractionDigits: 1 })}</div><div className="label">{isEn ? `${REVIEW_COUNT} Google reviews` : `${REVIEW_COUNT} Google yorumu`}</div></Stat>
             <Stat><div className="num">{isEn ? '81 Cities' : '81 İl'}</div><div className="label">{isEn ? 'Shipping Service' : 'Kargo Hizmeti'}</div></Stat>
           </StatsRow>
         </Container>
