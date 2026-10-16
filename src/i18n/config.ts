@@ -46,6 +46,7 @@ export const slugMap = {
     'vize-fotografi': 'visa-photo',
     'fotograf-baski': 'photo-printing',
     'cek-at-kamera-banyo': 'disposable-camera-developing',
+    'green-card-fotografi': 'green-card-photo',
   } as Record<string, string>,
 
   enToTr: {
@@ -63,6 +64,7 @@ export const slugMap = {
     'visa-photo': 'vize-fotografi',
     'photo-printing': 'fotograf-baski',
     'disposable-camera-developing': 'cek-at-kamera-banyo',
+    'green-card-photo': 'green-card-fotografi',
   } as Record<string, string>,
 };
 

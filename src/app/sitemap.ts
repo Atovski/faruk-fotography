@@ -3,6 +3,7 @@ import { createServerSupabaseClient } from '@/lib/supabase-server';
 import { baskiGroup } from '@/content/landing/baski';
 import { cekAtGroup } from '@/content/landing/cekat';
 import { dugunGroup } from '@/content/landing/dugun';
+import { greenCardGroup } from '@/content/landing/greencard';
 import { ikametGroup } from '@/content/landing/ikamet';
 import { vesikalikGroup } from '@/content/landing/vesikalik';
 import { vizeGroup } from '@/content/landing/vize';
@@ -65,6 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     vesikalikGroup,
     ikametGroup,
     vizeGroup,
+    greenCardGroup,
     baskiGroup,
     cekAtGroup,
     dugunGroup,

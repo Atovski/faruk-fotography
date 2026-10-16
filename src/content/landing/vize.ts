@@ -91,9 +91,9 @@ export const vizeGroup: LandingGroup = {
       related: {
         h2: 'İlgili Sayfalar',
         links: [
+          { label: 'Green Card Fotoğrafı', href: '/tr/green-card-fotografi' },
           { label: 'Vesikalık & Biyometrik Fotoğraf', href: '/tr/vesikalik-fotograf' },
           { label: 'İkamet İzni Fotoğrafı', href: '/tr/ikamet-fotografi' },
-          { label: 'Fotoğraf Baskı', href: '/tr/fotograf-baski' },
         ],
       },
       breadcrumbHome: 'Ana Sayfa',
@@ -185,9 +185,9 @@ export const vizeGroup: LandingGroup = {
       related: {
         h2: 'Related Pages',
         links: [
+          { label: 'Green Card Photo', href: '/en/green-card-photo' },
           { label: 'Passport & Biometric Photos', href: '/en/passport-photo' },
           { label: 'Residence Permit Photos', href: '/en/residence-permit-photo' },
-          { label: 'Photo Printing', href: '/en/photo-printing' },
         ],
       },
       breadcrumbHome: 'Home',
