@@ -4,6 +4,7 @@ import { baskiGroup } from '@/content/landing/baski';
 import { cekAtGroup } from '@/content/landing/cekat';
 import { dugunGroup } from '@/content/landing/dugun';
 import { greenCardGroup } from '@/content/landing/greencard';
+import { kurumsalGroup } from '@/content/landing/kurumsal';
 import { ikametGroup } from '@/content/landing/ikamet';
 import { vesikalikGroup } from '@/content/landing/vesikalik';
 import { vizeGroup } from '@/content/landing/vize';
@@ -67,6 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ikametGroup,
     vizeGroup,
     greenCardGroup,
+    kurumsalGroup,
     baskiGroup,
     cekAtGroup,
     dugunGroup,
