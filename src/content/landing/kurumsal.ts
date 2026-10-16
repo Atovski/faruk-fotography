@@ -13,10 +13,14 @@ import { VISIT_EN, VISIT_TR } from './visit';
  * October 2026 chamber-of-commerce tender): on-site at the institution, 150
  * people and 30 group shots planned into a single day, white background at
  * 4,5 x 6 cm, delivery digital or printed within five working days, the shop
- * staying open meanwhile. Capacity beyond 150, travel outside Istanbul,
- * corporate invoicing and any service other than staff and group photographs
- * are deliberately absent — they have not been confirmed. Do not add them
- * without asking.
+ * staying open meanwhile. Capacity beyond 150 (spread over more days),
+ * travel outside Istanbul, corporate invoicing, corporate portraits and the
+ * 5 m² of floor we need were all confirmed by the owner on 16 October.
+ *
+ * What is still missing is the list of other work he says he takes on. He
+ * said "diğer işler de yapılır" without naming any, and "we do everything"
+ * is not a sentence a buyer believes, so the page invites the question
+ * instead. Name the services before listing them here.
  *
  * No prices: corporate work is quoted per job, and a figure here would both
  * anchor the negotiation and misprice jobs of a different size.
@@ -68,6 +72,7 @@ export const kurumsalGroup: LandingGroup = {
           ['Kurul ve grup fotoğrafı', 'Komite, yönetim kurulu, meclis gibi grupların toplu fotoğrafı'],
           ['Dijital teslim', 'Her personelin dosyası dijital olarak'],
           ['Baskılı teslim', 'İstenirse kişi başı baskı, aynı teslim süresinde'],
+          ['Kurumsal portre', 'Yönetici ve personel portreleri, aynı çekim gününde'],
         ],
         note: 'Ölçü ve fon, kurumunuzun belge şartına göre ayarlanır. Farklı bir ölçü gerekiyorsa teklif aşamasında belirtmeniz yeterli.',
       },
@@ -76,7 +81,7 @@ export const kurumsalGroup: LandingGroup = {
         {
           h2: 'Çekim İçin Gereken',
           paragraphs: [
-            'Kurum içinde çekim yapılabilecek bir oda ve elektrik bağlantısı yeterli. Düzeni biz kurar, çekim bitince toplarız.',
+            'Kurum içinde yaklaşık 5 metrekarelik bir alan ve bir elektrik prizi yeterli. Fonu ve ışığı biz getirip kuruyor, çekim bitince topluyoruz.',
             'Çekim günü dükkânımız açık kalmaya devam eder; kurumunuzdaki işi ayrı bir ekiple yürütürüz.',
           ],
         },
@@ -85,6 +90,7 @@ export const kurumsalGroup: LandingGroup = {
           paragraphs: [
             'Kişi sayısını, varsa grup çekimi sayısını ve düşündüğünüz tarihi iletin; teklifi aynı gün hazırlayıp gönderelim.',
             'Dijital teslim ile baskılı teslim için ayrı ayrı fiyat veriyoruz, böylece ikisini karşılaştırarak karar verebiliyorsunuz.',
+            'Listede olmayan bir çekim ihtiyacınız varsa yazın; yapabileceksek açıkça söyler, yapamayacaksak onu da söyleriz.',
           ],
         },
       ],
@@ -108,7 +114,15 @@ export const kurumsalGroup: LandingGroup = {
           },
           {
             q: 'Kaç kişilik çekim yapabiliyorsunuz?',
-            a: '150 kişilik bir kurumu kurul fotoğraflarıyla birlikte tek güne planlıyoruz. Daha kalabalık kurumlarda kişi sayısını iletin, planı birlikte çıkaralım.',
+            a: '150 kişilik bir kurumu kurul fotoğraflarıyla birlikte tek güne planlıyoruz. Daha kalabalık kurumlarda çekimi birden fazla güne yayıyoruz; kişi sayısı sınır değil.',
+          },
+          {
+            q: 'İstanbul dışına geliyor musunuz?',
+            a: 'İstanbul dışındaki kurumların taleplerini de değerlendiriyoruz. Şehri ve kişi sayısını iletin, yol ve konaklama dahil bir teklif çıkaralım.',
+          },
+          {
+            q: 'Kurumsal fatura düzenliyor musunuz?',
+            a: 'Evet. Çekim sonrası kurumunuz adına fatura düzenliyoruz.',
           },
           {
             q: 'Teslim ne kadar sürüyor?',
@@ -185,6 +199,7 @@ export const kurumsalGroup: LandingGroup = {
           ['Board and group photographs', 'Committees, boards, councils and other groups'],
           ['Digital delivery', 'Each person’s file, delivered digitally'],
           ['Printed delivery', 'Prints per person if required, within the same timeframe'],
+          ['Corporate portraits', 'Executive and staff portraits, on the same shoot day'],
         ],
         note: 'Sizes and background are set to whatever your documents require. Tell us at the quote stage if you need something other than the standard.',
       },
@@ -193,7 +208,7 @@ export const kurumsalGroup: LandingGroup = {
         {
           h2: 'What We Need On Site',
           paragraphs: [
-            'A room inside your building and a power socket are enough. We bring the setup, and pack it away when the shoot is finished.',
+            'About five square metres inside your building and a power socket are enough. We bring the backdrop and lighting, set them up and pack them away afterwards.',
             'Our shop stays open on the day; the work at your premises is handled by a separate team.',
           ],
         },
@@ -202,6 +217,7 @@ export const kurumsalGroup: LandingGroup = {
           paragraphs: [
             'Send us the number of people, the number of group shots if any, and the date you have in mind, and we will send a written quote the same day.',
             'We price digital and printed delivery separately so you can compare the two before deciding.',
+            'If you need something that is not listed here, ask. We will tell you plainly whether we can do it.',
           ],
         },
       ],
@@ -220,7 +236,9 @@ export const kurumsalGroup: LandingGroup = {
         h2: 'Frequently Asked Questions',
         items: [
           { q: 'Where does the shoot take place?', a: 'At your own premises. We bring and set up the equipment.' },
-          { q: 'How many people can you photograph?', a: 'We plan a 150-person organisation, board shots included, into a single day. For larger organisations, send us the numbers and we will plan it with you.' },
+          { q: 'How many people can you photograph?', a: 'We plan a 150-person organisation, board shots included, into a single day. Larger organisations are spread over more than one day; the headcount is not a limit.' },
+          { q: 'Do you travel outside Istanbul?', a: 'We consider requests from outside Istanbul. Send us the city and the headcount and we will quote including travel and accommodation.' },
+          { q: 'Do you issue corporate invoices?', a: 'Yes. We invoice your organisation after the shoot.' },
           { q: 'How long does delivery take?', a: 'Within five working days of the shoot, whether or not prints are included.' },
           { q: 'Can we have both digital files and prints?', a: 'Yes. The quote prices them separately and you can take both.' },
           { q: 'How is the price set?', a: 'By the number of people and the delivery format. Send us the numbers and the written quote follows the same day.' },
