@@ -286,7 +286,16 @@ export default function Navbar() {
 
   // Navigation items with Turkish base paths (used for localization)
   const navItems = [
-    { basePath: '/vesikalik-fotograf', label: language === 'tr' ? 'Vesikalık' : 'Passport Photo' },
+    {
+      basePath: '/vesikalik-fotograf',
+      label: language === 'tr' ? 'Vesikalık' : 'Passport Photo',
+      children: [
+        { basePath: '/vesikalik-fotograf', label: language === 'tr' ? 'Vesikalık & Biyometrik' : 'Passport & Biometric' },
+        { basePath: '/vize-fotografi', label: language === 'tr' ? 'Vize Fotoğrafı' : 'Visa Photo' },
+        { basePath: '/green-card-fotografi', label: language === 'tr' ? 'Green Card Fotoğrafı' : 'Green Card Photo' },
+        { basePath: '/ikamet-fotografi', label: language === 'tr' ? 'İkamet İzni Fotoğrafı' : 'Residence Permit Photo' },
+      ],
+    },
     { basePath: '/hizmetler', label: t.nav.services },
     { basePath: '/urunler', label: t.nav.products },
     {

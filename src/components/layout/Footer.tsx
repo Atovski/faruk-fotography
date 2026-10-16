@@ -282,6 +282,9 @@ export default function Footer() {
           <FooterTitle>{t.footer.quickLinks}</FooterTitle>
           <FooterLink href={`/${language}`}>{t.nav.home}</FooterLink>
           <FooterLink href={getLocalizedHref('/hizmetler', language)}>{t.nav.services}</FooterLink>
+          <FooterLink href={getLocalizedHref('/kurumsal-fotograf-cekimi', language)}>
+            {language === 'tr' ? 'Kurumsal Çekim' : 'Corporate Photography'}
+          </FooterLink>
           <FooterLink href={getLocalizedHref('/galeri', language)}>{t.nav.gallery}</FooterLink>
           <FooterLink href={getLocalizedHref('/urunler', language)}>{t.nav.products}</FooterLink>
           <FooterLink href={getLocalizedHref('/hakkimizda', language)}>{t.nav.about}</FooterLink>
