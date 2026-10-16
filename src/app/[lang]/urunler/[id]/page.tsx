@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
 import { slugify, extractIdFromSlug } from '@/lib/utils';
 import ProductDetailClient from './ProductDetailClient';
@@ -45,6 +45,31 @@ async function getProduct(slugOrId: string): Promise<ProductRow | null> {
     return null;
   }
   return data as ProductRow;
+}
+
+/**
+ * A product URL carries the row's uuid, so editing a product in the admin —
+ * which creates a new row — kills the old address and throws away whatever
+ * standing it had built up in search. Search Console was reporting 116 of
+ * these, and the clicks still landing on them come from people searching for
+ * film stock and film cameras: exactly the film-developing audience.
+ *
+ * When the id misses, look the product up by the slug instead. If the same
+ * product is live under a new id, send the visitor on with a 308 so the link
+ * and its history survive the next edit too.
+ */
+async function findLiveProductBySlug(slugOrId: string): Promise<{ id: string; name: string } | null> {
+  const wanted = slugify(slugOrId.replace(/-?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, ''));
+  if (!wanted) return null;
+
+  const supabase = createServerSupabaseClient();
+  const { data } = await supabase
+    .from('products')
+    .select('id, name')
+    .eq('is_active', true);
+
+  if (!data) return null;
+  return (data as { id: string; name: string }[]).find((p) => slugify(p.name) === wanted) ?? null;
 }
 
 /* ───── Dynamic Metadata (SEO) ───── */
@@ -217,6 +242,15 @@ export default async function ProductDetailPage({
 }) {
   const { id, lang } = await params;
   const product = await getProduct(id);
+
+  // Gone under this id? It may have been recreated under another one.
+  if (!product) {
+    const moved = await findLiveProductBySlug(id);
+    if (moved) {
+      const base = lang === 'en' ? '/en/products' : '/tr/urunler';
+      permanentRedirect(`${base}/${slugify(moved.name)}-${moved.id}`);
+    }
+  }
 
   if (!product || !product.is_active) {
     notFound();
