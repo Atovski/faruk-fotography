@@ -173,10 +173,11 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       },
     },
     areaServed: { '@type': 'Country', name: isEn ? 'Turkey' : 'Türkiye' },
+    // Mirrors the page's own calculator: ₺600 at 1080p up to ₺750 at 4K, +₺50 for black & white.
     offers: {
       '@type': 'AggregateOffer',
-      lowPrice: '500',
-      highPrice: '900',
+      lowPrice: '600',
+      highPrice: '800',
       priceCurrency: 'TRY',
     },
   };

@@ -9,7 +9,7 @@ import { fadeInUp, fadeIn, fadeInLeft, fadeInRight } from '@/styles/animations';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCart, CartProduct } from '@/hooks/useCart';
 import { Button } from '@/components/ui/Button';
-import { FaWhatsapp, FaShippingFast, FaBoxOpen, FaFilm, FaCheckCircle } from 'react-icons/fa';
+import { FaWhatsapp, FaShippingFast, FaBoxOpen, FaFilm, FaCheckCircle, FaCameraRetro, FaRing } from 'react-icons/fa';
 import { HiCamera, HiMail, HiPhone, HiLocationMarker, HiClipboardList, HiPhotograph, HiDownload, HiClock, HiCheck, HiExclamation, HiInformationCircle, HiShoppingCart } from 'react-icons/hi';
 import { getWhatsAppUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -443,6 +443,12 @@ const CTABanner = styled.div`
     font-size: ${theme.fontSizes['2xl']};
     color: #FFFFFF;
     margin-bottom: ${theme.spacing.sm};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    svg { color: ${theme.colors.secondary}; flex-shrink: 0; }
   }
 
   p {
@@ -461,6 +467,8 @@ const CTAButtons = styled.div`
 
 const AddressBox = styled.div`
   margin-top: ${theme.spacing['2xl']};
+  /* The navbar is fixed, so an anchor jump would otherwise land under it. */
+  scroll-margin-top: 110px;
   padding: ${theme.spacing.lg};
   border-radius: ${theme.borderRadius.lg};
   background: ${theme.colors.surface};
@@ -476,6 +484,9 @@ const AddressBox = styled.div`
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .addr {
@@ -548,7 +559,7 @@ function ShippingAddress({ isEn, ...rest }: { isEn: boolean } & React.ComponentP
 
   return (
     <AddressBox {...rest}>
-      <span className="label">📦 {isEn ? 'Shipping Address' : 'Kargo Gönderim Adresi'}</span>
+      <span className="label"><FaBoxOpen /> {isEn ? 'Shipping Address' : 'Kargo Gönderim Adresi'}</span>
       <span className="addr">{SHIPPING_NAME} — {SHIPPING_ADDR}</span>
       <span className="phone">
         <span>{isEn ? 'Recipient phone: ' : 'Alıcı telefonu: '}</span>{SHIPPING_PHONE}
@@ -770,9 +781,11 @@ export default function FilmBanyoPage() {
           </HeroTitle>
           <HeroSub>
             {isEn
-              ? "Your film is developed and scanned within two hours of reaching us — 35mm black & white, 35mm colour (C-41), 120 medium format and disposable cameras, with over 55 years of craftsmanship. Bring your memories to our Sirkeci workshop or post them from anywhere in Turkey."
-              : "Filminiz elimize ulaştıktan sonra 2 saat içinde banyo edilip taranır ve kareleriniz dijital olarak size ulaşır. 35mm siyah-beyaz, 35mm renkli (C-41), 120 orta format ve çek-at (kullan-at) kameralar. Sirkeci'deki atölyemize getirin ya da Türkiye'nin her yerinden kargoyla yollayın."}
+              ? "Your film is developed and scanned within two hours of reaching us. 35mm colour and black & white, 120 medium format, disposable cameras. Bring it to the Sirkeci workshop or post it from anywhere in Turkey."
+              : "Filminiz elimize ulaştıktan sonra 2 saat içinde banyo edilip taranır. 35mm renkli ve siyah-beyaz, 120 orta format, çek-at kameralar. Sirkeci'deki atölyemize getirin ya da Türkiye'nin her yerinden kargoyla yollayın."}
           </HeroSub>
+          {/* Most of this page's traffic arrives from a nationwide ad, so the first
+              question is "where do I send it" — the second button jumps straight there. */}
           <HeroCTAs>
             <Button
               as="a"
@@ -781,7 +794,10 @@ export default function FilmBanyoPage() {
               $variant="whatsapp"
               $size="lg"
             >
-              <FaWhatsapp /> {isEn ? 'Contact Us' : 'İletişime Geç'}
+              <FaWhatsapp /> {isEn ? 'Order on WhatsApp' : 'WhatsApp’tan Sipariş Ver'}
+            </Button>
+            <Button as="a" href="#kargo-adresi" $variant="outline" $size="lg">
+              <FaBoxOpen /> {isEn ? 'Shipping address' : 'Kargo Adresi'}
             </Button>
           </HeroCTAs>
 
@@ -949,6 +965,7 @@ export default function FilmBanyoPage() {
           </StepsGrid>
 
           <ShippingAddress
+            id="kargo-adresi"
             isEn={isEn}
             style={{ marginTop: '32px', display: 'flex', width: '100%', maxWidth: '100%', textAlign: 'center', alignItems: 'center' }}
           />
@@ -968,7 +985,7 @@ export default function FilmBanyoPage() {
 
           <FAQGrid>
             <InfoCard>
-              <InfoTitle>🎨 {isEn ? 'Color Films (C-41)' : 'Renkli Filmler (C-41)'}</InfoTitle>
+              <InfoTitle><HiPhotograph /> {isEn ? 'Color Films (C-41)' : 'Renkli Filmler (C-41)'}</InfoTitle>
               <CheckList>
                 <CheckItem $type="check"><HiCheck size={16} /> Kodak Gold, ColorPlus, UltraMax</CheckItem>
                 <CheckItem $type="check"><HiCheck size={16} /> Kodak Portra 160 / 400 / 800</CheckItem>
@@ -981,7 +998,7 @@ export default function FilmBanyoPage() {
             </InfoCard>
 
             <InfoCard>
-              <InfoTitle>⬛ {isEn ? 'Black & White Films' : 'Siyah-Beyaz Filmler'}</InfoTitle>
+              <InfoTitle><FaFilm /> {isEn ? 'Black & White Films' : 'Siyah-Beyaz Filmler'}</InfoTitle>
               <CheckList>
                 <CheckItem $type="check"><HiCheck size={16} /> Ilford HP5 Plus, Delta 100/400/3200</CheckItem>
                 <CheckItem $type="check"><HiCheck size={16} /> Ilford FP4 Plus, Pan F Plus</CheckItem>
@@ -992,23 +1009,26 @@ export default function FilmBanyoPage() {
               </CheckList>
             </InfoCard>
 
+            {/* "Çek-at" and "tek kullanımlık" are the same thing; they used to be two
+                cards listing the same three cameras. The freed slot goes to 120, which
+                the hero and the calculator both offer but this list never mentioned. */}
             <InfoCard>
-              <InfoTitle>📷 {isEn ? 'Disposable Cameras' : 'Çek-At Kameralar'}</InfoTitle>
+              <InfoTitle><HiCamera /> {isEn ? 'Disposable Cameras' : 'Çek-At / Tek Kullanımlık'}</InfoTitle>
               <CheckList>
                 <CheckItem $type="check"><HiCheck size={16} /> Kodak FunSaver</CheckItem>
-                <CheckItem $type="check"><HiCheck size={16} /> Fujifilm QuickSnap</CheckItem>
-                <CheckItem $type="check"><HiCheck size={16} /> Ilford HP5+ tek kullanımlık</CheckItem>
+                <CheckItem $type="check"><HiCheck size={16} /> Fujifilm QuickSnap / Simple Ace</CheckItem>
+                <CheckItem $type="check"><HiCheck size={16} /> Ilford HP5 {isEn ? 'single-use' : 'tek kullanımlık'}</CheckItem>
                 <CheckItem $type="check"><HiCheck size={16} /> {isEn ? 'All other single-use cameras' : 'Diğer tüm tek kullanımlık makineler'}</CheckItem>
               </CheckList>
             </InfoCard>
 
             <InfoCard>
-              <InfoTitle>📷 {isEn ? 'Disposable Cameras' : 'Tek Kullanımlık Kameralar'}</InfoTitle>
+              <InfoTitle><FaCameraRetro /> {isEn ? 'Medium Format (120)' : 'Orta Format (120)'}</InfoTitle>
               <CheckList>
-                <CheckItem $type="check"><HiCheck size={16} /> Kodak FunSaver</CheckItem>
-                <CheckItem $type="check"><HiCheck size={16} /> Fujifilm Simple Ace / QuickSnap</CheckItem>
-                <CheckItem $type="check"><HiCheck size={16} /> Ilford HP5 Disposable</CheckItem>
-                <CheckItem $type="check"><HiCheck size={16} /> Tüm tek kullanımlık kameralar</CheckItem>
+                <CheckItem $type="check"><HiCheck size={16} /> {isEn ? '120 colour (C-41)' : '120 renkli (C-41)'}</CheckItem>
+                <CheckItem $type="check"><HiCheck size={16} /> {isEn ? '120 black & white' : '120 siyah-beyaz'}</CheckItem>
+                <CheckItem $type="check"><HiCheck size={16} /> {isEn ? 'Same price as 35mm' : '35mm ile aynı fiyat'}</CheckItem>
+                <CheckItem $type="check"><HiCheck size={16} /> {isEn ? 'You pick the scan resolution' : 'Tarama çözünürlüğünü siz seçersiniz'}</CheckItem>
               </CheckList>
             </InfoCard>
           </FAQGrid>
@@ -1056,7 +1076,7 @@ export default function FilmBanyoPage() {
       <Section $alt>
         <Container>
           <CTABanner>
-            <h2>🎞️ {isEn ? 'Ship Your Film to Us' : 'Filminizi Bize Gönderin'}</h2>
+            <h2><FaShippingFast /> {isEn ? 'Ship Your Film to Us' : 'Filminizi Bize Gönderin'}</h2>
             <p>{isEn ? 'Wherever you are in Turkey, ship your film and we\'ll develop it.' : 'Türkiye’nin neresinde olursanız olun, filminizi kargolayın, biz banyo edelim.'}</p>
 
             <CTAButtons>
@@ -1080,10 +1100,10 @@ export default function FilmBanyoPage() {
           {/* Most films posted to us are disposables, so point those visitors at the pages written for them. */}
           <RelatedLinks>
             <Link href={isEn ? '/en/disposable-camera-developing' : '/tr/cek-at-kamera-banyo'}>
-              📷 {isEn ? 'Disposable Camera Developing' : 'Çek-At Kamera Banyosu'}
+              <HiCamera /> {isEn ? 'Disposable Camera Developing' : 'Çek-At Kamera Banyosu'}
             </Link>
             {!isEn && (
-              <Link href="/tr/dugun-cek-at-kamera">💍 Düğün Çek-At Kamera Paketi</Link>
+              <Link href="/tr/dugun-cek-at-kamera"><FaRing /> Düğün Çek-At Kamera Paketi</Link>
             )}
           </RelatedLinks>
         </Container>

@@ -171,7 +171,7 @@ export default function FilmBanyoCTA() {
       <Container>
         <Grid>
           <TextSide>
-            <Badge>🎞️ {isTr ? 'Türkiye Geneli Hizmet' : 'Nationwide Service'}</Badge>
+            <Badge><FaFilm /> {isTr ? 'Türkiye Geneli Hizmet' : 'Nationwide Service'}</Badge>
             <Title>
               {isTr ? (
                 <>Analog Filmlerinizi Profesyonelce <span>Banyo Edecek</span> Bir Fotoğrafçı mı Arıyorsunuz?</>
@@ -185,7 +185,8 @@ export default function FilmBanyoCTA() {
                 : "We carefully develop your color (C-41) or black and white analog prints on the same day and convert them to digital format with our high-resolution scanners. Visit our Sirkeci store or ship from anywhere in Turkey."}
             </Description>
             <PriceInfo>
-              ₺500 <span>{isTr ? "'den başlayan fiyatlarla" : 'starting from'}</span>
+              {/* Must match the film page's headline figure; it was ₺500 here and ₺600 there. */}
+              ₺600 <span>{isTr ? "'den başlayan fiyatlarla" : 'starting from'}</span>
             </PriceInfo>
             <CTAs>
               <Button as={Link} href={getLocalizedHref('/film-banyo', language)} $variant="primary" $size="lg">
