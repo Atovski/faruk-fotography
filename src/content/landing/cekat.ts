@@ -30,7 +30,7 @@ export const cekAtGroup: LandingGroup = {
       h1: 'Çek-At Kamera Banyosu',
       intro:
         'Düğünde, kınada, mezuniyette ya da tatilde çektiğiniz çek-at kamerayı yıkatacak yer mi arıyorsunuz? Kameranızı kargoyla bize gönderin: elimize ulaştıktan sadece 2 saat sonra bütün kareleriniz taranmış halde telefonunuza gelir. Şehrinizde laboratuvar olmasına gerek yok.',
-      heroImage: { src: '/images/products/disp_kodak.png', alt: 'Banyo edilmeye hazır tek kullanımlık çek-at fotoğraf makinesi' },
+      heroImage: { src: '/images/sirkeci-dukkan-kare.jpg', alt: 'Sirkeci’deki dükkânımızın vitrini; tabelada Film Banyo yazıyor', fit: 'cover', position: 'center 22%' },
       whatsappLabel: "WhatsApp'tan Yazın",
       whatsappMessage: 'Merhaba, çek-at kamera banyosu için yazıyorum.',
       callLabel: 'Hemen Arayın',
@@ -159,7 +159,7 @@ export const cekAtGroup: LandingGroup = {
       h1: 'Disposable Camera Developing',
       intro:
         'Shot a disposable camera at a wedding, a festival or on your trip? Post it to us and two hours after it reaches our shop every frame is scanned and on your phone. No lab in your city? It does not matter.',
-      heroImage: { src: '/images/products/disp_kodak.png', alt: 'A single-use disposable camera ready to be developed' },
+      heroImage: { src: '/images/sirkeci-dukkan-kare.jpg', alt: 'Our Sirkeci shopfront, with the Film Developing sign in the window', fit: 'cover', position: 'center 22%' },
       whatsappLabel: 'Message Us on WhatsApp',
       whatsappMessage: 'Hello, I would like to develop a disposable camera.',
       callLabel: 'Call Now',

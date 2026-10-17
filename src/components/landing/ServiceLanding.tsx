@@ -76,12 +76,17 @@ const Badge = styled.span<{ $onDark?: boolean }>`
 `;
 
 /** Cut-out product shot under the hero copy; kept small so the text still leads. */
+/**
+ * A cut-out product shot, the only hero image that is a figure rather than
+ * scenery. It is kept small on purpose: at 420px it pushed the buttons off
+ * the first screen, and a page bought with ad money has to show its CTA.
+ */
 const HeroProduct = styled.div`
   position: relative;
   width: 100%;
-  max-width: 420px;
+  max-width: 260px;
   aspect-ratio: 4 / 3;
-  margin: ${theme.spacing.xl} auto 0;
+  margin: ${theme.spacing.lg} auto 0;
 `;
 
 /**
@@ -455,7 +460,14 @@ export default function ServiceLanding({ content: c, languages }: ServiceLanding
       {photoHero ? (
         <PhotoHero>
           <PhotoHeroImage>
-            <Image src={photoHero.src} alt={photoHero.alt} fill sizes="100vw" priority />
+            <Image
+              src={photoHero.src}
+              alt={photoHero.alt}
+              fill
+              sizes="100vw"
+              priority
+              style={photoHero.position ? { objectPosition: photoHero.position } : undefined}
+            />
           </PhotoHeroImage>
           <PhotoHeroScrim />
           <PhotoHeroGrain />

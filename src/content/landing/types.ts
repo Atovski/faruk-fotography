@@ -16,7 +16,12 @@ export interface LandingContent {
    * wants `cover`, which puts it in a framed card so it sits in the page
    * instead of on top of it.
    */
-  heroImage?: { src: string; alt: string; fit?: 'cover' | 'contain' };
+  /**
+   * `position` is a CSS object-position, for a cover photo whose subject is not
+   * where the default crop looks — the shopfront's Film Banyo sign sits low in
+   * the frame and would otherwise be cut off.
+   */
+  heroImage?: { src: string; alt: string; fit?: 'cover' | 'contain'; position?: string };
 
   whatsappLabel: string;
   whatsappMessage: string;
