@@ -316,7 +316,14 @@ export default function Navbar() {
     },
     // Printing is the single biggest search market we serve ("fotoğraf baskı",
     // ~14.800/month) and it was reachable only from the footer.
-    { basePath: '/fotograf-baski', label: language === 'tr' ? 'Fotoğraf Baskı' : 'Photo Printing' },
+    {
+      basePath: '/fotograf-baski',
+      label: language === 'tr' ? 'Baskı & Hediye' : 'Prints & Gifts',
+      children: [
+        { basePath: '/fotograf-baski', label: language === 'tr' ? 'Fotoğraf Baskı' : 'Photo Printing' },
+        { basePath: '/kanvas-tablo', label: language === 'tr' ? 'Kanvas Tablo' : 'Canvas Prints' },
+      ],
+    },
     { basePath: '/hizmetler', label: t.nav.services },
     { basePath: '/urunler', label: t.nav.products },
     { basePath: '/galeri', label: t.nav.gallery },

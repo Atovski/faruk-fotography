@@ -47,6 +47,7 @@ export const slugMap = {
     'fotograf-baski': 'photo-printing',
     'cek-at-kamera-banyo': 'disposable-camera-developing',
     'green-card-fotografi': 'green-card-photo',
+    'kanvas-tablo': 'canvas-print',
     'kurumsal-fotograf-cekimi': 'corporate-photography',
   } as Record<string, string>,
 
@@ -66,6 +67,7 @@ export const slugMap = {
     'photo-printing': 'fotograf-baski',
     'disposable-camera-developing': 'cek-at-kamera-banyo',
     'green-card-photo': 'green-card-fotografi',
+    'canvas-print': 'kanvas-tablo',
     'corporate-photography': 'kurumsal-fotograf-cekimi',
   } as Record<string, string>,
 };
