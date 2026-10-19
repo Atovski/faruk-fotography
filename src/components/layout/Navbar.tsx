@@ -66,6 +66,12 @@ const NavLinks = styled.div<{ $open: boolean }>`
   gap: ${theme.spacing.xl};
   justify-self: center;
 
+  /* Eight items at the 2rem gap overrun the bar between the drawer breakpoint
+     and ~1150px, so the gap closes up before the row has to wrap. */
+  @media (max-width: ${theme.breakpoints.desktop}) {
+    gap: ${theme.spacing.md};
+  }
+
   @media (max-width: ${theme.breakpoints.laptop}) {
     position: fixed;
     top: 0;
@@ -296,8 +302,6 @@ export default function Navbar() {
         { basePath: '/ikamet-fotografi', label: language === 'tr' ? 'İkamet İzni Fotoğrafı' : 'Residence Permit Photo' },
       ],
     },
-    { basePath: '/hizmetler', label: t.nav.services },
-    { basePath: '/urunler', label: t.nav.products },
     {
       basePath: '/film-banyo',
       label: language === 'tr' ? 'Film Banyo' : 'Film Dev.',
@@ -310,6 +314,11 @@ export default function Navbar() {
           : []),
       ],
     },
+    // Printing is the single biggest search market we serve ("fotoğraf baskı",
+    // ~14.800/month) and it was reachable only from the footer.
+    { basePath: '/fotograf-baski', label: language === 'tr' ? 'Fotoğraf Baskı' : 'Photo Printing' },
+    { basePath: '/hizmetler', label: t.nav.services },
+    { basePath: '/urunler', label: t.nav.products },
     { basePath: '/galeri', label: t.nav.gallery },
     { basePath: '/hakkimizda', label: t.nav.about },
     { basePath: '/iletisim', label: t.nav.contact },
