@@ -115,9 +115,13 @@ export const baskiGroup: LandingGroup = {
         ],
       },
       visit: VISIT_TR,
+      // Baskı sayfası en çok aranan hizmetimiz; buraya gelen ziyaretçinin bir
+      // sonraki adımı çoğu zaman bir hediye ürünü oluyor, o yüzden önce onlar.
       related: {
-        h2: 'İlgili Sayfalar',
+        h2: 'Bunlar da İlginizi Çekebilir',
         links: [
+          { label: 'Kanvas Tablo', href: '/tr/urunler/kanvas-tablo-07f184ec-1367-460f-be0e-672867e0c0e9' },
+          { label: 'Kişiye Özel Hediyeler (Magnet, Kupa, Puzzle)', href: '/tr/urunler?category=customizable-products' },
           { label: 'Vesikalık & Biyometrik Fotoğraf', href: '/tr/vesikalik-fotograf' },
           { label: 'Film Banyo', href: '/tr/film-banyo' },
         ],
@@ -230,8 +234,10 @@ export const baskiGroup: LandingGroup = {
       },
       visit: VISIT_EN,
       related: {
-        h2: 'Related Pages',
+        h2: 'You May Also Like',
         links: [
+          { label: 'Canvas Prints', href: '/en/products/kanvas-tablo-07f184ec-1367-460f-be0e-672867e0c0e9' },
+          { label: 'Personalised Gifts (Magnets, Mugs, Puzzles)', href: '/en/products?category=customizable-products' },
           { label: 'Passport & Biometric Photos', href: '/en/passport-photo' },
           { label: 'Film Developing', href: '/en/film-developing' },
         ],
