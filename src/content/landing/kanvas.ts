@@ -44,6 +44,7 @@ export const kanvasGroup: LandingGroup = {
       intro:
         'Telefonunuzda duran fotoğraf duvara asıldığında başka bir şey oluyor. Fotoğrafınızı dokulu pamuk kanvasa basıp ahşap şaseye geriyoruz; kutusundan çıktığı gibi asılır. WhatsApp’tan kareyi ve ebadı yollayın, gerisini biz halledelim.',
 
+      offer: { lowPrice: 550, highPrice: 1450 },
       whatsappLabel: 'WhatsApp’tan Sipariş Verin',
       whatsappMessage: 'Merhaba, kanvas tablo bastırmak istiyorum.',
       callLabel: 'Hemen Arayın',
@@ -148,7 +149,7 @@ export const kanvasGroup: LandingGroup = {
         h2: 'Bunlar da İlginizi Çekebilir',
         links: [
           { label: 'Fotoğraf Baskı', href: '/tr/fotograf-baski' },
-          { label: 'Kişiye Özel Hediyeler (Magnet, Kupa, Puzzle)', href: '/tr/urunler?category=customizable-products' },
+          { label: 'Kişiye Özel Hediyeler (Magnet, Kupa, Puzzle)', href: '/tr/urunler?kategori=customizable-products' },
           { label: 'Film Banyo', href: '/tr/film-banyo' },
         ],
       },
@@ -178,6 +179,7 @@ export const kanvasGroup: LandingGroup = {
       intro:
         'A photo on your phone becomes something else on a wall. We print yours on textured cotton canvas and stretch it over a wooden frame, so it hangs straight out of the box. Send us the frame and the size on WhatsApp and we will take it from there.',
 
+      offer: { lowPrice: 550, highPrice: 1450 },
       whatsappLabel: 'Order on WhatsApp',
       whatsappMessage: 'Hello, I would like to order a canvas print.',
       callLabel: 'Call Now',
@@ -246,7 +248,7 @@ export const kanvasGroup: LandingGroup = {
         h2: 'You May Also Like',
         links: [
           { label: 'Photo Printing', href: '/en/photo-printing' },
-          { label: 'Personalised Gifts (Magnets, Mugs, Puzzles)', href: '/en/products?category=customizable-products' },
+          { label: 'Personalised Gifts (Magnets, Mugs, Puzzles)', href: '/en/products?kategori=customizable-products' },
           { label: 'Film Developing', href: '/en/film-developing' },
         ],
       },

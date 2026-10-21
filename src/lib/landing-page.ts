@@ -70,6 +70,18 @@ export function landingJsonLd(group: LandingGroup, lang: string) {
       areaServed: { '@type': 'City', name: 'Istanbul' },
       provider: { '@id': SHOP.baseUrl },
       inLanguage: c.locale,
+      ...(c.offer
+        ? {
+            offers: {
+              '@type': 'AggregateOffer',
+              lowPrice: String(c.offer.lowPrice),
+              highPrice: String(c.offer.highPrice),
+              priceCurrency: 'TRY',
+              availability: 'https://schema.org/InStock',
+              url,
+            },
+          }
+        : {}),
     },
     {
       '@context': 'https://schema.org',

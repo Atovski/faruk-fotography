@@ -25,6 +25,8 @@ export const baskiGroup: LandingGroup = {
       h1: 'Fotoğraf Baskı: Anılarınız Telefonda Kalmasın',
       intro:
         "Telefonunuzdaki veya bilgisayarınızdaki fotoğrafları profesyonel Epson kalitesinde, solmaya dayanıklı mat ya da parlak fotoğraf kağıdına basıyoruz. Fotoğraflarınızı WhatsApp'tan gönderin, Sirkeci'deki dükkanımızdan aynı gün teslim alın.",
+      // Per print: ₺14 is the 251+ rate for 10x15, ₺350 a single 30x40.
+      offer: { lowPrice: 14, highPrice: 350 },
       whatsappLabel: "WhatsApp'tan Gönderin",
       whatsappMessage: 'Merhaba, fotoğraf baskı için yazıyorum.',
       callLabel: 'Hemen Arayın',
@@ -120,8 +122,8 @@ export const baskiGroup: LandingGroup = {
       related: {
         h2: 'Bunlar da İlginizi Çekebilir',
         links: [
-          { label: 'Kanvas Tablo', href: '/tr/urunler/kanvas-tablo-07f184ec-1367-460f-be0e-672867e0c0e9' },
-          { label: 'Kişiye Özel Hediyeler (Magnet, Kupa, Puzzle)', href: '/tr/urunler?category=customizable-products' },
+          { label: 'Kanvas Tablo', href: '/tr/kanvas-tablo' },
+          { label: 'Kişiye Özel Hediyeler (Magnet, Kupa, Puzzle)', href: '/tr/urunler?kategori=customizable-products' },
           { label: 'Vesikalık & Biyometrik Fotoğraf', href: '/tr/vesikalik-fotograf' },
           { label: 'Film Banyo', href: '/tr/film-banyo' },
         ],
@@ -151,6 +153,8 @@ export const baskiGroup: LandingGroup = {
       h1: "Photo Printing: Don't Leave Your Memories on Your Phone",
       intro:
         'We print the photos on your phone or computer in professional Epson quality on fade-resistant matte or glossy photo paper. Send your photos on WhatsApp and pick up your prints the same day at our shop in Sirkeci.',
+      // Per print: ₺14 is the 251+ rate for 10x15, ₺350 a single 30x40.
+      offer: { lowPrice: 14, highPrice: 350 },
       whatsappLabel: 'Send on WhatsApp',
       whatsappMessage: 'Hello, I would like to print some photos. / Merhaba, fotoğraf baskı için yazıyorum.',
       callLabel: 'Call Now',
@@ -236,8 +240,8 @@ export const baskiGroup: LandingGroup = {
       related: {
         h2: 'You May Also Like',
         links: [
-          { label: 'Canvas Prints', href: '/en/products/kanvas-tablo-07f184ec-1367-460f-be0e-672867e0c0e9' },
-          { label: 'Personalised Gifts (Magnets, Mugs, Puzzles)', href: '/en/products?category=customizable-products' },
+          { label: 'Canvas Prints', href: '/en/canvas-print' },
+          { label: 'Personalised Gifts (Magnets, Mugs, Puzzles)', href: '/en/products?kategori=customizable-products' },
           { label: 'Passport & Biometric Photos', href: '/en/passport-photo' },
           { label: 'Film Developing', href: '/en/film-developing' },
         ],

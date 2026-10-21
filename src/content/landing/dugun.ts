@@ -30,6 +30,8 @@ export const dugunGroup: LandingGroup = {
       intro:
         'Fotoğrafçınızın göremediği kareler misafirlerinizin elindedir. Masalara birer çek-at kamera bırakın; herkes kendi açısından çeksin. Düğünden sonra kameraları tek kutuda bize gönderin, iki saat içinde bütün kareler tek bir galeride toplansın.',
       heroImage: { src: '/images/products/disp_kodak.png', alt: 'Flaşlı tek kullanımlık çek-at fotoğraf makinesi' },
+      // Per camera: ₺1.350 in the 20-camera package, ₺1.600 for a single one.
+      offer: { lowPrice: 1350, highPrice: 1600 },
       whatsappLabel: "WhatsApp'tan Bilgi Alın",
       whatsappMessage: 'Merhaba, düğün çek-at kamera paketi için bilgi almak istiyorum.',
       callLabel: 'Hemen Arayın',

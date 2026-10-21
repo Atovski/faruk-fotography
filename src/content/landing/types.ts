@@ -23,6 +23,13 @@ export interface LandingContent {
    */
   heroImage?: { src: string; alt: string; fit?: 'cover' | 'contain'; position?: string };
 
+  /**
+   * Price span for the page's AggregateOffer. Written out rather than parsed
+   * from the table, because the tables mix prices with sizes, totals and
+   * surcharges, and a schema that disagrees with the page is worse than none.
+   */
+  offer?: { lowPrice: number; highPrice: number };
+
   whatsappLabel: string;
   whatsappMessage: string;
   callLabel: string;
