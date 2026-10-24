@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { Toaster } from 'react-hot-toast';
+import dynamic from 'next/dynamic';
 import { LanguageProvider } from '@/hooks/useLanguage';
 import StyledComponentsRegistry from '@/lib/registry';
 import GlobalStyles from '@/styles/GlobalStyles';
@@ -11,6 +11,10 @@ import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import { CartProvider } from '@/hooks/useCart';
 import GlobalCart from '@/components/layout/GlobalCart';
 import ContactClickTracker from '@/components/layout/ContactClickTracker';
+
+/* Nothing is on screen until a toast fires, so keep the toast library out of
+   the first load and let it arrive after hydration. */
+const Toaster = dynamic(() => import('react-hot-toast').then((m) => m.Toaster), { ssr: false });
 
 interface ClientLayoutProps {
   children: ReactNode;

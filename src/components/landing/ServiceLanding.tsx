@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import styled, { css } from 'styled-components';
 import { FaWhatsapp } from 'react-icons/fa';
 import { HiCheck, HiLocationMarker, HiPhone, HiClock } from 'react-icons/hi';
@@ -9,8 +10,11 @@ import { theme } from '@/styles/theme';
 import { fadeIn, fadeInUp } from '@/styles/animations';
 import { Button } from '@/components/ui/Button';
 import { getWhatsAppUrl } from '@/lib/utils';
-import PriceCalculator from './PriceCalculator';
 import { SHOP, type LandingContent } from '@/content/landing/types';
+
+/* Only the print landing page carries a calculator, so the other eight
+   service pages should not ship it. */
+const PriceCalculator = dynamic(() => import('./PriceCalculator'));
 
 /**
  * With a photo hero the picture runs under the fixed navbar, so the page

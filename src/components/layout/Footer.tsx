@@ -9,7 +9,6 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { getLocalizedHref } from '@/i18n/config';
 import { FaInstagram, FaWhatsapp, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 import { HiMail } from 'react-icons/hi';
-import toast from 'react-hot-toast';
 
 const FooterWrapper = styled.footer`
   background: ${theme.colors.primaryDark};
@@ -250,6 +249,9 @@ export default function Footer() {
   const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
+    // Imported here rather than at module scope: the footer is in the layout,
+    // so a static import puts the toast library in every page's first load.
+    const { default: toast } = await import('react-hot-toast');
     toast.success(t.footer.newsletter.success);
     setEmail('');
   };

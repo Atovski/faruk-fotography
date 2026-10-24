@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import toast from 'react-hot-toast';
 
 // For now, let's just use any or Product for the product inside cart. Since ProductExt has mainCategory and images, we can use an extended product type.
 export interface CartProduct {

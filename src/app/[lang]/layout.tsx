@@ -1,7 +1,31 @@
 import type { Metadata } from 'next';
+import { Playfair_Display, Inter } from 'next/font/google';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { i18n, type Locale, getLocalizedHref } from '@/i18n/config';
 import { getDictionary } from '@/i18n/getDictionary';
 import ClientLayout from '@/components/layout/ClientLayout';
+import '../globals.css';
+
+/**
+ * This is the public site's root layout. It used to sit at app/layout.tsx and
+ * take the locale from a middleware header, but reading headers() opted every
+ * page in the site into per-request rendering; owning <html> here means the
+ * locale comes from the URL segment instead and all 22 pages prerender.
+ */
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
+});
 
 const BASE_URL = 'https://farukfotografcilik.com';
 
@@ -192,12 +216,21 @@ export default async function LangLayout({
   };
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <ClientLayout lang={locale}>{children}</ClientLayout>
-    </>
+    <html lang={lang} className={`${playfair.variable} ${inter.variable}`}>
+      <head>
+        <link rel="icon" href="/favicon.png" type="image/png" />
+      </head>
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <ClientLayout lang={locale}>{children}</ClientLayout>
+        {/* GT-KFH8RGWV was loaded alongside this one; both fetch the same
+            594 kB gtag.js for the same GA4 destination, so the pair cost every
+            visitor ~196 kB gzipped twice over. */}
+        <GoogleAnalytics gaId="G-S2WJGQFG97" />
+      </body>
+    </html>
   );
 }
