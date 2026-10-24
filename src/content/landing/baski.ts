@@ -123,7 +123,8 @@ export const baskiGroup: LandingGroup = {
         h2: 'Bunlar da İlginizi Çekebilir',
         links: [
           { label: 'Kanvas Tablo', href: '/tr/kanvas-tablo' },
-          { label: 'Kişiye Özel Hediyeler (Magnet, Kupa, Puzzle)', href: '/tr/urunler?kategori=customizable-products' },
+          { label: 'Fotoğraf Baskılı Magnet', href: '/tr/fotograf-magnet' },
+          { label: 'Kişiye Özel Hediyeler (Kupa, Puzzle)', href: '/tr/urunler?kategori=customizable-products' },
           { label: 'Vesikalık & Biyometrik Fotoğraf', href: '/tr/vesikalik-fotograf' },
           { label: 'Film Banyo', href: '/tr/film-banyo' },
         ],

@@ -225,6 +225,9 @@ export default function HeroSection() {
     <HeroWrapper id="hero">
       <BackgroundVideo
         key={isMobile ? 'mobile' : 'desktop'}
+        /* The first frame stands in while the file arrives, so the hero is
+           never a black rectangle on a slow phone. */
+        poster={isMobile ? '/hero-poster-mobile.jpg' : '/hero-poster.jpg'}
         autoPlay
         loop
         muted

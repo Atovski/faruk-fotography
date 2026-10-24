@@ -6,6 +6,7 @@ import { dugunGroup } from '@/content/landing/dugun';
 import { greenCardGroup } from '@/content/landing/greencard';
 import { kanvasGroup } from '@/content/landing/kanvas';
 import { kurumsalGroup } from '@/content/landing/kurumsal';
+import { magnetGroup } from '@/content/landing/magnet';
 import { ikametGroup } from '@/content/landing/ikamet';
 import { vesikalikGroup } from '@/content/landing/vesikalik';
 import { vizeGroup } from '@/content/landing/vize';
@@ -72,6 +73,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     kurumsalGroup,
     baskiGroup,
     kanvasGroup,
+    magnetGroup,
     cekAtGroup,
     dugunGroup,
   ].flatMap((group) => {
