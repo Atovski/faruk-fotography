@@ -57,7 +57,9 @@ export async function POST(
       .from('gallery_photos')
       .insert({
         gallery_id: galleryId,
-        roll_id: rollId,
+        // Omitted entirely when there is no roll, so the insert still matches
+        // the pre-migration table shape.
+        ...(rollId ? { roll_id: rollId } : {}),
         file_name: file.name,
         storage_path: storagePath,
         public_url: publicUrl,
