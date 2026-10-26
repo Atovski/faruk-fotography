@@ -29,10 +29,18 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Galeri bulunamadı veya bağlantı geçersiz.' }, { status: 404 });
     }
 
-    // 2. Fetch photos
+    // 2. Fetch the rolls — one folder per film the customer sent
+    const { data: rolls } = await supabase
+      .from('gallery_rolls')
+      .select('id, name, film_type')
+      .eq('gallery_id', gallery.id)
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: true });
+
+    // 3. Fetch photos
     const { data: photos, error: photosError } = await supabase
       .from('gallery_photos')
-      .select('id, file_name, public_url, created_at')
+      .select('id, roll_id, file_name, public_url, created_at')
       .eq('gallery_id', gallery.id)
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: true });
@@ -48,7 +56,9 @@ export async function GET(request: Request) {
         film_type: gallery.film_type,
         status: gallery.status,
         created_at: gallery.created_at,
+        access_token: gallery.access_token,
       },
+      rolls: rolls || [],
       photos: photos || [],
     });
 

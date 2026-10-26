@@ -23,10 +23,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Galeri bulunamadı veya bilgiler hatalı.' }, { status: 404 });
     }
 
-    // 2. Fetch the photos for this gallery
+    // 2. Fetch the rolls — one folder per film the customer sent
+    const { data: rolls } = await supabase
+      .from('gallery_rolls')
+      .select('id, name, film_type')
+      .eq('gallery_id', gallery.id)
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: true });
+
+    // 3. Fetch the photos for this gallery
     const { data: photos, error: photosError } = await supabase
       .from('gallery_photos')
-      .select('id, file_name, public_url, created_at')
+      .select('id, roll_id, file_name, public_url, created_at')
       .eq('gallery_id', gallery.id)
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: true });
@@ -35,8 +43,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Fotoğraflar yüklenirken bir sorun oluştu.' }, { status: 500 });
     }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       gallery: {
         id: gallery.id,
         film_type: gallery.film_type,
@@ -44,7 +52,8 @@ export async function POST(request: Request) {
         created_at: gallery.created_at,
         access_token: gallery.access_token
       },
-      photos: photos || [] 
+      rolls: rolls || [],
+      photos: photos || []
     });
 
   } catch (error) {

@@ -9,6 +9,9 @@ export async function POST(
     const { id: galleryId } = await params;
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
+    // Which film in this gallery the frame belongs to. Absent for galleries
+    // made before rolls existed, and those photos stay ungrouped.
+    const rollId = formData.get('roll_id')?.toString() || null;
 
     if (!file) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
@@ -19,7 +22,12 @@ export async function POST(
     // Use original file name but sanitize it for URL safety
     const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
     const timestamp = Date.now();
-    const storagePath = `${galleryId}/${timestamp}_${safeName}`;
+    // Keeping each roll in its own Storage prefix means two films that contain
+    // an IMG_0001.jpg each don't collide, and the bucket mirrors what the
+    // customer sees.
+    const storagePath = rollId
+      ? `${galleryId}/${rollId}/${timestamp}_${safeName}`
+      : `${galleryId}/${timestamp}_${safeName}`;
 
     // Upload to Supabase Storage matching precisely using the buffer
     const arrayBuffer = await file.arrayBuffer();
@@ -49,6 +57,7 @@ export async function POST(
       .from('gallery_photos')
       .insert({
         gallery_id: galleryId,
+        roll_id: rollId,
         file_name: file.name,
         storage_path: storagePath,
         public_url: publicUrl,
