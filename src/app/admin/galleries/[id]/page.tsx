@@ -19,7 +19,19 @@ export default async function GalleryDetailPage({ params }: { params: Promise<{ 
     return notFound();
   }
 
-  // 2. Fetch existing photos
+  // 2. Fetch the rolls — one per film the customer sent in this batch
+  const { data: rolls, error: rollsError } = await supabase
+    .from('gallery_rolls')
+    .select('*')
+    .eq('gallery_id', id)
+    .order('sort_order', { ascending: true })
+    .order('created_at', { ascending: true });
+
+  if (rollsError) {
+    console.error('Error fetching rolls:', rollsError.message);
+  }
+
+  // 3. Fetch existing photos
   const { data: photos, error: photosError } = await supabase
     .from('gallery_photos')
     .select('*')
@@ -37,5 +49,11 @@ export default async function GalleryDetailPage({ params }: { params: Promise<{ 
   // For simplicity and to bypass RLS in the client, we will create an API route to handle uploads securely,
   // or use Server Actions. We will pass the IDs to the client.
 
-  return <GalleryDetailClient gallery={gallery} initialPhotos={photos || []} />;
+  return (
+    <GalleryDetailClient
+      gallery={gallery}
+      initialRolls={rolls || []}
+      initialPhotos={photos || []}
+    />
+  );
 }

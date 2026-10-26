@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import JSZip from 'jszip';
 import styled from 'styled-components';
@@ -164,6 +164,35 @@ const PhotoGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: ${theme.spacing.md};
+`;
+
+const RollSection = styled.section`
+  & + & {
+    margin-top: ${theme.spacing['2xl']};
+  }
+`;
+
+const RollHeading = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: ${theme.spacing.sm} ${theme.spacing.md};
+  margin-bottom: ${theme.spacing.md};
+  padding-bottom: ${theme.spacing.sm};
+  border-bottom: 1px solid ${theme.colors.glassBorder};
+
+  h3 {
+    margin: 0;
+    font-family: ${theme.fonts.heading};
+    font-size: ${theme.fontSizes.lg};
+    color: ${theme.colors.text};
+    overflow-wrap: anywhere;
+  }
+
+  span {
+    color: ${theme.colors.textSecondary};
+    font-size: ${theme.fontSizes.sm};
+  }
 `;
 
 const PhotoCard = styled.div`
@@ -438,6 +467,9 @@ function GalleryPageContent() {
   const [authenticated, setAuthenticated] = useState(false);
   const [galleryData, setGalleryData] = useState<any>(null);
   const [photos, setPhotos] = useState<any[]>([]);
+  // One roll per film the customer posted. A batch of four films arrives as
+  // four folders behind a single link.
+  const [rolls, setRolls] = useState<any[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [downloadingZip, setDownloadingZip] = useState(false);
   const [tokenLoading, setTokenLoading] = useState(false);
@@ -446,6 +478,35 @@ function GalleryPageContent() {
   const { language } = useLanguage();
   const { addToCart } = useCart();
   const [filmProducts, setFilmProducts] = useState<any[]>([]);
+
+  // The grid is laid out film by film, so the lightbox has to walk that same
+  // order — not the raw insertion order the API returns.
+  const groups = useMemo(() => {
+    const byRoll = new Map<string, any[]>();
+    for (const photo of photos) {
+      const key = photo.roll_id ?? '__none__';
+      const list = byRoll.get(key);
+      if (list) list.push(photo);
+      else byRoll.set(key, [photo]);
+    }
+
+    const out = rolls.map((roll: any) => ({
+      key: roll.id as string,
+      name: roll.name as string | null,
+      filmType: (roll.film_type as string | null) || null,
+      items: byRoll.get(roll.id) || [],
+    }));
+
+    // Galleries created before rolls existed have photos attached to no film.
+    const loose = byRoll.get('__none__') || [];
+    if (loose.length) {
+      out.push({ key: '__none__', name: null, filmType: null, items: loose });
+    }
+
+    return out.filter((group) => group.items.length > 0);
+  }, [photos, rolls]);
+
+  const ordered = useMemo(() => groups.flatMap((group) => group.items), [groups]);
 
   // Magic Link: auto-login via ?token= parameter
   const searchParams = useSearchParams();
@@ -459,6 +520,7 @@ function GalleryPageContent() {
       .then(data => {
         if (data.success) {
           setGalleryData(data.gallery);
+          setRolls(data.rolls || []);
           setPhotos(data.photos);
           setAuthenticated(true);
         } else {
@@ -506,14 +568,14 @@ function GalleryPageContent() {
       if (e.key === 'Escape') {
         setLightboxIndex(null);
       } else if (e.key === 'ArrowLeft') {
-        setLightboxIndex(prev => prev !== null && prev > 0 ? prev - 1 : photos.length - 1);
+        setLightboxIndex(prev => prev !== null && prev > 0 ? prev - 1 : ordered.length - 1);
       } else if (e.key === 'ArrowRight') {
-        setLightboxIndex(prev => prev !== null && prev < photos.length - 1 ? prev + 1 : 0);
+        setLightboxIndex(prev => prev !== null && prev < ordered.length - 1 ? prev + 1 : 0);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxIndex, photos.length]);
+  }, [lightboxIndex, ordered.length]);
 
   const handleAccess = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -531,6 +593,7 @@ function GalleryPageContent() {
 
       if (res.ok && data.success) {
         setGalleryData(data.gallery);
+        setRolls(data.rolls || []);
         setPhotos(data.photos);
         setAuthenticated(true);
         toast.success(t.gallery.messages?.success || 'Fotoğraflar yüklendi!');
@@ -547,9 +610,9 @@ function GalleryPageContent() {
   const navigateLightbox = (direction: 'prev' | 'next') => {
     if (lightboxIndex === null) return;
     if (direction === 'prev') {
-      setLightboxIndex(prev => prev !== null && prev > 0 ? prev - 1 : photos.length - 1);
+      setLightboxIndex(prev => prev !== null && prev > 0 ? prev - 1 : ordered.length - 1);
     } else {
-      setLightboxIndex(prev => prev !== null && prev < photos.length - 1 ? prev + 1 : 0);
+      setLightboxIndex(prev => prev !== null && prev < ordered.length - 1 ? prev + 1 : 0);
     }
   };
 
@@ -561,10 +624,19 @@ function GalleryPageContent() {
     try {
       const zip = new JSZip();
       
-      const promises = photos.map(async (photo) => {
-        const response = await fetch(photo.public_url);
-        const blob = await response.blob();
-        zip.file(photo.file_name, blob);
+      // More than one film means folders in the archive too, so the customer
+      // unzips the same structure the page showed them.
+      const multiple = groups.length > 1;
+      const promises = groups.flatMap((group, gi) => {
+        const folder = multiple
+          ? (group.name || (language === 'en' ? 'Other' : 'Diger')).replace(/[\\/:*?"<>|]/g, '-').trim() || `Film-${gi + 1}`
+          : null;
+
+        return group.items.map(async (photo: any) => {
+          const response = await fetch(photo.public_url);
+          const blob = await response.blob();
+          zip.file(folder ? `${folder}/${photo.file_name}` : photo.file_name, blob);
+        });
       });
       
       await Promise.all(promises);
@@ -711,23 +783,52 @@ function GalleryPageContent() {
               </div>
             </OrderInfoBar>
 
-            <PhotoGrid>
-              {photos.length === 0 ? (
+            {ordered.length === 0 ? (
+              <PhotoGrid>
                 <div style={{ color: theme.colors.textSecondary, gridColumn: '1 / -1', padding: '40px 0', textAlign: 'center' }}>
                   Bu galeriye henüz fotoğraf yüklenmemiş.
                 </div>
-              ) : null}
-              {photos.map((photo, i) => (
-                <PhotoCard
-                  key={photo.id}
-                  onClick={() => setLightboxIndex(i)}
-                  style={{ animationDelay: `${i * 0.05}s` }}
-                >
-                  <img src={photo.public_url} alt={photo.file_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  <PhotoNumber>{String(i + 1).padStart(2, '0')}</PhotoNumber>
-                </PhotoCard>
-              ))}
-            </PhotoGrid>
+              </PhotoGrid>
+            ) : (
+              groups.map((group, gi) => {
+                // Index into `ordered`, so clicking any frame opens the lightbox
+                // at the right place across every film.
+                const offset = groups
+                  .slice(0, gi)
+                  .reduce((total, g) => total + g.items.length, 0);
+
+                // A single unnamed group is just a plain gallery — no heading.
+                const heading =
+                  group.name ??
+                  (groups.length > 1 ? (language === 'en' ? 'Other' : 'Diğer') : null);
+
+                return (
+                  <RollSection key={group.key}>
+                    {heading && (
+                      <RollHeading>
+                        <h3>{heading}</h3>
+                        <span>
+                          {group.filmType ? `${group.filmType} · ` : ''}
+                          {group.items.length} {language === 'en' ? 'photos' : 'fotoğraf'}
+                        </span>
+                      </RollHeading>
+                    )}
+                    <PhotoGrid>
+                      {group.items.map((photo: any, i: number) => (
+                        <PhotoCard
+                          key={photo.id}
+                          onClick={() => setLightboxIndex(offset + i)}
+                          style={{ animationDelay: `${i * 0.05}s` }}
+                        >
+                          <img src={photo.public_url} alt={photo.file_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          <PhotoNumber>{String(i + 1).padStart(2, '0')}</PhotoNumber>
+                        </PhotoCard>
+                      ))}
+                    </PhotoGrid>
+                  </RollSection>
+                );
+              })
+            )}
 
             {/* Upsell Slider for Film Products */}
             {filmProducts.length > 0 && (
@@ -794,8 +895,8 @@ function GalleryPageContent() {
             </LightboxNav>
             <LightboxImage onClick={(e) => e.stopPropagation()}>
               <img 
-                src={photos[lightboxIndex].public_url} 
-                alt={photos[lightboxIndex].file_name} 
+                src={ordered[lightboxIndex].public_url} 
+                alt={ordered[lightboxIndex].file_name} 
                 style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: theme.borderRadius.lg }} 
               />
             </LightboxImage>
@@ -804,9 +905,9 @@ function GalleryPageContent() {
             </LightboxNav>
             <LightboxInfo>
               <LightboxCounter>
-                {(lightboxIndex + 1)} / {photos.length}
+                {(lightboxIndex + 1)} / {ordered.length}
               </LightboxCounter>
-              <Button $variant="primary" $size="sm" onClick={(e) => { e.stopPropagation(); handleDownloadSingle(photos[lightboxIndex].public_url, photos[lightboxIndex].file_name); }}>
+              <Button $variant="primary" $size="sm" onClick={(e) => { e.stopPropagation(); handleDownloadSingle(ordered[lightboxIndex].public_url, ordered[lightboxIndex].file_name); }}>
                 <HiDownload /> {t.gallery.download}
               </Button>
             </LightboxInfo>
