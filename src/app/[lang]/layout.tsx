@@ -14,20 +14,25 @@ import '../globals.css';
  */
 
 /**
- * Both families are variable fonts, so naming weights is what forced next/font
- * to ship a separate static file per weight — four font files and 189 KB on a
- * page whose markup is 19 KB. Dropping `weight` serves one variable file per
- * family covering the whole 100-900 range, which is every weight the styles
- * ask for (400/500/600/700) and fewer bytes in front of a phone on mobile data.
+ * `latin-ext` is not optional on a Turkish site. ğ, ş, İ, Ğ and Ş live in that
+ * subset, not in `latin` — so with `latin` alone next/font preloaded the two
+ * latin files and left the browser to discover the latin-ext ones from the
+ * stylesheet afterwards. Measured on the live page: latin started at 144 ms,
+ * latin-ext at 206 ms, and latin-ext is the file that draws the ğ in
+ * "Fotoğraf". Naming both subsets preloads the faces the headings actually
+ * need instead of fetching them a round trip late.
+ *
+ * Weights stay unlisted: both families are variable, so one file per family
+ * spans 100-900 and covers every weight the styles ask for (400/500/600/700).
  */
 const playfair = Playfair_Display({
-  subsets: ['latin'],
+  subsets: ['latin', 'latin-ext'],
   variable: '--font-playfair',
   display: 'swap',
 });
 
 const inter = Inter({
-  subsets: ['latin'],
+  subsets: ['latin', 'latin-ext'],
   variable: '--font-inter',
   display: 'swap',
 });

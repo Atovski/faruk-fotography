@@ -7,15 +7,15 @@ import '../globals.css';
  * app/[lang] so that the locale comes from the URL and every page prerenders,
  * which leaves nothing above this branch to render the document.
  */
-// Variable fonts: see the note in app/[lang]/layout.tsx for why no weights.
+// Variable fonts + Turkish subset: see the note in app/[lang]/layout.tsx.
 const playfair = Playfair_Display({
-  subsets: ['latin'],
+  subsets: ['latin', 'latin-ext'],
   variable: '--font-playfair',
   display: 'swap',
 });
 
 const inter = Inter({
-  subsets: ['latin'],
+  subsets: ['latin', 'latin-ext'],
   variable: '--font-inter',
   display: 'swap',
 });
