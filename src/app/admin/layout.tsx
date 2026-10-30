@@ -7,18 +7,17 @@ import '../globals.css';
  * app/[lang] so that the locale comes from the URL and every page prerenders,
  * which leaves nothing above this branch to render the document.
  */
+// Variable fonts: see the note in app/[lang]/layout.tsx for why no weights.
 const playfair = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-playfair',
   display: 'swap',
-  weight: ['400', '600', '700'],
 });
 
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
-  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata = {

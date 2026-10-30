@@ -13,18 +13,23 @@ import '../globals.css';
  * locale comes from the URL segment instead and all 22 pages prerender.
  */
 
+/**
+ * Both families are variable fonts, so naming weights is what forced next/font
+ * to ship a separate static file per weight — four font files and 189 KB on a
+ * page whose markup is 19 KB. Dropping `weight` serves one variable file per
+ * family covering the whole 100-900 range, which is every weight the styles
+ * ask for (400/500/600/700) and fewer bytes in front of a phone on mobile data.
+ */
 const playfair = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-playfair',
   display: 'swap',
-  weight: ['400', '500', '600', '700', '800'],
 });
 
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
-  weight: ['300', '400', '500', '600', '700'],
 });
 
 const BASE_URL = 'https://farukfotografcilik.com';
